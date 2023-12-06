@@ -15,7 +15,7 @@ const Container = ({ listMenuBasedOnUser, children }) => {
         </div>
 
         {/* List menu features */}
-        <ul className="flex flex-col gap-3">
+        <ul className="flex flex-col gap-5">
           {listMenuBasedOnUser.map((item, index) => (
             <li key={index}>
               <NavLink to={item.path}>
