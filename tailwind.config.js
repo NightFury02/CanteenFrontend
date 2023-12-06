@@ -15,10 +15,15 @@ export default {
         "dark-bg-2": "#1F1D2B",
         "dark-line": "#393C49",
 
-        // Satus
+        // Status
         completed: "#50D1AA",
+
+        //text
+        light: "#ABBBC2",
       },
-      fontFamily: {},
+      fontFamily: {
+        barlow: 'Barlow',
+      },
     },
   },
   plugins: [],
