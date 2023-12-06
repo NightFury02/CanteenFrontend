@@ -1,6 +1,6 @@
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import PropTypes from "prop-types";
-import { Logo } from "../../assets/svgs";
+import { Logo, LogoutIcon } from "../../assets/svgs";
 
 const Container = ({ listMenuBasedOnUser, children }) => {
   return (
@@ -15,18 +15,24 @@ const Container = ({ listMenuBasedOnUser, children }) => {
         </div>
 
         {/* List menu features */}
-        <ul className="flex flex-col gap-10">
+        <ul className="flex flex-col gap-3">
           {listMenuBasedOnUser.map((item, index) => (
             <li key={index}>
-              <Link to={item.path}>
-                {<item.icon className="fill-primary w-[20px] h-[20px]" />}
-              </Link>
+              <NavLink to={item.path}>
+                {
+                  <div className="p-4 hover:bg-[#EB966A]/30 rounded-lg">
+                    <item.icon className="fill-primary w-[20px] h-[20px]" />
+                  </div>
+                }
+              </NavLink>
             </li>
           ))}
         </ul>
 
         {/* Logout button */}
-        <button></button>
+        <button>{
+          <LogoutIcon className="fill-primary w-[20px] h-[20px] my-3"></LogoutIcon>
+        }</button>
       </aside>
 
       <section className="grow">{children}</section>

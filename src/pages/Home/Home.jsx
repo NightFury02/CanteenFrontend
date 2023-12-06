@@ -12,8 +12,8 @@ const rolesUser = {
 };
 
 const Home = () => {
-  const isLogin = false;
-  const user = { role: "admin" };
+  const isLogin = true;
+  const user = { role: "staff" };
   const HomePage = rolesUser[user.role];
 
   return (
