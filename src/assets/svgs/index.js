@@ -6,3 +6,4 @@ export { default as SettingIcon } from "./setting.svg?react";
 export { default as InventoryIcon } from "./inventory.svg?react";
 export { default as Logo } from "./logo.svg?react";
 export { default as DashboardIcon} from "./dashboard.svg?react";
+export { default as SearchIcon} from "./search.svg?react";

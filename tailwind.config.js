@@ -20,6 +20,9 @@ export default {
 
         //text
         light: "#ABBBC2",
+
+        //Box-shadow
+        brown: "rgba(234, 124, 105, 0.30)",
       },
       fontFamily: {
         barlow: 'Barlow',
