@@ -35,7 +35,11 @@ const Container = ({ listMenuBasedOnUser, children }) => {
         }</button>
       </aside>
 
-      <section className="grow">{children}</section>
+      <section className="grow">
+        <div className="m-4">
+          {children}
+        </div>
+      </section>
     </main>
   );
 };
