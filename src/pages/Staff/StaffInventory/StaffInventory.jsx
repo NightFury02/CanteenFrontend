@@ -4,6 +4,9 @@ const StaffInventory = () => {
   const handleImport = () => {
     console.log("import");
   }
+  const handleExport = () => {
+    console.log("export");
+  }
   return (
     <>
       <Header heading="Quản lý kho"></Header>
@@ -16,7 +19,7 @@ const StaffInventory = () => {
         <Button 
           title={'Tạo phiếu xuất kho'}
           className="p-2"
-          onAction={handleImport}
+          onAction={handleExport}
         />
       </div>
     </>
