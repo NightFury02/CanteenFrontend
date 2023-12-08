@@ -35,7 +35,7 @@ const Container = ({ listMenuBasedOnUser, children }) => {
         }</button>
       </aside>
 
-      <section className="grow">
+      <section className="grow overflow-y-auto">
         <div className="m-4">
           {children}
         </div>

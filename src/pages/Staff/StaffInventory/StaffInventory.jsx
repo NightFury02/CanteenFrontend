@@ -11,7 +11,12 @@ const StaffInventory = () => {
   const rowData = [
     ["The Sliding Mr. Bones (Next Stop, Pottersville)", "Malcolm Lockyer", "1961", "Malcolm Lockyer", "Malcolm Lockyer"],
     ["The Sliding Mr. Bones (Next Stop, Pottersville)", "Malcolm Lockyer", "1961", "Malcolm Lockyer", "Malcolm Lockyer"],
-    ["The Sliding Mr. Bones (Next Stop, Pottersville)", "Malcolm Lockyer", "1961", "Malcolm Lockyer", "Malcolm Lockyer"]
+    ["The Sliding Mr. Bones (Next Stop, Pottersville)", "Malcolm Lockyer", "1961", "Malcolm Lockyer", "Malcolm Lockyer"],
+    ["The Sliding Mr. Bones (Next Stop, Pottersville)", "Malcolm Lockyer", "1961", "Malcolm Lockyer", "Malcolm Lockyer"],
+    ["The Sliding Mr. Bones (Next Stop, Pottersville)", "Malcolm Lockyer", "1961", "Malcolm Lockyer", "Malcolm Lockyer"],
+    ["The Sliding Mr. Bones (Next Stop, Pottersville)", "Malcolm Lockyer", "1961", "Malcolm Lockyer", "Malcolm Lockyer"],
+    ["The Sliding Mr. Bones (Next Stop, Pottersville)", "Malcolm Lockyer", "1961", "Malcolm Lockyer", "Malcolm Lockyer"],
+    ["The Sliding Mr. Bones (Next Stop, Pottersville)", "Malcolm Lockyer", "1961", "Malcolm Lockyer", "Malcolm Lockyer"],
   ]
   const columnData = ['Mã sản phẩm', 'Tên', 'Số lượng', 'Hạn sử dụng', 'Xóa'];
   return (
@@ -34,6 +39,14 @@ const StaffInventory = () => {
       <div className="mt-5 p-2">
         <Table 
           title="Sản phẩm hết hạn"
+          column={columnData}
+          rows={rowData}
+        />
+      </div>
+
+      <div className="mt-5 p-2">
+        <Table 
+          title="Kho"
           column={columnData}
           rows={rowData}
         />

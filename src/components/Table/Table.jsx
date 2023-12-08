@@ -6,18 +6,21 @@ const Table = ({ title, column, rows }) => {
   return (
     <div className="bg-dark-bg-2 text-white border border-dark-bg-2 rounded-md">
       <h1 className="ms-4 mt-2 text-2xl font-semibold text-primary">{title}</h1>
-      <table className="table-auto w-full">
-        <thead>
-          <Column column={column}/>
-        </thead>
-        <tbody>
-          {
-            rows.map((row, index) => (
-              <Row key={index} row={row}/>
-            ))
-          }
-        </tbody>
-      </table>
+      {/* Handle overflow scrolling */}
+      <div className="row-container max-h-80 overflow-y-auto"> 
+        <table className="table-auto w-full">
+          <thead>
+            <Column column={column}/>
+          </thead>
+          <tbody>
+            {
+              rows.map((row, index) => (
+                <Row key={index} row={row}/>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
