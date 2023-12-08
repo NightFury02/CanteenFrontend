@@ -3,13 +3,13 @@ import Row from "./Row/Row";
 import Column from "./Column/Column";
 import Filter from "../Filter/Filter";
 
-const Table = ({ title, column, rows, hasFilter = true }) => {
+const Table = ({ title, column, rows, hasFilter = false, filterItems=[] }) => {
   return (
     <div className="bg-dark-bg-2 text-white border border-dark-bg-2 rounded-md">
       <div className="flex justify-between">
         <h1 className="ms-4 my-2 text-2xl font-semibold text-primary flex items-center">{title}</h1>
         {/* Conditionally render Filter component */}
-        {hasFilter && <div className="p-4"><Filter /></div>}
+        {hasFilter && filterItems!=[] && <div className="p-4"><Filter filterItems={filterItems}/></div>}
       </div>
       {/* Handle overflow scrolling */}
       <div className="row-container max-h-80 overflow-y-auto"> 

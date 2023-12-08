@@ -2,12 +2,9 @@ import { Fragment } from 'react'
 import { Menu, Transition } from '@headlessui/react'
 import { ChevronDownIcon } from '../../assets/svgs/index'
 import { FilterIcon } from '../../assets/svgs/index';
+import classNames from 'classnames';
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ')
-}
-
-const Filter = () => {
+const Filter = ({filterItems}) => {
   return (
     <Menu as="div" className="relative inline-block text-left">
       <div>
@@ -29,60 +26,28 @@ const Filter = () => {
       >
         <Menu.Items className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
           <div className="py-1">
-            <Menu.Item>
-              {({ active }) => (
-                <a
-                  href="#"
-                  className={classNames(
-                    active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                    'block px-4 py-2 text-sm'
-                  )}
-                >
-                  Account settings
-                </a>
-              )}
-            </Menu.Item>
-            <Menu.Item>
-              {({ active }) => (
-                <a
-                  href="#"
-                  className={classNames(
-                    active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                    'block px-4 py-2 text-sm'
-                  )}
-                >
-                  Support
-                </a>
-              )}
-            </Menu.Item>
-            <Menu.Item>
-              {({ active }) => (
-                <a
-                  href="#"
-                  className={classNames(
-                    active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                    'block px-4 py-2 text-sm'
-                  )}
-                >
-                  License
-                </a>
-              )}
-            </Menu.Item>
-            <form method="POST" action="#">
-              <Menu.Item>
-                {({ active }) => (
-                  <button
-                    type="submit"
-                    className={classNames(
-                      active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                      'block w-full px-4 py-2 text-left text-sm'
-                    )}
-                  >
-                    Sign out
-                  </button>
-                )}
-              </Menu.Item>
-            </form>
+            {
+                filterItems.map((item, index) => (
+                    <Menu.Item key={index} as={Fragment}>
+                        {({active}) => (
+                            <a 
+                                href={item.href} 
+                                className={classNames(
+                                    'block',
+                                    'px-4 py-2',
+                                    'text-sm',
+                                    {
+                                        'bg-gray-100 text-gray-900': active,
+                                        'text-gray-700': !active,
+                                    }
+                                )}
+                            >
+                                {item.label}
+                            </a>
+                        )}
+                    </Menu.Item>
+                ))
+            }
           </div>
         </Menu.Items>
       </Transition>

@@ -1,7 +1,6 @@
 import Header from "../../../components/Header/Header"
 import Button from "../../../components/Button/Button"
 import Table from "../../../components/Table/Table"
-import Filter from "../../../components/Filter/Filter";
 
 const StaffInventory = () => {
   const handleImport = () => {
@@ -21,6 +20,13 @@ const StaffInventory = () => {
     ["#143", "Malcolm Lockyer", "1961", "Malcolm Lockyer", "Malcolm Lockyer"],
   ]
   const columnData = ['Mã sản phẩm', 'Tên', 'Số lượng', 'Hạn sử dụng', 'Xóa'];
+  const links = [
+    { href: '/account-settings', label: 'Account settings' },
+    { href: '/support', label: 'Support' },
+    { href: '/license', label: 'License' },
+    { href: '/sign-out', label: 'Sign out' },
+  ];
+
   return (
     <>
       <div>
@@ -44,7 +50,8 @@ const StaffInventory = () => {
           title="Sản phẩm hết hạn"
           column={columnData}
           rows={rowData}
-          hasFilter={false}
+          hasFilter={true}
+          filterItems={links}
         />
       </div>
 
