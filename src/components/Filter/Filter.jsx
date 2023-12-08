@@ -33,9 +33,7 @@ const Filter = ({filterItems}) => {
                             <a 
                                 href={item.href} 
                                 className={classNames(
-                                    'block',
-                                    'px-4 py-2',
-                                    'text-sm',
+                                    'block px-4 py-2 text-sm',
                                     {
                                         'bg-gray-100 text-gray-900': active,
                                         'text-gray-700': !active,
