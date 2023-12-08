@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import classNames from 'classnames'; // Import classNames library or use any other method for class merging
+import classNames from 'classnames'; // Import class merging
 
 const Button = ({
   title,
@@ -39,7 +39,7 @@ Button.propTypes = {
   variant: PropTypes.string,
   onAction: PropTypes.func.isRequired,
   type: PropTypes.string,
-  className: PropTypes.string // Define className as a string prop
+  className: PropTypes.string
 };
 
 export default Button;

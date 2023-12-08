@@ -1,6 +1,8 @@
 import Header from "../../../components/Header/Header"
 import Button from "../../../components/Button/Button"
 import Table from "../../../components/Table/Table"
+import Filter from "../../../components/Filter/Filter";
+
 const StaffInventory = () => {
   const handleImport = () => {
     console.log("import");
@@ -9,14 +11,14 @@ const StaffInventory = () => {
     console.log("export");
   }
   const rowData = [
-    ["The Sliding Mr. Bones (Next Stop, Pottersville)", "Malcolm Lockyer", "1961", "Malcolm Lockyer", "Malcolm Lockyer"],
-    ["The Sliding Mr. Bones (Next Stop, Pottersville)", "Malcolm Lockyer", "1961", "Malcolm Lockyer", "Malcolm Lockyer"],
-    ["The Sliding Mr. Bones (Next Stop, Pottersville)", "Malcolm Lockyer", "1961", "Malcolm Lockyer", "Malcolm Lockyer"],
-    ["The Sliding Mr. Bones (Next Stop, Pottersville)", "Malcolm Lockyer", "1961", "Malcolm Lockyer", "Malcolm Lockyer"],
-    ["The Sliding Mr. Bones (Next Stop, Pottersville)", "Malcolm Lockyer", "1961", "Malcolm Lockyer", "Malcolm Lockyer"],
-    ["The Sliding Mr. Bones (Next Stop, Pottersville)", "Malcolm Lockyer", "1961", "Malcolm Lockyer", "Malcolm Lockyer"],
-    ["The Sliding Mr. Bones (Next Stop, Pottersville)", "Malcolm Lockyer", "1961", "Malcolm Lockyer", "Malcolm Lockyer"],
-    ["The Sliding Mr. Bones (Next Stop, Pottersville)", "Malcolm Lockyer", "1961", "Malcolm Lockyer", "Malcolm Lockyer"],
+    ["#1", "Malcolm Lockyer", "1961", "Malcolm Lockyer", "Malcolm Lockyer"],
+    ["#2", "Malcolm Lockyer", "1961", "Malcolm Lockyer", "Malcolm Lockyer"],
+    ["#300", "Malcolm Lockyer", "1961", "Malcolm Lockyer", "Malcolm Lockyer"],
+    ["#120", "Malcolm Lockyer", "1961", "Malcolm Lockyer", "Malcolm Lockyer"],
+    ["#3400", "Malcolm Lockyer", "1961", "Malcolm Lockyer", "Malcolm Lockyer"],
+    ["#12", "Malcolm Lockyer", "1961", "Malcolm Lockyer", "Malcolm Lockyer"],
+    ["#600", "Malcolm Lockyer", "1961", "Malcolm Lockyer", "Malcolm Lockyer"],
+    ["#143", "Malcolm Lockyer", "1961", "Malcolm Lockyer", "Malcolm Lockyer"],
   ]
   const columnData = ['Mã sản phẩm', 'Tên', 'Số lượng', 'Hạn sử dụng', 'Xóa'];
   return (
@@ -36,11 +38,13 @@ const StaffInventory = () => {
           onAction={handleExport}
         />
       </div>
+      
       <div className="mt-5 p-2">
         <Table 
           title="Sản phẩm hết hạn"
           column={columnData}
           rows={rowData}
+          hasFilter={false}
         />
       </div>
 
