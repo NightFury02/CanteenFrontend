@@ -26,6 +26,14 @@ const theme = createTheme({
   },
   typography: {
     fontFamily: 'Barlow',
+    fontWeight: {
+      tableTitle: '600'
+    },
+    fontSize: {
+      tableTitle: "1.5rem",
+      icon: "1.5rem"
+    }
+    
   },
 });
 

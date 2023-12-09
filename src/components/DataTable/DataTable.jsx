@@ -118,13 +118,13 @@ function EnhancedTableHead(props) {
       <TableRow>
         <TableCell padding="checkbox">
           <Checkbox
-            color="primary"
             indeterminate={numSelected > 0 && numSelected < rowCount}
             checked={rowCount > 0 && numSelected === rowCount}
             onChange={onSelectAllClick}
             inputProps={{
               'aria-label': 'select all desserts',
             }}
+            sx={{color: 'text.primary'}}
           />
         </TableCell>
         {headCells.map((headCell) => (
@@ -174,6 +174,7 @@ function EnhancedTableToolbar(props) {
           bgcolor: (theme) =>
             alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
         }),
+        bgcolor: 'background.secondary'
       }}
     >
       {numSelected > 0 ? (
@@ -187,8 +188,8 @@ function EnhancedTableToolbar(props) {
         </Typography>
       ) : (
         <Typography
-          sx={{ flex: '1 1 100%' }}
-          variant="h6"
+          sx={{ flex: '1 1 100%', color: '#EA7C69', fontWeight: 'fontWeight.tableTitle', fontSize: 'fontSize.tableTitle' }}
+          variant="h1"
           id="tableTitle"
           component="div"
         >
@@ -196,16 +197,10 @@ function EnhancedTableToolbar(props) {
         </Typography>
       )}
 
-      {numSelected > 0 ? (
+      {numSelected > 0 && (
         <Tooltip title="Delete">
           <IconButton>
-            <DeleteIcon />
-          </IconButton>
-        </Tooltip>
-      ) : (
-        <Tooltip title="Filter list">
-          <IconButton>
-            {/* <FilterListIcon /> */}
+            <DeleteIcon sx={{color: 'text.white', fontSize: 'fontSize.icon'}}/>
           </IconButton>
         </Tooltip>
       )}
@@ -288,7 +283,7 @@ export default function EnhancedTable() {
         <EnhancedTableToolbar numSelected={selected.length} />
         <TableContainer>
           <Table
-            sx={{ minWidth: 750 }}
+            sx={{ minWidth: 750, bgcolor: 'background.secondary' }}
             aria-labelledby="tableTitle"
             size={'medium'}
           >
@@ -323,6 +318,7 @@ export default function EnhancedTable() {
                         inputProps={{
                           'aria-labelledby': labelId,
                         }}
+                        sx={{color: 'text.white'}}
                       />
                     </TableCell>
                     <TableCell
@@ -330,13 +326,14 @@ export default function EnhancedTable() {
                       id={labelId}
                       scope="row"
                       padding="none"
+                      sx={{color: 'text.white'}}
                     >
                       {row.name}
                     </TableCell>
-                    <TableCell align="right">{row.calories}</TableCell>
-                    <TableCell align="right">{row.fat}</TableCell>
-                    <TableCell align="right">{row.carbs}</TableCell>
-                    <TableCell align="right">{row.protein}</TableCell>
+                    <TableCell align="right" sx={{color: 'text.white'}}>{row.calories}</TableCell>
+                    <TableCell align="right" sx={{color: 'text.white'}}>{row.fat}</TableCell>
+                    <TableCell align="right" sx={{color: 'text.white'}}>{row.carbs}</TableCell>
+                    <TableCell align="right" sx={{color: 'text.white'}}>{row.protein}</TableCell>
                   </TableRow>
                 );
               })}
@@ -360,6 +357,7 @@ export default function EnhancedTable() {
           page={page}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
+          sx={{bgcolor: 'background.secondary', color: 'text.white'}}
         />
       </Paper>
     </Box>
