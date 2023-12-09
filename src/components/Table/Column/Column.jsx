@@ -5,7 +5,7 @@ const Column = ({column}) => {
         <tr>
             {column.map((columnCell, index) => {
               return (
-                <th key={index} className="p-4 text-left">{columnCell}</th>
+                <th key={index} className="px-4 py-1 text-left">{columnCell}</th>
               );
             })}
         </tr>
