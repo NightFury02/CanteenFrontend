@@ -1,6 +1,7 @@
 import Header from "../../../components/Header/Header"
 import Button from "../../../components/Button/Button"
 import Table from "../../../components/Table/Table"
+import EnhancedTable from "../../../components/DataTable/DataTable";
 
 const StaffInventory = () => {
   const handleImport = () => {
@@ -61,6 +62,10 @@ const StaffInventory = () => {
           column={columnData}
           rows={rowData}
         />
+      </div>
+
+      <div className="mt-5 p-2">
+        <EnhancedTable/>
       </div>
     </>
   );
