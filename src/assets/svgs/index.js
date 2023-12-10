@@ -9,3 +9,4 @@ export { default as DashboardIcon} from "./dashboard.svg?react";
 export { default as SearchIcon} from "./search.svg?react";
 export { default as FilterIcon} from "./filter.svg?react";
 export { default as ChevronDownIcon } from "./chevrondown.svg?react";
+export { default as Management } from "./management.svg?react";

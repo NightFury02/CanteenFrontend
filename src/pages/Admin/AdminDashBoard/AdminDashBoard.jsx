@@ -1,5 +1,13 @@
+import React from 'react';
+
 const AdminDashBoard = () => {
-  return <div>AdminDashBoard</div>;
+  // Your staff dashboard component logic
+  return (
+    <div>
+      <h2>AdminDashBoard</h2>
+      {/* Other components or content */}
+    </div>
+  );
 };
 
 export default AdminDashBoard;

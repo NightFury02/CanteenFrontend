@@ -1,4 +1,4 @@
-import { HomeIcon, SettingIcon, EditIcon, LogoutIcon, NotificationIcon, InventoryIcon, DashboardIcon } from "../assets/svgs";
+import { HomeIcon, SettingIcon, EditIcon, LogoutIcon, Management, NotificationIcon, InventoryIcon, DashboardIcon } from "../assets/svgs";
 
 const listMenuBasedOnUser = {
   user: [
@@ -38,7 +38,28 @@ const listMenuBasedOnUser = {
       icon: SettingIcon,
     },
   ],
-  admin: [],
+  admin: [
+    {
+      path: "/",
+      icon: HomeIcon,
+    },
+    {
+      path: "/admin/dashboard",
+      icon: DashboardIcon,
+    },
+    {
+      path: "/admin/inventory",
+      icon: InventoryIcon,
+    },
+    {
+      path: "/admin/orders",
+      icon: NotificationIcon,
+    },
+    {
+      path: "/admin/management",
+      icon: Management,
+    }
+  ],
 };
 
 export { listMenuBasedOnUser };

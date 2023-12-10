@@ -3,6 +3,9 @@ export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
+      minHeight: {
+        '1/2': '50%',
+      },
       colors: {
         // Login/Register Form
         "dark-pink": "#C10C99",
@@ -29,5 +32,25 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    function ({ addComponents, theme }) {
+      const customStyles = {
+        '.custom-popup-container': {
+          backgroundColor: "#1F1D2B",
+          color: theme('colors.customText'),
+        },
+        '.custom-popup-content': {
+          boxShadow: `0 4px 8px ${theme('colors.customShadow')}`,
+        },
+        '.custom-popup-header': {
+          color: "white",
+        },
+        '.custom-popup-data': {
+          color: "white",
+        },
+      };
+
+      addComponents(customStyles);
+    },
+  ],
 };
