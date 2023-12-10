@@ -5,3 +5,8 @@
 .active>div{
     background-color: rgba(235, 150, 106, 0.3);
 }
+
+.MuiTableSortLabel-icon{
+    color: #EA7C69 !important;
+}
+  

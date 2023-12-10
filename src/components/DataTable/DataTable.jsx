@@ -1,4 +1,5 @@
 import * as React from 'react';
+import axios from 'axios';
 import PropTypes from 'prop-types';
 import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -18,33 +19,6 @@ import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { visuallyHidden } from '@mui/utils';
-
-function createData(id, name, calories, fat, carbs, protein) {
-  return {
-    id,
-    name,
-    calories,
-    fat,
-    carbs,
-    protein,
-  };
-}
-
-const rows = [
-  createData(1, 'Cupcake', 305, 3.7, 67, 4.3),
-  createData(2, 'Donut', 452, 25.0, 51, 4.9),
-  createData(3, 'Eclair', 262, 16.0, 24, 6.0),
-  createData(4, 'Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData(5, 'Gingerbread', 356, 16.0, 49, 3.9),
-  createData(6, 'Honeycomb', 408, 3.2, 87, 6.5),
-  createData(7, 'Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData(8, 'Jelly Bean', 375, 0.0, 94, 0.0),
-  createData(9, 'KitKat', 518, 26.0, 65, 7.0),
-  createData(10, 'Lollipop', 392, 0.2, 98, 0.0),
-  createData(11, 'Marshmallow', 318, 0, 81, 2.0),
-  createData(12, 'Nougat', 360, 19.0, 9, 37.0),
-  createData(13, 'Oreo', 437, 18.0, 63, 4.0),
-];
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -74,41 +48,8 @@ function stableSort(array, comparator) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-const headCells = [
-  {
-    id: 'name',
-    numeric: false,
-    disablePadding: true,
-    label: 'Dessert (100g serving)',
-  },
-  {
-    id: 'calories',
-    numeric: true,
-    disablePadding: false,
-    label: 'Calories',
-  },
-  {
-    id: 'fat',
-    numeric: true,
-    disablePadding: false,
-    label: 'Fat (g)',
-  },
-  {
-    id: 'carbs',
-    numeric: true,
-    disablePadding: false,
-    label: 'Carbs (g)',
-  },
-  {
-    id: 'protein',
-    numeric: true,
-    disablePadding: false,
-    label: 'Protein (g)',
-  },
-];
-
 function EnhancedTableHead(props) {
-  const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
+  const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, headCells } = props;
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };
@@ -130,7 +71,7 @@ function EnhancedTableHead(props) {
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
-            align={headCell.numeric ? 'right' : 'left'}
+            align={'left'}
             padding={headCell.disablePadding ? 'none' : 'normal'}
             sortDirection={orderBy === headCell.id ? order : false}
           >
@@ -160,10 +101,11 @@ EnhancedTableHead.propTypes = {
   order: PropTypes.oneOf(['asc', 'desc']).isRequired,
   orderBy: PropTypes.string.isRequired,
   rowCount: PropTypes.number.isRequired,
+  headCells: PropTypes.arrayOf(PropTypes.object)
 };
 
 function EnhancedTableToolbar(props) {
-  const { numSelected } = props;
+  const { numSelected, handleDelete, title } = props;
 
   return (
     <Toolbar
@@ -193,13 +135,13 @@ function EnhancedTableToolbar(props) {
           id="tableTitle"
           component="div"
         >
-          Sản phẩm hết hạn
+          {title}
         </Typography>
       )}
 
       {numSelected > 0 && (
         <Tooltip title="Delete">
-          <IconButton>
+          <IconButton onClick={handleDelete}>
             <DeleteIcon sx={{color: 'text.white', fontSize: 'fontSize.icon'}}/>
           </IconButton>
         </Tooltip>
@@ -210,156 +152,198 @@ function EnhancedTableToolbar(props) {
 
 EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
+  handleDelete: PropTypes.func.isRequired,
+  title: PropTypes.string.isRequired
 };
 
-export default function EnhancedTable() {
-  const [order, setOrder] = React.useState('asc');
-  const [orderBy, setOrderBy] = React.useState('calories');
-  const [selected, setSelected] = React.useState([]);
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+export default function EnhancedTable(props) {
+    const {headCells, title} = props;
+    const [order, setOrder] = React.useState('asc');
+    const [orderBy, setOrderBy] = React.useState('id');
+    const [selected, setSelected] = React.useState([]);
+    const [rows, setRows] = React.useState([]);
+    const [totalRow, setTotalRow] = React.useState(0);
+    const [paginationController, setController] = React.useState({
+        page: 0,
+        rowsPerPage: 5
+    })
 
-  const handleRequestSort = (event, property) => {
-    const isAsc = orderBy === property && order === 'asc';
-    setOrder(isAsc ? 'desc' : 'asc');
-    setOrderBy(property);
-  };
+    React.useEffect(() => {
+        const fetchExpiredProducts = async () => {
+            const url = `https://reqres.in/api/users?page=${paginationController.page + 1}&per_page=${paginationController.rowsPerPage}`;
+            try {
+              const res = await axios.get(url);
+              const data = res.data;
+              setRows(data.data);
+              setTotalRow(data.total);
+            } catch (error) {
+              console.error('Error fetching expired products:', error);
+            }
+        }
+        fetchExpiredProducts()
+    },[paginationController]);
 
-  const handleSelectAllClick = (event) => {
-    if (event.target.checked) {
-      const newSelected = rows.map((n) => n.id);
-      setSelected(newSelected);
-      return;
+    // console.log(rows);
+    // console.log(paginationController.page)
+    // console.log(paginationController.rowsPerPage)
+
+    const handleRequestSort = (event, property) => {
+        const isAsc = orderBy === property && order === 'asc';
+        setOrder(isAsc ? 'desc' : 'asc');
+        setOrderBy(property);
+    };
+
+    const handleSelectAllClick = (event) => {
+        if (event.target.checked) {
+            const newSelected = rows.map((n) => n.id);
+            setSelected(newSelected);
+            return;
+        }
+        setSelected([]);
+    };
+
+    const handleClick = (event, id) => {
+        const selectedIndex = selected.indexOf(id);
+        let newSelected = [];
+
+        if (selectedIndex === -1) {
+            newSelected = newSelected.concat(selected, id);
+        } else if (selectedIndex === 0) {
+            newSelected = newSelected.concat(selected.slice(1));
+        } else if (selectedIndex === selected.length - 1) {
+            newSelected = newSelected.concat(selected.slice(0, -1));
+        } else if (selectedIndex > 0) {
+            newSelected = newSelected.concat(
+            selected.slice(0, selectedIndex),
+            selected.slice(selectedIndex + 1),);
+        }
+        setSelected(newSelected);
+    };
+
+    const handleChangePage = (event, newPage) => {
+        setController({
+            ...paginationController,
+            page: newPage
+        })
+    };
+
+    const handleChangeRowsPerPage = (event) => {
+        setController({
+            ...paginationController,
+            rowsPerPage: parseInt(event.target.value, 10),
+            page: 0
+        })
+    };
+
+    const handleOnDeleteIconClick = async () => {
+        await axios.delete('http://localhost:8080/v1/api/deleteExpiredProducts', {
+        data: { ids: selected },
+      });
+      setSelected([]); // Clear the selection after deletion
+      await fetchExpiredProducts();
     }
-    setSelected([]);
-  };
+    
+    const isSelected = (id) => selected.indexOf(id) !== -1;
 
-  const handleClick = (event, id) => {
-    const selectedIndex = selected.indexOf(id);
-    let newSelected = [];
+    // Avoid a layout jump when reaching the last page with empty rows.
+    const emptyRows =
+    paginationController.page > 0 ? Math.max(0, (1 + paginationController.page) * paginationController.rowsPerPage - totalRow) : 0;
 
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
-      );
-    }
-    setSelected(newSelected);
-  };
+    //console.log(emptyRows);
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
+    const visibleRows = React.useMemo(
+        () =>
+        stableSort(rows, getComparator(order, orderBy)).slice(
+            paginationController.page * paginationController.rowsPerPage,
+            paginationController.page * paginationController.rowsPerPage + paginationController.rowsPerPage,
+        ),
+        [order, orderBy, paginationController.page, paginationController.rowsPerPage],
+    );
 
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
+    console.log(visibleRows);
 
-  const isSelected = (id) => selected.indexOf(id) !== -1;
+    return (
+        <Box sx={{ width: '100%' }}>
+        <Paper sx={{ width: '100%', mb: 2 }}>
+            <EnhancedTableToolbar numSelected={selected.length} handleDelete={handleOnDeleteIconClick} title={title} />
+            <TableContainer>
+            <Table
+                sx={{ minWidth: 750, bgcolor: 'background.secondary' }}
+                aria-labelledby="tableTitle"
+                size={'medium'}
+            >
+                <EnhancedTableHead
+                    numSelected={selected.length}
+                    order={order}
+                    orderBy={orderBy}
+                    onSelectAllClick={handleSelectAllClick}
+                    onRequestSort={handleRequestSort}
+                    rowCount={rows.length}
+                    headCells={headCells}
+                />
+                <TableBody>
+                {rows.map((row, index) => {
+                    const isItemSelected = isSelected(row.id);
+                    const labelId = `enhanced-table-checkbox-${index}`;
 
-  // Avoid a layout jump when reaching the last page with empty rows.
-  const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
-
-  const visibleRows = React.useMemo(
-    () =>
-      stableSort(rows, getComparator(order, orderBy)).slice(
-        page * rowsPerPage,
-        page * rowsPerPage + rowsPerPage,
-      ),
-    [order, orderBy, page, rowsPerPage],
-  );
-
-  return (
-    <Box sx={{ width: '100%' }}>
-      <Paper sx={{ width: '100%', mb: 2 }}>
-        <EnhancedTableToolbar numSelected={selected.length} />
-        <TableContainer>
-          <Table
-            sx={{ minWidth: 750, bgcolor: 'background.secondary' }}
-            aria-labelledby="tableTitle"
-            size={'medium'}
-          >
-            <EnhancedTableHead
-              numSelected={selected.length}
-              order={order}
-              orderBy={orderBy}
-              onSelectAllClick={handleSelectAllClick}
-              onRequestSort={handleRequestSort}
-              rowCount={rows.length}
-            />
-            <TableBody>
-              {visibleRows.map((row, index) => {
-                const isItemSelected = isSelected(row.id);
-                const labelId = `enhanced-table-checkbox-${index}`;
-
-                return (
-                  <TableRow
-                    hover
-                    onClick={(event) => handleClick(event, row.id)}
-                    role="checkbox"
-                    aria-checked={isItemSelected}
-                    tabIndex={-1}
-                    key={row.id}
-                    selected={isItemSelected}
-                    sx={{ cursor: 'pointer' }}
-                  >
-                    <TableCell padding="checkbox">
-                      <Checkbox
-                        color="primary"
-                        checked={isItemSelected}
-                        inputProps={{
-                          'aria-labelledby': labelId,
-                        }}
-                        sx={{color: 'text.white'}}
-                      />
-                    </TableCell>
-                    <TableCell
-                      component="th"
-                      id={labelId}
-                      scope="row"
-                      padding="none"
-                      sx={{color: 'text.white'}}
+                    return (
+                    <TableRow
+                        hover
+                        onClick={(event) => handleClick(event, row.id)}
+                        role="checkbox"
+                        aria-checked={isItemSelected}
+                        tabIndex={-1}
+                        key={row.id}
+                        selected={isItemSelected}
+                        sx={{ cursor: 'pointer' }}
                     >
-                      {row.name}
-                    </TableCell>
-                    <TableCell align="right" sx={{color: 'text.white'}}>{row.calories}</TableCell>
-                    <TableCell align="right" sx={{color: 'text.white'}}>{row.fat}</TableCell>
-                    <TableCell align="right" sx={{color: 'text.white'}}>{row.carbs}</TableCell>
-                    <TableCell align="right" sx={{color: 'text.white'}}>{row.protein}</TableCell>
-                  </TableRow>
-                );
-              })}
-              {emptyRows > 0 && (
-                <TableRow
-                  style={{
-                    height: (53) * emptyRows,
-                  }}
-                >
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-          sx={{bgcolor: 'background.secondary', color: 'text.white'}}
-        />
-      </Paper>
-    </Box>
-  );
+                        <TableCell padding="checkbox">
+                        <Checkbox
+                            color="primary"
+                            checked={isItemSelected}
+                            inputProps={{
+                                'aria-labelledby': labelId,
+                            }}
+                            sx={{color: 'text.white'}}
+                        />
+                        </TableCell>
+                        {headCells.map((cell, index) => (
+                            <TableCell
+                                key={cell.id}
+                                id={labelId}
+                                scope="row"
+                                padding='none'
+                                sx={{color: 'text.white', paddingTop: '1rem', paddingBottom: '1rem'}}
+                            >
+                            {row[cell.id]}
+                            </TableCell>
+                        ))}
+                    </TableRow>
+                    );
+                })}
+                {emptyRows > 0 && (
+                    <TableRow
+                    style={{
+                        height: (53) * emptyRows,
+                    }}
+                    >
+                    <TableCell colSpan={6} />
+                    </TableRow>
+                )}
+                </TableBody>
+            </Table>
+            </TableContainer>
+            <TablePagination
+                rowsPerPageOptions={[5, 10, 25]}
+                component="div"
+                count={totalRow}
+                rowsPerPage={paginationController.rowsPerPage}
+                page={paginationController.page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                sx={{bgcolor: 'background.secondary', color: 'text.white'}}
+            />
+        </Paper>
+        </Box>
+    );
 }
