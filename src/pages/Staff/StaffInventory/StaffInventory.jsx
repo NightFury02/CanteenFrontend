@@ -1,6 +1,7 @@
 import Header from "../../../components/Header/Header"
 import Button from "../../../components/Button/Button"
 import Table from "../../../components/Table/Table"
+import EnhancedTable from "../../../components/DataTable/DataTable";
 
 const StaffInventory = () => {
   const handleImport = () => {
@@ -10,7 +11,7 @@ const StaffInventory = () => {
     console.log("export");
   }
   const rowData = [
-    ["#1", "Malcolm Lockyer", "1961", "Malcolm Lockyer", "Malcolm Lockyer"],
+    ["#1", "Malcolm Lockyer", "1961", "Malcolm Lockyer", <Button title={'Xóa'} className="px-2" onAction={handleExport}/>],
     ["#2", "Malcolm Lockyer", "1961", "Malcolm Lockyer", "Malcolm Lockyer"],
     ["#300", "Malcolm Lockyer", "1961", "Malcolm Lockyer", "Malcolm Lockyer"],
     ["#120", "Malcolm Lockyer", "1961", "Malcolm Lockyer", "Malcolm Lockyer"],
@@ -21,10 +22,10 @@ const StaffInventory = () => {
   ]
   const columnData = ['Mã sản phẩm', 'Tên', 'Số lượng', 'Hạn sử dụng', 'Xóa'];
   const links = [
-    { href: '/account-settings', label: 'Account settings' },
-    { href: '/support', label: 'Support' },
-    { href: '/license', label: 'License' },
-    { href: '/sign-out', label: 'Sign out' },
+    { href: '/account-settings', label: 'ID sản phẩm' },
+    { href: '/support', label: 'Tên' },
+    { href: '/license', label: 'Số lượng' },
+    { href: '/sign-out', label: 'Hạn sử dụng' },
   ];
 
   return (
@@ -61,6 +62,10 @@ const StaffInventory = () => {
           column={columnData}
           rows={rowData}
         />
+      </div>
+
+      <div className="mt-5 p-2">
+        <EnhancedTable/>
       </div>
     </>
   );

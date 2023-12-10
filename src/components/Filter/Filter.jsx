@@ -1,6 +1,5 @@
 import { Fragment } from 'react'
 import { Menu, Transition } from '@headlessui/react'
-import { ChevronDownIcon } from '../../assets/svgs/index'
 import { FilterIcon } from '../../assets/svgs/index';
 import classNames from 'classnames';
 
