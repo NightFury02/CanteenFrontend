@@ -3,7 +3,7 @@ import Table from "../../../components/Table/Table"
 import Button from "../../../components/Button/Button"
 import Breadcrumbs from "../../../components/Breadcrumbs/Breadcrumbs";
 
-const StaffHome = () => {
+const UserHome = () => {
   const handleImport = () => {
     console.log("import");
   }
@@ -24,8 +24,7 @@ const StaffHome = () => {
   //tổng thanh toán data
   const thanhToanRowData = [
     ['Tổng', '150.000đ'],
-    ['Đã nhận', '200.000đ'],
-    ['Tiền thừa', '50.000đ'],
+    ['Thời gian đến', <Button title="Chọn giờ" className="p-2 mt-2"></Button>],
   ]
   const thanhToanColData = [
     ['', '']
@@ -41,7 +40,7 @@ const StaffHome = () => {
     <div className="grid grid-cols-3 gap-x-16">
       <div className="col-span-2"> 
         <div>
-          <Header heading="Tên nhân viên"></Header>
+          <Header heading="Tên khách hàng"></Header>
         </div>
 
         <div className="ms-3">
@@ -84,7 +83,7 @@ const StaffHome = () => {
           />
         </div>
         <Button 
-          title={'Xác nhận thanh toán'}
+          title={'Đặt món'}
           className="p-2 mt-2 w-full"
           onAction={handleImport}
         />
@@ -98,4 +97,4 @@ const StaffHome = () => {
   );
 };
 
-export default StaffHome;
+export default UserHome;
