@@ -138,6 +138,7 @@ const AdminManagement = () => {
                     buttonTitle="Tạo tài khoản"
                     className="p-2 mt-2 ml-2 fixed bottom-5 right-5"
                     isPopupOpen={isAddPopupOpen}
+                    onPopup={() => handleAddPopupOpen()}
                     children={<>
                         <div>Họ và tên</div>
                         <input className='w-11/12 pl-2 border border-white rounded bg-dark_bg'></input>
