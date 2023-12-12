@@ -17,6 +17,7 @@ const PopupButton = ({
         shadow = 'shadow-lg shadow-brown',
         hover = 'hover:bg-primary/70',
         className: customClass,
+        cancelTitle = 'Hủy',
         cancelClassName = "close absolute left-2 bottom-2 text-black bg-light pt-1 pb-1 pl-5 pr-5 border border-light rounded hover:bg-gray-100",
         children
     }) => {
@@ -48,7 +49,7 @@ const PopupButton = ({
                     </div>
                     <button className={cancelClassName}
                         onClick={() => {setOpen(false);}}>
-                        Hủy
+                        {cancelTitle}
                     </button>
                 </div>
             </div>
@@ -65,7 +66,9 @@ PopupButton.propTypes = {
     className: PropTypes.string,
     children: PropTypes.object,
     onPopup: PropTypes.func,
-    isOpen: PropTypes.bool
+    isOpen: PropTypes.bool,
+    cancelTitle: PropTypes.string,
+    cancelClassName: PropTypes.string
 };
 
 export default PopupButton;

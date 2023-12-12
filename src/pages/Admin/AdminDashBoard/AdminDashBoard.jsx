@@ -54,37 +54,43 @@ const AdminDashBoard = () => {
         <span className='text-xl'>Báo cáo</span><br></br>
         <PopupButton
           title="Báo cáo kho theo ngày"
-          header="Thêm nhân viên"
+          header="Báo cáo kho theo ngày"
           className="p-3 mt-3 bg-dark_line w-80 rounded-lg"
+          cancelTitle='Thoát'
+          cancelClassName='absolute bottom-2 left-1/2 transform -translate-x-1/2 pt-1 pb-1 pl-16 pr-16 bg-emerald-700 text-white border border-emerald-700 rounded hover:bg-emerald-500'
           data={<>
               <div>Họ và tên</div>
               <input className='w-11/12 pl-2 border border-white rounded bg-dark_bg'></input>
           </>    
           }
           >
-      </PopupButton><br></br>
-      <PopupButton
-          title="Báo cáo doanh thu theo ngày"
-          header="Thêm nhân viên"
-          className="p-3 mt-3 bg-dark_line w-80 rounded-lg"
-          data={<>
-              <div>Họ và tên</div>
-              <input className='w-11/12 pl-2 border border-white rounded bg-dark_bg'></input>
-          </>    
-          }
-          >
-      </PopupButton><br></br>
-      <PopupButton
-          title="Báo cáo doanh thu theo tháng"
-          header="Thêm nhân viên"
-          className="p-3 mt-3 bg-dark_line w-80 rounded-lg"
-          data={<>
-              <div>Họ và tên</div>
-              <input className='w-11/12 pl-2 border border-white rounded bg-dark_bg'></input>
-          </>    
-          }
-          >
-      </PopupButton>
+        </PopupButton><br></br>
+        <PopupButton
+            title="Báo cáo doanh thu theo ngày"
+            header="Báo cáo doanh thu theo ngày"
+            className="p-3 mt-3 bg-dark_line w-80 rounded-lg"
+            cancelTitle='Thoát'
+            cancelClassName='absolute bottom-2 left-1/2 transform -translate-x-1/2 pt-1 pb-1 pl-16 pr-16 bg-emerald-700 text-white border border-emerald-700 rounded hover:bg-emerald-500'
+            data={<>
+                <div>Họ và tên</div>
+                <input className='w-11/12 pl-2 border border-white rounded bg-dark_bg'></input>
+            </>    
+            }
+            >
+        </PopupButton><br></br>
+        <PopupButton
+            title="Báo cáo doanh thu theo tháng"
+            header="Báo cáo doanh thu theo tháng"
+            className="p-3 mt-3 bg-dark_line w-80 rounded-lg"
+            cancelTitle='Thoát'
+            cancelClassName='absolute bottom-2 left-1/2 transform -translate-x-1/2 pt-1 pb-1 pl-16 pr-16 bg-emerald-700 text-white border border-emerald-700 rounded hover:bg-emerald-500'
+            data={<>
+                <div>Họ và tên</div>
+                <input className='w-11/12 pl-2 border border-white rounded bg-dark_bg'></input>
+            </>    
+            }
+            >
+        </PopupButton>
       </div>
     </div>
   );
