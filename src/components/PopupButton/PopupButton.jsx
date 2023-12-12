@@ -78,7 +78,7 @@ PopupButton.propTypes = {
     data: PropTypes.object,
     buttonTitle: PropTypes.string,
     onAction: PropTypes.func.isRequired,
-    onPopUp: PropTypes.func.isRequired,
+    onPopUp: PropTypes.func,
 };
 
 export default PopupButton;
