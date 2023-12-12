@@ -18,6 +18,9 @@ export default {
         "dark-bg-2": "#1F1D2B",
         "dark-line": "#393C49",
 
+        dark_bg: "#1F1D2B",
+        dark_line: "#393C49",
+
         // Status
         completed: "#50D1AA",
 

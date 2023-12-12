@@ -5,7 +5,7 @@ import { listMenuBasedOnUser } from "../../constants";
 
 const Layout = ({children}) => {
   const isLogin = true;
-  const user = { role: "staff" };
+  const user = { role: "admin" };
   return (
     <>
       {!isLogin ? (

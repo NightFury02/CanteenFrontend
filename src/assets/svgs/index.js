@@ -10,3 +10,7 @@ export { default as SearchIcon} from "./search.svg?react";
 export { default as FilterIcon} from "./filter.svg?react";
 export { default as ChevronDownIcon } from "./chevrondown.svg?react";
 export { default as Management } from "./management.svg?react";
+export { default as MoneyIcon } from "./money.svg?react";
+export { default as IncreaseIcon } from "./increase.svg?react";
+export { default as DecreaseIcon } from "./decrease.svg?react";
+export { default as OrderIcon } from "./order.svg?react";

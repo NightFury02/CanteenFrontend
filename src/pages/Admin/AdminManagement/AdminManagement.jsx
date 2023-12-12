@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import Header from "../../../components/Header/Header"
 import Table from "../../../components/Table/Table"
-import Button from "../../../components/Button/Button"
 import PopupButton from '../../../components/PopupButton/PopupButton';
 
 const staffList = [
@@ -10,24 +9,38 @@ const staffList = [
 ];
 
 const AdminManagement = () => {
-    const [isPopupVisible, setPopupVisibility] = useState(false);
-    const [selectedStaff, setSelectedStaff] = useState([]);
-
-    const popupAction = () => {
-        console.log('Pop-up')
+    const casualPopup = () => {
+        //for fun
     }
-
     const addStaff = () => {
         console.log('add')
     }
 
-    const showPopup = (staff) => {
-        setSelectedStaff(staff);
-        setPopupVisibility(true);
+    const [selectedStaff, setSelectedStaff] = useState({});
+    const [editedStaff, setEditedStaff] = useState({
+        id: '',
+        name: '',
+        dob: '',
+        phone: '',
+        address: '',
+        email: '',
+        password: '',
+      });
+
+    const editStaff = (updatedStaff) => {
+        console.log('Updated staff: ',updatedStaff)
     };
 
-    const closePopup = () => {
-        setPopupVisibility(false);
+    const handleInputChange = (fieldName, value) => {
+        setEditedStaff((prevStaff) => ({
+          ...prevStaff,
+          [fieldName]: value,
+        }));
+    };
+
+    const handlePopupOpen = (staff) => {
+        setSelectedStaff(staff);
+        setEditedStaff(staff);
     };
 
     const rowData = staffList.map(({ id, name, dob, phone, address, email, password }) => [
@@ -36,11 +49,54 @@ const AdminManagement = () => {
         dob,
         phone,
         address,
-        <Button
-          className="p-2 mt-2 ml-2"
-          onAction={() => showPopup({ id, name, dob, phone, address, email, password })}
-          title="Chi tiết"
-        ></Button>
+        <PopupButton
+            title="Chi tiết"
+            header="Thông tin nhân viên"
+            buttonTitle="Xác nhận"
+            onPopUp={() => handlePopupOpen({ id, name, dob, phone, address, email, password })}
+            onAction={() => editStaff({editedStaff})}
+            className="p-2 mt-2 ml-2"
+            data={<>
+                <div>Họ và tên</div>
+                <input 
+                    className='w-11/12 pl-2 border border-white rounded bg-dark_bg' 
+                    value={editedStaff.name}
+                    onChange={(e) => handleInputChange('name', e.target.value)}
+                ></input>
+                <div>Email</div>
+                <input 
+                    className='w-11/12 pl-2 border border-white rounded bg-dark_bg' 
+                    value={editedStaff.email}
+                    onChange={(e) => handleInputChange('email', e.target.value)}
+                ></input>
+                <div>Mật khẩu</div>
+                <input 
+                    className='w-11/12 pl-2 border border-white rounded bg-dark_bg' 
+                    value={editedStaff.password}
+                    onChange={(e) => handleInputChange('password', e.target.value)}
+                ></input>
+                <div>Ngày sinh</div>
+                <input 
+                    className='w-11/12 pl-2 border border-white rounded bg-dark_bg' 
+                    value={editedStaff.dob}
+                    onChange={(e) => handleInputChange('dob', e.target.value)}
+                ></input>
+                <div>Số điện thoại</div>
+                <input 
+                    className='w-11/12 pl-2 border border-white rounded bg-dark_bg' 
+                    value={editedStaff.phone}
+                    onChange={(e) => handleInputChange('phone', e.target.value)}
+                ></input>
+                <div>Địa chỉ</div>
+                <input 
+                    className='w-11/12 pl-2 border border-white rounded bg-dark_bg' 
+                    value={editedStaff.address}
+                    onChange={(e) => handleInputChange('address', e.target.value)}
+                ></input>
+            </>    
+            }
+            >
+        </PopupButton>
     ]);
     const columnData = ['Mã nhân viên', 'Tên nhân viên', 'Ngày sinh', 'Số điện thoại', 'Địa chỉ', 'Chỉnh sửa'];
     return (
@@ -51,44 +107,33 @@ const AdminManagement = () => {
 
             <div className="mt-5 p-2">
             <Table 
+                title=''
                 column={columnData}
                 rows={rowData}
                 hasFilter={false}
             />
             </div>
-            {isPopupVisible && (
-            <div className="popup">
-                <div className="popup-content">
-                    <span className="close" onClick={closePopup}>&times;</span>
-                    <h2>Chi tiết nhân viên</h2>
-                    <p><strong>Mã nhân viên:</strong> {selectedStaff.id}</p>
-                    <p><strong>Tên nhân viên:</strong> {selectedStaff.name}</p>
-                    <p><strong>Ngày sinh:</strong> {selectedStaff.dob}</p>
-                    <p><strong>Số điện thoại:</strong> {selectedStaff.phone}</p>
-                    <p><strong>Địa chỉ:</strong> {selectedStaff.address}</p>
-                    <p><strong>Email:</strong> {selectedStaff.email}</p>
-                    <p><strong>Password:</strong> {selectedStaff.password}</p>
-                </div>
-            </div>
-            )}
             <div className='relative'>
                 <PopupButton
                     title="Thêm nhân viên"
                     header="Thêm nhân viên"
+                    buttonTitle="Tạo tài khoản"
+                    onAction={addStaff}
+                    onPopUp={casualPopup}
                     className="p-2 mt-2 ml-2 fixed bottom-5 right-5"
                     data={<>
                         <div>Họ và tên</div>
-                        <input></input>
+                        <input className='w-11/12 pl-2 border border-white rounded bg-dark_bg'></input>
                         <div>Email</div>
-                        <input></input>
+                        <input className='w-11/12 pl-2 border border-white rounded bg-dark_bg'></input>
                         <div>Mật khẩu</div>
-                        <input></input>
+                        <input className='w-11/12 pl-2 border border-white rounded bg-dark_bg'></input>
                         <div>Ngày sinh</div>
-                        <input></input>
+                        <input className='w-11/12 pl-2 border border-white rounded bg-dark_bg'></input>
                         <div>Số điện thoại</div>
-                        <input></input>
+                        <input className='w-11/12 pl-2 border border-white rounded bg-dark_bg'></input>
                         <div>Địa chỉ</div>
-                        <input></input>
+                        <input className='w-11/12 pl-2 border border-white rounded bg-dark_bg'></input>
                     </>    
                     }
                     >
