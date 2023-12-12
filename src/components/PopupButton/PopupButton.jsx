@@ -1,24 +1,27 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Button from '../Button/Button';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import Popup from 'reactjs-popup';
 import 'reactjs-popup/dist/index.css';
+import { TroubleshootOutlined } from '@mui/icons-material';
 
 const PopupButton = ({
-    title,
-    header,
-    buttonTitle,
-    onPopUp,
-    onAction,
-    outline = '',
-    variant = 'bg-primary',
-    border = 'border border-primary rounded',
-    shadow = 'shadow-lg shadow-brown',
-    hover = 'hover:bg-primary/70',
-    className: customClass,
-    data,
-  }) => {
+        title,
+        isOpen = true,
+        header,
+        onPopup = () => {},
+        outline = '',
+        variant = 'bg-primary',
+        border = 'border border-primary rounded',
+        shadow = 'shadow-lg shadow-brown',
+        hover = 'hover:bg-primary/70',
+        className: customClass,
+        cancelClassName = "close absolute left-2 bottom-2 text-black bg-light pt-1 pb-1 pl-5 pr-5 border border-light rounded hover:bg-gray-100",
+        children
+    }) => {
+    const [isPopupOpen, setOpen] = useState(false);
+    
     const classes = classNames('button', variant, outline, border, shadow, hover, customClass); 
 
     const contentStyle = {
@@ -28,45 +31,32 @@ const PopupButton = ({
         backgroundColor: '#1F1D2B'
     };
 
-    const onActionFunc = (e) => {
-        e.preventDefault();
-        onAction.call();
-    };
-
     return (
         <Popup
-        trigger={
-            <button>
-                <Button className={classes} title={title} onAction={() => {onPopUp()}}/>
-            </button>
-        }
-        modal
-        contentStyle={contentStyle}
+            open={isOpen && isPopupOpen}
+            trigger={
+                <button>
+                    <Button className={classes} title={title} onAction={() => {onPopup(); setOpen(true);}} />
+                </button>
+            }
+            modal
+            contentStyle={contentStyle}
         >
-        {close => (
             <div className="custom-popup-container">
                 <div className="custom-popup-content">
-                    <button className="close absolute left-2 bottom-2 text-black bg-light pt-1 pb-1 pl-5 pr-5 border border-light rounded" 
-                        onClick={close}>
-                        Hủy
-                    </button>
-                    <button className="absolute right-2 bottom-2 text-white bg-emerald-700 pt-1 pb-1 pl-16 pr-16 border border-emerald-700 rounded" 
-                        onClick={(e) => {
-                            onActionFunc(e);
-                            close();
-                        }}>
-                        {buttonTitle}
-                    </button>
                     <div className="custom-popup-header text-xl mt-2 mb-4 ml-3">{header}</div>
                     <div className="custom-popup-data ml-3 space-y-2">
-                        {data}
+                    {children}
                     </div>
+                    <button className={cancelClassName}
+                        onClick={() => {setOpen(false);}}>
+                        Hủy
+                    </button>
                 </div>
             </div>
-        )}
         </Popup>
     );
-  };
+};
   
 PopupButton.propTypes = {
     title: PropTypes.string.isRequired,
@@ -75,10 +65,9 @@ PopupButton.propTypes = {
     variant: PropTypes.string,
     type: PropTypes.string,
     className: PropTypes.string,
-    data: PropTypes.object,
-    buttonTitle: PropTypes.string,
-    onAction: PropTypes.func.isRequired,
-    onPopUp: PropTypes.func,
+    children: PropTypes.object,
+    onPopup: PropTypes.func,
+    isOpen: PropTypes.bool
 };
 
 export default PopupButton;

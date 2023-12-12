@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Header from "../../../components/Header/Header"
 import Table from "../../../components/Table/Table"
+import Button from '../../../components/Button/Button';
 import PopupButton from '../../../components/PopupButton/PopupButton';
 
 const staffList = [
@@ -9,12 +10,16 @@ const staffList = [
 ];
 
 const AdminManagement = () => {
-    const casualPopup = () => {
-        //for fun
-    }
+    const [isPopupOpen, setPopupOpen] = useState(false);
+    const [isAddPopupOpen, setAddPopupOpen] = useState(false);
+
+    //Handle add staff function
     const addStaff = () => {
-        console.log('add')
+        console.log('add');
+        setAddPopupOpen(false);
     }
+    
+    const handleAddPopupOpen = () => setAddPopupOpen(true);
 
     const [selectedStaff, setSelectedStaff] = useState({});
     const [editedStaff, setEditedStaff] = useState({
@@ -25,10 +30,12 @@ const AdminManagement = () => {
         address: '',
         email: '',
         password: '',
-      });
+    });
 
+    //Handle edit staff function
     const editStaff = (updatedStaff) => {
-        console.log('Updated staff: ',updatedStaff)
+        console.log('Updated staff: ',updatedStaff);
+        setPopupOpen(false);
     };
 
     const handleInputChange = (fieldName, value) => {
@@ -39,6 +46,7 @@ const AdminManagement = () => {
     };
 
     const handlePopupOpen = (staff) => {
+        setPopupOpen(true);
         setSelectedStaff(staff);
         setEditedStaff(staff);
     };
@@ -52,11 +60,10 @@ const AdminManagement = () => {
         <PopupButton
             title="Chi tiết"
             header="Thông tin nhân viên"
-            buttonTitle="Xác nhận"
-            onPopUp={() => handlePopupOpen({ id, name, dob, phone, address, email, password })}
-            onAction={() => editStaff({editedStaff})}
+            onPopup={() => handlePopupOpen({ id, name, dob, phone, address, email, password })}
             className="p-2 mt-2 ml-2"
-            data={<>
+            isOpen={isPopupOpen}
+            children={<>
                 <div>Họ và tên</div>
                 <input 
                     className='w-11/12 pl-2 border border-white rounded bg-dark_bg' 
@@ -93,6 +100,17 @@ const AdminManagement = () => {
                     value={editedStaff.address}
                     onChange={(e) => handleInputChange('address', e.target.value)}
                 ></input>
+                <Button 
+                    title='Xác nhận'
+                    type='button'
+                    outline='absolute right-2 bottom-2 pt-1 pb-1 pl-16 pr-16'
+                    variant='bg-emerald-700'
+                    hover='hover:bg-emerald-500'
+                    shadow=''
+                    textColor='text-white'
+                    border='border border-emerald-700 rounded'
+                    onAction={() => {editStaff({editedStaff})}}
+                ></Button>
             </>    
             }
             >
@@ -118,10 +136,10 @@ const AdminManagement = () => {
                     title="Thêm nhân viên"
                     header="Thêm nhân viên"
                     buttonTitle="Tạo tài khoản"
-                    onAction={addStaff}
-                    onPopUp={casualPopup}
                     className="p-2 mt-2 ml-2 fixed bottom-5 right-5"
-                    data={<>
+                    isOpen={isAddPopupOpen}
+                    onPopup={() => handleAddPopupOpen()}
+                    children={<>
                         <div>Họ và tên</div>
                         <input className='w-11/12 pl-2 border border-white rounded bg-dark_bg'></input>
                         <div>Email</div>
@@ -134,6 +152,17 @@ const AdminManagement = () => {
                         <input className='w-11/12 pl-2 border border-white rounded bg-dark_bg'></input>
                         <div>Địa chỉ</div>
                         <input className='w-11/12 pl-2 border border-white rounded bg-dark_bg'></input>
+                        <Button 
+                            title='Tạo tài khoản'
+                            type='button'
+                            outline='absolute right-2 bottom-2 pt-1 pb-1 pl-16 pr-16'
+                            variant='bg-emerald-700'
+                            hover='hover:bg-emerald-500'
+                            shadow=''
+                            textColor='text-white'
+                            border='border border-emerald-700 rounded'
+                            onAction={() => {addStaff()}}
+                        ></Button>
                     </>    
                     }
                     >

@@ -55,9 +55,6 @@ const AdminDashBoard = () => {
         <PopupButton
           title="Báo cáo kho theo ngày"
           header="Thêm nhân viên"
-          buttonTitle="Tạo tài khoản"
-          onAction={popup}
-          onPopUp={popup}
           className="p-3 mt-3 bg-dark_line w-80 rounded-lg"
           data={<>
               <div>Họ và tên</div>
@@ -69,9 +66,6 @@ const AdminDashBoard = () => {
       <PopupButton
           title="Báo cáo doanh thu theo ngày"
           header="Thêm nhân viên"
-          buttonTitle="Tạo tài khoản"
-          onAction={popup}
-          onPopUp={popup}
           className="p-3 mt-3 bg-dark_line w-80 rounded-lg"
           data={<>
               <div>Họ và tên</div>
@@ -83,9 +77,6 @@ const AdminDashBoard = () => {
       <PopupButton
           title="Báo cáo doanh thu theo tháng"
           header="Thêm nhân viên"
-          buttonTitle="Tạo tài khoản"
-          onAction={popup}
-          onPopUp={popup}
           className="p-3 mt-3 bg-dark_line w-80 rounded-lg"
           data={<>
               <div>Họ và tên</div>
