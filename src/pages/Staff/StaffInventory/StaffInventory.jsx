@@ -1,12 +1,14 @@
+import React from 'react';
 import Header from "../../../components/Header/Header"
 import Button from "../../../components/Button/Button"
 import ExpiredProductTable from "./ExpiredProductTable/ExpiredProductTable";
 import InventoryTable from "./InventoryTable/InventoryTable";
 import DeletedProductTable from "./DeletedProductTable/DeletedProductTable";
+import PopupButton from "../../../components/PopUpButton/PopUpButton";
 
 const StaffInventory = () => {
   const handleImport = () => {
-    console.log("import");
+    console.log("importing")
   }
   const handleExport = () => {
     console.log("export");
@@ -128,16 +130,20 @@ const StaffInventory = () => {
         <Header heading="Quản lý kho"></Header>
       </div>
       <div className="ms-3">
-        <Button 
+        <PopupButton 
           title={'Tạo phiếu nhập kho'}
           className="p-2 me-5"
           onAction={handleImport}
-        />
-        <Button 
+        >
+          {<ExpiredProductTable headCells={headCells} title={'Sản phẩm hết hạn'}/>}
+        </PopupButton>
+        <PopupButton 
           title={'Tạo phiếu xuất kho'}
           className="p-2"
           onAction={handleExport}
-        />
+        >
+          {<InventoryTable headCells={headCells} title={'Kho'}/>}
+        </PopupButton>
       </div>
       
       <div className="mt-5 p-2">
