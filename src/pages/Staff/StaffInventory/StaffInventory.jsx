@@ -1,8 +1,8 @@
 import Header from "../../../components/Header/Header"
 import Button from "../../../components/Button/Button"
-import Table from "../../../components/Table/Table"
-import EnhancedTable from "../../../components/DataTable/DataTable";
-
+import ExpiredProductTable from "./ExpiredProductTable/ExpiredProductTable";
+import InventoryTable from "./InventoryTable/InventoryTable";
+import DeletedProductTable from "./DeletedProductTable/DeletedProductTable";
 
 const StaffInventory = () => {
   const handleImport = () => {
@@ -141,25 +141,15 @@ const StaffInventory = () => {
       </div>
       
       <div className="mt-5 p-2">
-        <Table 
-          title="Sản phẩm đã bị xóa"
-          column={columnData}
-          rows={rowData}
-          hasFilter={true}
-          filterItems={links}
-        />
+        <InventoryTable headCells={headCells} title={'Kho'}/>
       </div>
 
       <div className="mt-5 p-2">
-        <Table 
-          title="Kho"
-          column={columnData}
-          rows={rowData}
-        />
+        <ExpiredProductTable headCells={headCells} title={'Sản phẩm hết hạn'}/>
       </div>
 
       <div className="mt-5 p-2">
-        <EnhancedTable headCells={headCells} title={'Sản phẩm hết hạn'}/>
+        <DeletedProductTable headCells={headCells} title={'Sản phẩm đã bị xóa'}/>
       </div>
     </>
   );
