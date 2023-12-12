@@ -10,8 +10,8 @@ const staffList = [
 ];
 
 const AdminManagement = () => {
-    const [isPopupOpen, setPopupOpen] = useState(false);
-    const [isAddPopupOpen, setAddPopupOpen] = useState(false);
+    const [isPopupOpen, setPopupOpen] = useState(true);
+    const [isAddPopupOpen, setAddPopupOpen] = useState(true);
 
     //Handle add staff function
     const addStaff = () => {
@@ -62,7 +62,7 @@ const AdminManagement = () => {
             header="Thông tin nhân viên"
             onPopup={() => handlePopupOpen({ id, name, dob, phone, address, email, password })}
             className="p-2 mt-2 ml-2"
-            isOpen={isPopupOpen}
+            isPopupOpen={isPopupOpen}
             children={<>
                 <div>Họ và tên</div>
                 <input 
@@ -137,7 +137,7 @@ const AdminManagement = () => {
                     header="Thêm nhân viên"
                     buttonTitle="Tạo tài khoản"
                     className="p-2 mt-2 ml-2 fixed bottom-5 right-5"
-                    isOpen={isAddPopupOpen}
+                    isPopupOpen={isAddPopupOpen}
                     onPopup={() => handleAddPopupOpen()}
                     children={<>
                         <div>Họ và tên</div>

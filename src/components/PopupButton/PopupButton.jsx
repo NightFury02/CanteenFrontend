@@ -8,7 +8,7 @@ import { TroubleshootOutlined } from '@mui/icons-material';
 
 const PopupButton = ({
         title,
-        isOpen = true,
+        isPopupOpen = true,
         header,
         onPopup = () => {},
         outline = '',
@@ -20,7 +20,7 @@ const PopupButton = ({
         cancelClassName = "close absolute left-2 bottom-2 text-black bg-light pt-1 pb-1 pl-5 pr-5 border border-light rounded hover:bg-gray-100",
         children
     }) => {
-    const [isPopupOpen, setOpen] = useState(false);
+    const [isOpen, setOpen] = useState(false);
     
     const classes = classNames('button', variant, outline, border, shadow, hover, customClass); 
 
