@@ -35,9 +35,7 @@ const PopupButton = ({
         <Popup
             open={isOpen && isPopupOpen}
             trigger={
-                <button>
-                    <Button className={classes} title={title} onAction={() => {onPopup(); setOpen(true);}} />
-                </button>
+                <Button className={classes} title={title} onAction={() => {onPopup(); setOpen(true);}} />
             }
             modal
             contentStyle={contentStyle}
