@@ -165,7 +165,6 @@ export default function ExpiredProductTable(props) {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const [rows, setRows] = React.useState([]);
-
     //Fetch data
     React.useEffect(() => {
         const fetchExpiredProducts = async () => {
@@ -179,11 +178,9 @@ export default function ExpiredProductTable(props) {
             }
         }
         fetchExpiredProducts()
-    });
+    }, []);
 
     //console.log(rows);
-    // console.log(paginationController.page)
-    // console.log(paginationController.rowsPerPage)
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -241,13 +238,9 @@ export default function ExpiredProductTable(props) {
 
     //console.log(emptyRows);
 
-    const visibleRows = React.useMemo(
-      () =>
-        stableSort(rows, getComparator(order, orderBy)).slice(
-          page * rowsPerPage,
-          page * rowsPerPage + rowsPerPage,
-        ),
-      [order, orderBy, page, rowsPerPage],
+    const visibleRows = stableSort(rows, getComparator(order, orderBy)).slice(
+      page * rowsPerPage,
+      page * rowsPerPage + rowsPerPage,
     );
 
     //console.log(visibleRows);

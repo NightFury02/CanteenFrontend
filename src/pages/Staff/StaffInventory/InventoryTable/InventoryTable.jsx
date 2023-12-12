@@ -149,31 +149,23 @@ export default function ExpiredProductTable(props) {
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('id');
     const [selected, setSelected] = React.useState(null);
+    const [page, setPage] = React.useState(0);
+    const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const [rows, setRows] = React.useState([]);
-    const [totalRow, setTotalRow] = React.useState(0);
-    const [paginationController, setController] = React.useState({
-        page: 0,
-        rowsPerPage: 5
-    })
 
     React.useEffect(() => {
-        const fetchExpiredProducts = async () => {
-            const url = `https://reqres.in/api/users?page=${paginationController.page + 1}&per_page=${paginationController.rowsPerPage}`;
-            try {
-              const res = await axios.get(url);
-              const data = res.data;
-              setRows(data.data);
-              setTotalRow(data.total);
-            } catch (error) {
-              console.error('Error fetching expired products:', error);
-            }
-        }
-        fetchExpiredProducts()
-    },[paginationController]);
-
-    // console.log(rows);
-    // console.log(paginationController.page)
-    // console.log(paginationController.rowsPerPage)
+      const fetchExpiredProducts = async () => {
+          const url = `https://reqres.in/api/users`;
+          try {
+            const res = await axios.get(url);
+            const data = res.data;
+            setRows(data.data);
+          } catch (error) {
+            console.error('Error fetching expired products:', error);
+          }
+      }
+      fetchExpiredProducts()
+    }, []);
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -193,18 +185,12 @@ export default function ExpiredProductTable(props) {
     };
 
     const handleChangePage = (event, newPage) => {
-        setController({
-            ...paginationController,
-            page: newPage
-        })
+      setPage(newPage);
     };
 
     const handleChangeRowsPerPage = (event) => {
-        setController({
-            ...paginationController,
-            rowsPerPage: parseInt(event.target.value, 10),
-            page: 0
-        })
+      setRowsPerPage(parseInt(event.target.value, 10));
+      setPage(0);
     };
 
     const handleOnDeleteIconClick = async () => {
@@ -222,21 +208,15 @@ export default function ExpiredProductTable(props) {
     const isSelected = (id) => selected === id;
 
     // Avoid a layout jump when reaching the last page with empty rows.
-    const emptyRows =
-    paginationController.page > 0 ? Math.max(0, (1 + paginationController.page) * paginationController.rowsPerPage - totalRow) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
     //console.log(emptyRows);
-
-    const visibleRows = React.useMemo(
-        () =>
-        stableSort(rows, getComparator(order, orderBy)).slice(
-            paginationController.page * paginationController.rowsPerPage,
-            paginationController.page * paginationController.rowsPerPage + paginationController.rowsPerPage,
-        ),
-        [order, orderBy, paginationController.page, paginationController.rowsPerPage],
+    const visibleRows = stableSort(rows, getComparator(order, orderBy)).slice(
+      page * rowsPerPage,
+      page * rowsPerPage + rowsPerPage,
     );
 
-    console.log(visibleRows);
+    //console.log(visibleRows);
 
     return (
         <Box sx={{ width: '100%' }}>
@@ -260,7 +240,7 @@ export default function ExpiredProductTable(props) {
                     headCells={headCells}
                 />
                 <TableBody>
-                {rows.map((row, index) => {
+                {visibleRows.map((row, index) => {
                     const isItemSelected = isSelected(row.id);
                     const labelId = `enhanced-table-checkbox-${index}`;
 
@@ -305,9 +285,9 @@ export default function ExpiredProductTable(props) {
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={totalRow}
-                rowsPerPage={paginationController.rowsPerPage}
-                page={paginationController.page}
+                count={rows.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
                 sx={{bgcolor: 'background.secondary', color: 'text.white'}}
