@@ -3,13 +3,13 @@ import {Button} from '@mui/material';
 
 export default function ActionButton(props) {
 
-    const {variant = 'primary', children, onClick } = props;
+    const {sx, children, onClick } = props;
 
     return (
         <Button
+            sx={sx}
             onClick={onClick}
             variant="contained"
-            color={variant}
         >
             {children}
         </Button>

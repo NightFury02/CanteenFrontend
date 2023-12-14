@@ -33,18 +33,7 @@ const theme = createTheme({
       tableTitle: "1.5rem",
       icon: "1.5rem"
     }
-    
   },
-  components: {
-    MuiButton: {
-      styleOverrides: {
-        root: ({ variant }) => ({
-          backgroundColor: variant === 'secondary' ? '#1F1D2B' : '#EA7C69',
-          spacing: 0.5
-        })
-      }
-    }
-  }
 });
 
 export default theme;

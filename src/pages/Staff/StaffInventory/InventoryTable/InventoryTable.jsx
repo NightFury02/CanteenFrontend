@@ -19,6 +19,8 @@ import Tooltip from '@mui/material/Tooltip';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { visuallyHidden } from '@mui/utils';
+import PopUp from '../../../../components/Popup/Popup';
+import GRNForm from '../GoodsReceivedNoteForm/GoodReceiveNoteForm';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -94,14 +96,14 @@ EnhancedTableHead.propTypes = {
 };
 
 function EnhancedTableToolbar(props) {
-  const { numSelected, handleDelete, handleAdjust, title } = props;
+  const { selected, handleDelete, handleEditIconClick, title } = props;
 
   return (
     <Toolbar
       sx={{
         pl: { sm: 2 },
         pr: { xs: 1, sm: 1 },
-        ...(numSelected > 0 && {
+        ...(selected && {
           bgcolor: (theme) =>
             alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
         }),
@@ -119,7 +121,7 @@ function EnhancedTableToolbar(props) {
         </Typography>
       )}
 
-      {numSelected > 0 && (
+      {selected && (
         <>
             <Tooltip title="Delete">
               <IconButton onClick={handleDelete}>
@@ -127,7 +129,7 @@ function EnhancedTableToolbar(props) {
               </IconButton>
             </Tooltip>
             <Tooltip title="Edit">
-              <IconButton onClick={handleAdjust}>
+              <IconButton onClick={handleEditIconClick}>
                   <EditIcon sx={{color: 'text.white', fontSize: 'fontSize.icon'}}/>
               </IconButton>
             </Tooltip>
@@ -138,20 +140,23 @@ function EnhancedTableToolbar(props) {
 }
 
 EnhancedTableToolbar.propTypes = {
-  numSelected: PropTypes.number.isRequired,
+  selected: PropTypes.bool,
   handleDelete: PropTypes.func.isRequired,
-  handleAdjust: PropTypes.func.isRequired,
-  title: PropTypes.string.isRequired
+  handleEditIconClick: PropTypes.func.isRequired,
+  title: PropTypes.string
 };
 
-export default function ExpiredProductTable(props) {
+export default function InventoryTable(props) {
     const {headCells, title} = props;
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('id');
-    const [selected, setSelected] = React.useState(null);
+    const [selected, setSelected] = React.useState({});
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const [rows, setRows] = React.useState([]);
+
+    //Handle edit pop up
+    const [openEditPopUp, setOpenEditPopUp] = React.useState(false)
 
     React.useEffect(() => {
       const fetchExpiredProducts = async () => {
@@ -174,13 +179,13 @@ export default function ExpiredProductTable(props) {
     };
 
     //Handle on row click
-    const handleClick = (event, id) => {
+    const handleClick = (event, row) => {
         //if row is already selected, remove it from selected
-        if (selected === id){
-            setSelected(null);
+        if (selected === row){
+            setSelected({});
         }
         else{
-            setSelected(id);
+            setSelected(row);
         }
     };
 
@@ -198,14 +203,20 @@ export default function ExpiredProductTable(props) {
         await axios.delete('http://localhost:8080/v1/api/deleteExpiredProducts', {
         data: { ids: selected },
       });
-      setSelected([]); // Clear the selection after deletion
+      setSelected({}); // Clear the selection after deletion
     }
 
     const handleOnAdjustIconClick = async () => {
         console.log(selected);
+
     }
+
+    const handleOpenChange = (isOpen) => {
+      setOpenEditPopUp(isOpen);
+      setSelected({})
+    };
     
-    const isSelected = (id) => selected === id;
+    const isSelected = (row) => selected === row;
 
     // Avoid a layout jump when reaching the last page with empty rows.
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
@@ -222,10 +233,10 @@ export default function ExpiredProductTable(props) {
         <Box sx={{ width: '100%' }}>
         <Paper sx={{ width: '100%', mb: 2 }}>
             <EnhancedTableToolbar 
-                numSelected={selected !== null ? 1 : 0} 
+                selected={Object.keys(selected).length === 0 ? false : true} 
                 handleDelete={handleOnDeleteIconClick} 
                 title={title}
-                handleAdjust={handleOnAdjustIconClick}
+                handleEditIconClick={() => {setOpenEditPopUp(true)}}
              />
             <TableContainer>
             <Table
@@ -241,13 +252,13 @@ export default function ExpiredProductTable(props) {
                 />
                 <TableBody>
                 {visibleRows.map((row, index) => {
-                    const isItemSelected = isSelected(row.id);
+                    const isItemSelected = isSelected(row);
                     const labelId = `enhanced-table-checkbox-${index}`;
 
                     return (
                     <TableRow
                         hover
-                        onClick={(event) => handleClick(event, row.id)}
+                        onClick={(event) => handleClick(event, row)}
                         role="checkbox"
                         aria-checked={isItemSelected}
                         tabIndex={-1}
@@ -293,6 +304,17 @@ export default function ExpiredProductTable(props) {
                 sx={{bgcolor: 'background.secondary', color: 'text.white'}}
             />
         </Paper>
+
+        <PopUp
+          title="CẬP NHẬT"
+          openPopUp={openEditPopUp}
+          setOpenPopUp={handleOpenChange}
+        >
+          {<GRNForm
+            targetProduct={selected}
+            setOpen={handleOpenChange}
+          />}
+        </PopUp>
         </Box>
     );
 }

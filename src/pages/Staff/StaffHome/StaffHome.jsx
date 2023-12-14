@@ -1,6 +1,6 @@
 import Header from "../../../components/Header/Header"
 import Table from "../../../components/Table/Table"
-import Button from "../../../components/Button/Button"
+import CustomButton from "../../../components/CustomButton/CustomButton"
 import Breadcrumbs from "../../../components/Breadcrumbs/Breadcrumbs";
 
 const StaffHome = () => {
@@ -83,12 +83,12 @@ const StaffHome = () => {
             filterItems={links}
           />
         </div>
-        <Button 
+        <CustomButton 
           title={'Xác nhận thanh toán'}
           className="p-2 mt-2 w-full"
           onAction={handleImport}
         />
-        <Button 
+        <CustomButton 
           title={'Hủy'}
           className="p-2 mt-2 w-full"
           onAction={handleExport}

@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import classNames from 'classnames'; // Import class merging
 
-const Button = ({
+const CustomButton = ({
   title,
   outline = '',
   variant = 'bg-primary',
@@ -33,7 +33,7 @@ const Button = ({
   );
 };
 
-Button.propTypes = {
+CustomButton.propTypes = {
   title: PropTypes.string.isRequired,
   outline: PropTypes.bool,
   variant: PropTypes.string,
@@ -42,4 +42,4 @@ Button.propTypes = {
   className: PropTypes.string
 };
 
-export default Button;
+export default CustomButton;

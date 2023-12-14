@@ -1,10 +1,9 @@
 import React from 'react';
 import Header from "../../../components/Header/Header"
-import Button from "../../../components/Button/Button"
 import ExpiredProductTable from "./ExpiredProductTable/ExpiredProductTable";
 import InventoryTable from "./InventoryTable/InventoryTable";
 import DeletedProductTable from "./DeletedProductTable/DeletedProductTable";
-import PopupButton from "../../../components/PopUpButton/PopUpButton";
+import PopupButton from "../../../components/PopupButton/PopupButton";
 
 const StaffInventory = () => {
   const handleImport = () => {
@@ -13,90 +12,6 @@ const StaffInventory = () => {
   const handleExport = () => {
     console.log("export");
   }
-
-  const rows = [
-    {
-        id: '#001',
-        name: 'Mỳ ý sốt thịt băm',
-        quantity: 43,
-        expiryDate: '12/03/2024'
-    },
-    {
-        id: '#002',
-        name: 'Mỳ ý sốt thịt băm',
-        quantity: 43,
-        expiryDate: '12/03/2024'
-    },
-    {
-        id: '#003',
-        name: 'Mỳ ý sốt thịt băm',
-        quantity: 43,
-        expiryDate: '12/03/2024'
-    },
-    {
-        id: '#004',
-        name: 'Mỳ ý sốt thịt băm',
-        quantity: 43,
-        expiryDate: '12/03/2024'
-    },
-    {
-        id: '#005',
-        name: 'Mỳ ý sốt thịt băm',
-        quantity: 43,
-        expiryDate: '12/03/2024'
-    },
-    {
-        id: '#006',
-        name: 'Mỳ ý sốt thịt băm',
-        quantity: 43,
-        expiryDate: '12/03/2024'
-    },
-];
-
-  const rowData = [
-    ["#1", "Malcolm Lockyer", "1961", "Malcolm Lockyer"],
-    ["#2", "Malcolm Lockyer", "1961", "Malcolm Lockyer"],
-    ["#300", "Malcolm Lockyer", "1961", "Malcolm Lockyer"],
-    ["#120", "Malcolm Lockyer", "1961", "Malcolm Lockyer"],
-    ["#3400", "Malcolm Lockyer", "1961", "Malcolm Lockyer"],
-    ["#12", "Malcolm Lockyer", "1961", "Malcolm Lockyer"],
-    ["#600", "Malcolm Lockyer", "1961", "Malcolm Lockyer"],
-    ["#143", "Malcolm Lockyer", "1961", "Malcolm Lockyer"],
-  ]
-  const columnData = ['Mã sản phẩm', 'Tên', 'Số lượng', 'Hạn sử dụng'];
-  const links = [
-    { href: '/account-settings', label: 'ID sản phẩm' },
-    { href: '/support', label: 'Tên' },
-    { href: '/license', label: 'Số lượng' },
-    { href: '/sign-out', label: 'Hạn sử dụng' },
-  ];
-
-  // const headCells = [
-  //   {
-  //     id: 'id',
-  //     numeric: false,
-  //     disablePadding: true,
-  //     label: 'Mã sản phẩm',
-  //   },
-  //   {
-  //     id: 'name',
-  //     numeric: true,
-  //     disablePadding: true,
-  //     label: 'Tên',
-  //   },
-  //   {
-  //     id: 'quantity',
-  //     numeric: true,
-  //     disablePadding: true,
-  //     label: 'Số lượng',
-  //   },
-  //   {
-  //     id: 'expiryDate',
-  //     numeric: true,
-  //     disablePadding: true,
-  //     label: 'Hạn sử dụng',
-  //   },
-  // ];
 
   const headCells = [
     {
@@ -124,6 +39,7 @@ const StaffInventory = () => {
       label: 'Tên',
     },
   ];
+
   return (
     <>
       <div>
