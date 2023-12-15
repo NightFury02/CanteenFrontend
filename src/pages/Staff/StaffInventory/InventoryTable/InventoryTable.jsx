@@ -215,11 +215,6 @@ export default function InventoryTable(props) {
       setOpenEditPopUp(isOpen);
       setSelected({})
     };
-
-    const handleOpenDeleteChange = (isOpen) => {
-      setOpenDeletePopUp(isOpen);
-      setSelected({})
-    };
     
     const isSelected = (row) => selected === row;
 
@@ -312,8 +307,8 @@ export default function InventoryTable(props) {
 
         <PopUp
           title="CẬP NHẬT"
-          openPopUp={openEditPopUp}
-          setOpenPopUp={handleOpenEditChange}
+          isOpen={openEditPopUp}
+          handleCloseBtnClick={() => {setOpenEditPopUp(false); setSelected({})}}
         >
           {<EditForm
             targetProduct={selected}
@@ -323,8 +318,8 @@ export default function InventoryTable(props) {
 
         <PopUp
           title="Xóa sản phẩm"
-          openPopUp={openDeletePopUp}
-          setOpenPopUp={handleOpenDeleteChange}
+          isOpen={openDeletePopUp}
+          handleCloseBtnClick={() => {setOpenDeletePopUp(false); setSelected({})}}
         >
           {
             <div className='flex flex-col'>
