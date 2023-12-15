@@ -1,10 +1,9 @@
 import React, {useState} from 'react';
-import Button from '../Button/Button';
+import CustomButton from '../CustomButton/CustomButton';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import Popup from 'reactjs-popup';
 import 'reactjs-popup/dist/index.css';
-import { TroubleshootOutlined } from '@mui/icons-material';
 
 const PopupButton = ({
         title,
@@ -19,6 +18,7 @@ const PopupButton = ({
         className: customClass,
         cancelTitle = 'Hủy',
         cancelClassName = "close absolute left-2 bottom-2 text-black bg-light pt-1 pb-1 pl-5 pr-5 border border-light rounded hover:bg-gray-100",
+        triggerComponent: TriggerComponent,
         children
     }) => {
     const [isOpen, setOpen] = useState(false);
@@ -32,12 +32,15 @@ const PopupButton = ({
         backgroundColor: '#1F1D2B'
     };
 
+    const triggerButton = (
+        <CustomButton className={classes} title={title} onAction={() => { onPopup(); setOpen(true); }} />
+    );
+    
     return (
-        <Popup
+        <Popup 
             open={isOpen && isPopupOpen}
-            trigger={
-                <Button className={classes} title={title} onAction={() => {onPopup(); setOpen(true);}} />
-            }
+            onClose={()=>setOpen(false)}
+            trigger={TriggerComponent || triggerButton}
             modal
             contentStyle={contentStyle}
         >
@@ -58,7 +61,7 @@ const PopupButton = ({
 };
   
 PopupButton.propTypes = {
-    title: PropTypes.string.isRequired,
+    title: PropTypes.string,
     header: PropTypes.string,
     outline: PropTypes.bool,
     variant: PropTypes.string,
@@ -68,7 +71,8 @@ PopupButton.propTypes = {
     onPopup: PropTypes.func,
     isOpen: PropTypes.bool,
     cancelTitle: PropTypes.string,
-    cancelClassName: PropTypes.string
+    cancelClassName: PropTypes.string,
+    triggerComponent: PropTypes.elementType,
 };
 
 export default PopupButton;

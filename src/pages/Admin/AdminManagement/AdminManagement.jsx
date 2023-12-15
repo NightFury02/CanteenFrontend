@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Header from "../../../components/Header/Header"
 import Table from "../../../components/Table/Table"
-import Button from '../../../components/Button/Button';
+import CustomButton from '../../../components/CustomButton/CustomButton';
 import PopupButton from '../../../components/PopupButton/PopupButton';
 
 const staffList = [
@@ -100,17 +100,12 @@ const AdminManagement = () => {
                     value={editedStaff.address}
                     onChange={(e) => handleInputChange('address', e.target.value)}
                 ></input>
-                <Button 
+                <CustomButton 
                     title='Xác nhận'
-                    type='button'
-                    outline='absolute right-2 bottom-2 pt-1 pb-1 pl-16 pr-16'
-                    variant='bg-emerald-700'
-                    hover='hover:bg-emerald-500'
-                    shadow=''
-                    textColor='text-white'
-                    border='border border-emerald-700 rounded'
+                    variant='tertiary'
                     onAction={() => {editStaff({editedStaff})}}
-                ></Button>
+                    className="absolute right-[70px] bottom-2 pt-1 pb-1 pl-16 pr-16"
+                ></CustomButton>
             </>    
             }
             >
@@ -152,7 +147,7 @@ const AdminManagement = () => {
                         <input className='w-11/12 pl-2 border border-white rounded bg-dark_bg'></input>
                         <div>Địa chỉ</div>
                         <input className='w-11/12 pl-2 border border-white rounded bg-dark_bg'></input>
-                        <Button 
+                        <CustomButton 
                             title='Tạo tài khoản'
                             type='button'
                             outline='absolute right-2 bottom-2 pt-1 pb-1 pl-16 pr-16'
@@ -162,7 +157,7 @@ const AdminManagement = () => {
                             textColor='text-white'
                             border='border border-emerald-700 rounded'
                             onAction={() => {addStaff()}}
-                        ></Button>
+                        ></CustomButton>
                     </>    
                     }
                     >

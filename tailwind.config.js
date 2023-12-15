@@ -11,8 +11,10 @@ export default {
         "dark-pink": "#C10C99",
         form: "#050214",
 
-        // Homepage
+        // Main color
         primary: "#EA7C69",
+        secondary: "#E7EAEE",
+        tertiary: "rgb(4 120 87 / 1)",
 
         // Background
         "dark-bg-2": "#1F1D2B",
