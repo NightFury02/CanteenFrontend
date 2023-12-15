@@ -3,7 +3,7 @@ import Header from "../../../components/Header/Header"
 import Table from "../../../components/Table/Table"
 import PopupButton from '../../../components/PopupButton/PopupButton';
 import CurrentDate from '../../../components/CurrentDate/CurrentDate';
-import { MoneyIcon, IncreaseIcon, DecreaseIcon, Management, OrderIcon } from '../../../assets/svgs';
+import { MoneyIcon, IncreaseIcon, DecreaseIcon, Management, OrderIcon, FilterIcon } from '../../../assets/svgs';
 
 const AdminDashBoard = () => {
   const popup = () =>{
@@ -54,7 +54,7 @@ const AdminDashBoard = () => {
         <span className='text-xl'>Báo cáo</span><br></br>
         <PopupButton
           title="Báo cáo kho theo ngày"
-          header="Báo cáo kho theo ngày"
+          header="Báo cáo kho theo ngày "
           className="p-3 mt-3 bg-dark_line w-80 rounded-lg"
           cancelTitle='Thoát'
           cancelClassName='absolute bottom-2 left-1/2 transform -translate-x-1/2 pt-1 pb-1 pl-16 pr-16 bg-emerald-700 text-white border border-emerald-700 rounded hover:bg-emerald-500'
