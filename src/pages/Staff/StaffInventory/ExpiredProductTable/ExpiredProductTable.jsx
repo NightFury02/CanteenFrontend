@@ -19,6 +19,8 @@ import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { visuallyHidden } from '@mui/utils';
+import CustomButton from '../../../../components/CustomButton/CustomButton';
+import PopUp from '../../../../components/Popup/Popup';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -165,6 +167,10 @@ export default function ExpiredProductTable(props) {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const [rows, setRows] = React.useState([]);
+
+    //Handle pop up
+    const [openDeletePopUp, setOpenDeletePopUp] = React.useState(false);
+    
     //Fetch data
     React.useEffect(() => {
         const fetchExpiredProducts = async () => {
@@ -225,10 +231,18 @@ export default function ExpiredProductTable(props) {
     };
 
     const handleOnDeleteIconClick = async () => {
-        await axios.delete('http://localhost:8080/v1/api/deleteExpiredProducts', {
-        data: { ids: selected },
-      });
-      setSelected([]); // Clear the selection after deletion
+      setOpenDeletePopUp(true);
+    }
+    
+    const handleOnDelete = async () => {
+      console.log(selected);
+      setOpenDeletePopUp(false);
+      setSelected([]);
+    }
+
+    const handleOpenDeleteChange = (isOpen) => {
+      setOpenDeletePopUp(isOpen);
+      setSelected([]);
     }
     
     const isSelected = (id) => selected.indexOf(id) !== -1;
@@ -327,6 +341,30 @@ export default function ExpiredProductTable(props) {
                 sx={{bgcolor: 'background.secondary', color: 'text.white'}}
             />
         </Paper>
-        </Box>
+        <PopUp
+          title="Xóa sản phẩm"
+          openPopUp={openDeletePopUp}
+          setOpenPopUp={handleOpenDeleteChange}
+        >
+          {
+            <div className='flex flex-col'>
+              <h2 className='text-white pb-5'>Bạn có chắc chắn muốn xóa sản phẩm này?</h2>
+              <div className='flex justify-end gap-2'>
+                <CustomButton
+                  title='Hủy'
+                  variant='secondary'
+                  onAction={()=>{setOpenDeletePopUp(false); setSelected({})}}
+                  className="py-1 px-4"
+                />
+                <CustomButton
+                  title='Xác nhận'
+                  onAction={handleOnDelete}
+                  className="py-1 px-4"
+                />
+              </div>
+            </div>
+          }
+        </PopUp>
+      </Box>
     );
 }

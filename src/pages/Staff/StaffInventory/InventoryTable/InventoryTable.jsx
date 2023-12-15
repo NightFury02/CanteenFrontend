@@ -20,7 +20,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { visuallyHidden } from '@mui/utils';
 import PopUp from '../../../../components/Popup/Popup';
-import GRNForm from '../GoodsReceivedNoteForm/GoodReceiveNoteForm';
+import EditForm from '../EditForm/EditForm';
 import CustomButton from '../../../../components/CustomButton/CustomButton';
 
 function descendingComparator(a, b, orderBy) {
@@ -315,7 +315,7 @@ export default function InventoryTable(props) {
           openPopUp={openEditPopUp}
           setOpenPopUp={handleOpenEditChange}
         >
-          {<GRNForm
+          {<EditForm
             targetProduct={selected}
             setOpen={handleOpenEditChange}
           />}

@@ -1,8 +1,9 @@
 import {useState} from 'react'
 import {FormControl, FormLabel, TextField} from '@mui/material'
 import CustomButton from '../../../../components/CustomButton/CustomButton'
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
-const GRNForm = (props) => {
+const EditForm = (props) => {
     const {targetProduct, setOpen} = props
     const [editedProduct, setEditedProduct] = useState({
         id: targetProduct.id || '', 
@@ -59,10 +60,17 @@ const GRNForm = (props) => {
                 onChange={(e) => {handleInputChange("first_name", e.target.value) }}
                 sx={textFieldStyle}
             />
-            <TextField
+            {/* <TextField
                 variant='outlined'
                 label="Hạn sử dụng"
                 name="last_name"
+                type='date'
+                value={editedProduct.last_name}
+                onChange={(e) => {handleInputChange("last_name", e.target.value) }}
+                sx={textFieldStyle}
+            /> */}
+            <DatePicker
+                label="Hạn sử dụng"
                 value={editedProduct.last_name}
                 onChange={(e) => {handleInputChange("last_name", e.target.value) }}
                 sx={textFieldStyle}
@@ -77,4 +85,4 @@ const GRNForm = (props) => {
     )
 }
 
-export default GRNForm
+export default EditForm
