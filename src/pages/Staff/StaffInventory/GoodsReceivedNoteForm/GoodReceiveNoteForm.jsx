@@ -27,7 +27,6 @@ const GRNForm = (props) => {
 
     const textFieldStyle = {
         marginBottom: '2rem',
-        
     }
     return (
         <form 
@@ -70,12 +69,7 @@ const GRNForm = (props) => {
             />
             <CustomButton
                 title='Xác nhận'
-                type='button'
-                variant='bg-emerald-700'
-                hover='hover:bg-emerald-500'
-                shadow=''
-                textColor='text-white'
-                border='border border-emerald-700 rounded'
+                variant='tertiary'
                 onAction={handleSubmit}
                 className="p-2"
             />

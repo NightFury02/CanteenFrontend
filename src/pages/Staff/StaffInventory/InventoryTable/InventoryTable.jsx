@@ -21,6 +21,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import { visuallyHidden } from '@mui/utils';
 import PopUp from '../../../../components/Popup/Popup';
 import GRNForm from '../GoodsReceivedNoteForm/GoodReceiveNoteForm';
+import CustomButton from '../../../../components/CustomButton/CustomButton';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -96,7 +97,7 @@ EnhancedTableHead.propTypes = {
 };
 
 function EnhancedTableToolbar(props) {
-  const { selected, handleDelete, handleEditIconClick, title } = props;
+  const { selected, handleDeleteIconClick, handleEditIconClick, title } = props;
 
   return (
     <Toolbar
@@ -124,7 +125,7 @@ function EnhancedTableToolbar(props) {
       {selected && (
         <>
             <Tooltip title="Delete">
-              <IconButton onClick={handleDelete}>
+              <IconButton onClick={handleDeleteIconClick}>
                   <DeleteIcon sx={{color: 'text.white', fontSize: 'fontSize.icon'}}/>
               </IconButton>
             </Tooltip>
@@ -141,7 +142,7 @@ function EnhancedTableToolbar(props) {
 
 EnhancedTableToolbar.propTypes = {
   selected: PropTypes.bool,
-  handleDelete: PropTypes.func.isRequired,
+  handleDeleteIconClick: PropTypes.func.isRequired,
   handleEditIconClick: PropTypes.func.isRequired,
   title: PropTypes.string
 };
@@ -157,6 +158,8 @@ export default function InventoryTable(props) {
 
     //Handle edit pop up
     const [openEditPopUp, setOpenEditPopUp] = React.useState(false)
+    //Handle delete pop uo
+    const [openDeletePopUp, setOpenDeletePopUp] = React.useState(false)
 
     React.useEffect(() => {
       const fetchExpiredProducts = async () => {
@@ -198,21 +201,23 @@ export default function InventoryTable(props) {
       setPage(0);
     };
 
-    const handleOnDeleteIconClick = async () => {
+    const handleOnDelete = async () => {
         console.log(selected);
-        await axios.delete('http://localhost:8080/v1/api/deleteExpiredProducts', {
-        data: { ids: selected },
-      });
-      setSelected({}); // Clear the selection after deletion
+        setOpenDeletePopUp(false);
+        setSelected({});
+      //   await axios.delete('http://localhost:8080/v1/api/deleteExpiredProducts', {
+      //   data: { ids: selected },
+      // });
+      
     }
 
-    const handleOnAdjustIconClick = async () => {
-        console.log(selected);
-
-    }
-
-    const handleOpenChange = (isOpen) => {
+    const handleOpenEditChange = (isOpen) => {
       setOpenEditPopUp(isOpen);
+      setSelected({})
+    };
+
+    const handleOpenDeleteChange = (isOpen) => {
+      setOpenDeletePopUp(isOpen);
       setSelected({})
     };
     
@@ -230,20 +235,20 @@ export default function InventoryTable(props) {
     //console.log(visibleRows);
 
     return (
-        <Box sx={{ width: '100%' }}>
+      <Box sx={{ width: '100%' }}>
         <Paper sx={{ width: '100%', mb: 2 }}>
             <EnhancedTableToolbar 
                 selected={Object.keys(selected).length === 0 ? false : true} 
-                handleDelete={handleOnDeleteIconClick} 
+                handleDeleteIconClick={()=> {setOpenDeletePopUp(true)}} 
                 title={title}
                 handleEditIconClick={() => {setOpenEditPopUp(true)}}
              />
             <TableContainer>
-            <Table
-                sx={{ minWidth: 750, bgcolor: 'background.secondary' }}
-                aria-labelledby="tableTitle"
-                size={'medium'}
-            >
+              <Table
+                  sx={{ minWidth: 750, bgcolor: 'background.secondary' }}
+                  aria-labelledby="tableTitle"
+                  size={'medium'}
+              >
                 <EnhancedTableHead
                     order={order}
                     orderBy={orderBy}
@@ -291,7 +296,7 @@ export default function InventoryTable(props) {
                     </TableRow>
                 )}
                 </TableBody>
-            </Table>
+              </Table>
             </TableContainer>
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
@@ -308,13 +313,38 @@ export default function InventoryTable(props) {
         <PopUp
           title="CẬP NHẬT"
           openPopUp={openEditPopUp}
-          setOpenPopUp={handleOpenChange}
+          setOpenPopUp={handleOpenEditChange}
         >
           {<GRNForm
             targetProduct={selected}
-            setOpen={handleOpenChange}
+            setOpen={handleOpenEditChange}
           />}
         </PopUp>
-        </Box>
+
+        <PopUp
+          title="Xóa sản phẩm"
+          openPopUp={openDeletePopUp}
+          setOpenPopUp={handleOpenDeleteChange}
+        >
+          {
+            <div className='flex flex-col'>
+              <h2 className='text-white pb-5'>Bạn có chắc chắn muốn xóa sản phẩm này?</h2>
+              <div className='flex justify-end gap-2'>
+                <CustomButton
+                  title='Hủy'
+                  variant='secondary'
+                  onAction={()=>{setOpenDeletePopUp(false); setSelected({})}}
+                  className="py-1 px-4"
+                />
+                <CustomButton
+                  title='Xác nhận'
+                  onAction={handleOnDelete}
+                  className="py-1 px-4"
+                />
+              </div>
+            </div>
+          }
+        </PopUp>
+      </Box>
     );
 }

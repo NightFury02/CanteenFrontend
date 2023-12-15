@@ -102,14 +102,9 @@ const AdminManagement = () => {
                 ></input>
                 <CustomButton 
                     title='Xác nhận'
-                    type='button'
-                    outline='absolute right-2 bottom-2 pt-1 pb-1 pl-16 pr-16'
-                    variant='bg-emerald-700'
-                    hover='hover:bg-emerald-500'
-                    shadow=''
-                    textColor='text-white'
-                    border='border border-emerald-700 rounded'
+                    variant='tertiary'
                     onAction={() => {editStaff({editedStaff})}}
+                    className="absolute right-[70px] bottom-2 pt-1 pb-1 pl-16 pr-16"
                 ></CustomButton>
             </>    
             }
