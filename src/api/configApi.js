@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:8080/v1/api";
+const BASE_URL = "https://canteen-lzfp.onrender.com/v1/api";
 
 const configHeader = ({ token, clientId }) => {
   return {
