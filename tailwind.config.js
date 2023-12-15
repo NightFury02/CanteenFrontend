@@ -4,7 +4,7 @@ export default {
   theme: {
     extend: {
       minHeight: {
-        '1/2': '50%',
+        "1/2": "50%",
       },
       colors: {
         // Login/Register Form
@@ -33,24 +33,25 @@ export default {
         brown: "rgba(234, 124, 105, 0.30)",
       },
       fontFamily: {
-        barlow: 'Barlow',
+        barlow: "Barlow",
+        poppin: '"Poppins", sans-serif',
       },
     },
   },
   plugins: [
     function ({ addComponents, theme }) {
       const customStyles = {
-        '.custom-popup-container': {
+        ".custom-popup-container": {
           backgroundColor: "#1F1D2B",
-          color: theme('colors.customText'),
+          color: theme("colors.customText"),
         },
-        '.custom-popup-content': {
-          boxShadow: `0 4px 8px ${theme('colors.customShadow')}`,
+        ".custom-popup-content": {
+          boxShadow: `0 4px 8px ${theme("colors.customShadow")}`,
         },
-        '.custom-popup-header': {
+        ".custom-popup-header": {
           color: "white",
         },
-        '.custom-popup-data': {
+        ".custom-popup-data": {
           color: "white",
         },
       };
