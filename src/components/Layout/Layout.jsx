@@ -1,27 +1,33 @@
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import PropTypes from "prop-types";
 import { Container } from "../../containers";
 import { listMenuBasedOnUser } from "../../constants";
+import { useEffect } from "react";
+import userApi from "../../api/userApi";
 
-const Layout = ({children}) => {
-  const isLogin = true;
-  const user = { role: "staff" };
+const Layout = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
+
+  const token = localStorage.getItem("token");
+  const clientId = localStorage.getItem("clientId");
+  const isLogin = user ? true : false;
+
+  useEffect(() => {
+    if (token && clientId) {
+      userApi.loginSuccess({ token, clientId }).then((res) => {
+        setUser(res?.data?.user);
+      });
+    } else {
+      setUser(null);
+      navigate("/login");
+    }
+  }, []);
+
   return (
     <>
-      {!isLogin ? (
-        <main className="flex">
-          <div className="m-auto">
-            <h1>You need login or register</h1>
-            <Link to="/login" className="text-blue-500">
-              Login
-            </Link>
-
-            <Link to="/register" className="text-red-500 block">
-              register
-            </Link>
-          </div>
-        </main>
-      ) : (
+      {isLogin && (
         <Container listMenuBasedOnUser={listMenuBasedOnUser[user.role]}>
           {children}
         </Container>
@@ -31,6 +37,6 @@ const Layout = ({children}) => {
 };
 
 Layout.propTypes = {
-    children: PropTypes.node
-}
+  children: PropTypes.node,
+};
 export default Layout;
