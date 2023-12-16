@@ -33,7 +33,7 @@ const listMenuBasedOnUser = {
       icon: MenuIcon,
     },
     {
-      path: "/staff/orders",
+      path: "/staff/preorders",
       icon: NotificationIcon,
     },
     {

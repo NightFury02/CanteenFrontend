@@ -11,7 +11,7 @@ const CustomButton = ({
     const secondaryButtonClass = 'bg-secondary border-0 border-secondary rounded text-black hover:bg-secondary/70';
     const tertiaryButtonClass = 'bg-tertiary border-0 border-tertiary rounded text-white hover:bg-tertiary/70';
     const dangerButtonClass = 'bg-red-700 border-0 border-red-700 rounded text-white hover:bg-red-700/70'
-    const deleteButtonClass = 'bg-transparent border border-red-700 border-2 rounded text-red-500 hover:bg-red-700 hover:text-white';
+    const deleteButtonClass = 'bg-transparent border-primary border-2 rounded text-primary hover:bg-primary hover:text-white';
 
     let classes =''
     if (variant === 'primary'){
