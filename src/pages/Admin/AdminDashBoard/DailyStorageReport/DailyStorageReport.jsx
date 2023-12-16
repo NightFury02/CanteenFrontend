@@ -1,7 +1,6 @@
 import * as React from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
-import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -14,14 +13,7 @@ import TableSortLabel from '@mui/material/TableSortLabel';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
-import IconButton from '@mui/material/IconButton';
-import Tooltip from '@mui/material/Tooltip';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
 import { visuallyHidden } from '@mui/utils';
-import PopUp from '../../../../components/Popup/Popup';
-import CustomButton from '../../../../components/CustomButton/CustomButton';
-import EditStaffForm from '../EditStaffForm/EditStaffForm';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -97,17 +89,13 @@ EnhancedTableHead.propTypes = {
 };
 
 function EnhancedTableToolbar(props) {
-  const { selected, handleDeleteIconClick, handleEditIconClick, title } = props;
+  const { title } = props;
 
   return (
     <Toolbar
       sx={{
         pl: { sm: 2 },
         pr: { xs: 1, sm: 1 },
-        ...(selected && {
-          bgcolor: (theme) =>
-            alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
-        }),
         bgcolor: 'background.secondary'
       }}
     >
@@ -121,75 +109,43 @@ function EnhancedTableToolbar(props) {
           {title}
         </Typography>
       )}
-
-      {selected && (
-        <>
-            <Tooltip title="Delete">
-              <IconButton onClick={handleDeleteIconClick}>
-                  <DeleteIcon sx={{color: 'text.white', fontSize: 'fontSize.icon'}}/>
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Edit">
-              <IconButton onClick={handleEditIconClick}>
-                  <EditIcon sx={{color: 'text.white', fontSize: 'fontSize.icon'}}/>
-              </IconButton>
-            </Tooltip>
-        </>
-      )}
     </Toolbar>
   );
 }
 
 EnhancedTableToolbar.propTypes = {
-  selected: PropTypes.bool,
   handleDeleteIconClick: PropTypes.func.isRequired,
   handleEditIconClick: PropTypes.func.isRequired,
   title: PropTypes.string
 };
 
-export default function StaffTable(props) {
+export default function DailyStorageReport(props) {
     const {headCells, title} = props;
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('id');
-    const [selected, setSelected] = React.useState({});
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const [rows, setRows] = React.useState([]);
 
-    //Handle edit pop up
-    const [openEditPopUp, setOpenEditPopUp] = React.useState(false)
-    //Handle delete pop uo
-    const [openDeletePopUp, setOpenDeletePopUp] = React.useState(false)
 
     React.useEffect(() => {
-      const fetchStaffs = async () => {
+      const fetchExpiredProducts = async () => {
           const url = `https://reqres.in/api/users`;
           try {
             const res = await axios.get(url);
             const data = res.data;
             setRows(data.data);
           } catch (error) {
-            console.error('Error fetching expired Staffs:', error);
+            console.error('Error fetching expired products:', error);
           }
       }
-      fetchStaffs()
+      fetchExpiredProducts()
     }, []);
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
-    };
-
-    //Handle on row click
-    const handleClick = (event, row) => {
-        //if row is already selected, remove it from selected
-        if (selected === row){
-            setSelected({});
-        }
-        else{
-            setSelected(row);
-        }
     };
 
     const handleChangePage = (event, newPage) => {
@@ -200,28 +156,6 @@ export default function StaffTable(props) {
       setRowsPerPage(parseInt(event.target.value, 10));
       setPage(0);
     };
-
-    const handleOnDelete = async () => {
-        console.log(selected);
-        setOpenDeletePopUp(false);
-        setSelected({});
-      //   await axios.delete('http://localhost:8080/v1/api/deleteExpiredStaffs', {
-      //   data: { ids: selected },
-      // });
-      
-    }
-
-    const handleOpenEditChange = (isOpen) => {
-      setOpenEditPopUp(isOpen);
-      setSelected({})
-    };
-
-    const handleOpenDeleteChange = (isOpen) => {
-      setOpenDeletePopUp(isOpen);
-      setSelected({})
-    };
-    
-    const isSelected = (row) => selected === row;
 
     // Avoid a layout jump when reaching the last page with empty rows.
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
@@ -238,14 +172,11 @@ export default function StaffTable(props) {
       <Box sx={{ width: '100%' }}>
         <Paper sx={{ width: '100%', mb: 2 }}>
             <EnhancedTableToolbar 
-                selected={Object.keys(selected).length === 0 ? false : true} 
-                handleDeleteIconClick={()=> {setOpenDeletePopUp(true)}} 
-                title={''}
-                handleEditIconClick={() => {setOpenEditPopUp(true)}}
+                title={title}
              />
             <TableContainer>
               <Table
-                  sx={{ minWidth: 750, bgcolor: 'background.secondary' }}
+                  sx={{ minWidth: 600, bgcolor: 'background.secondary' }}
                   aria-labelledby="tableTitle"
                   size={'medium'}
               >
@@ -257,7 +188,7 @@ export default function StaffTable(props) {
                 />
                 <TableBody>
                 {visibleRows.map((row, index) => {
-                    const isItemSelected = isSelected(row);
+                    
                     const labelId = `enhanced-table-checkbox-${index}`;
 
                     return (
@@ -265,10 +196,8 @@ export default function StaffTable(props) {
                         hover
                         onClick={(event) => handleClick(event, row)}
                         role="checkbox"
-                        aria-checked={isItemSelected}
                         tabIndex={-1}
                         key={row.id}
-                        selected={isItemSelected}
                         sx={{ cursor: 'pointer' }}
                     >
                         <TableCell padding="checkbox"></TableCell>
@@ -309,42 +238,6 @@ export default function StaffTable(props) {
                 sx={{bgcolor: 'background.secondary', color: 'text.white'}}
             />
         </Paper>
-
-        <PopUp
-          title="CẬP NHẬT"
-          openPopUp={openEditPopUp}
-          setOpenPopUp={handleOpenEditChange}
-        >
-            {<EditStaffForm
-            targetStaff={selected}
-            setOpen={handleOpenEditChange}
-          />}
-        </PopUp>
-
-        <PopUp
-          title="Xóa nhân viên"
-          openPopUp={openDeletePopUp}
-          setOpenPopUp={handleOpenDeleteChange}
-        >
-          {
-            <div className='flex flex-col'>
-              <h2 className='text-white pb-5'>Bạn có chắc chắn muốn xóa nhân viên này?</h2>
-              <div className='flex justify-end gap-2'>
-                <CustomButton
-                  title='Hủy'
-                  variant='secondary'
-                  onAction={()=>{setOpenDeletePopUp(false); setSelected({})}}
-                  className="py-1 px-4"
-                />
-                <CustomButton
-                  title='Xác nhận'
-                  onAction={handleOnDelete}
-                  className="py-1 px-4"
-                />
-              </div>
-            </div>
-          }
-        </PopUp>
       </Box>
     );
 }
