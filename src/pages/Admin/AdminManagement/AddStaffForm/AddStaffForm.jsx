@@ -1,6 +1,7 @@
 import {useState} from 'react'
 import {FormControl, FormLabel, TextField} from '@mui/material'
 import CustomButton from '../../../../components/CustomButton/CustomButton'
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 const AddStaffForm = (props) => {
     const {setOpen} = props
@@ -64,10 +65,8 @@ const AddStaffForm = (props) => {
                 onChange={(e) => {handleInputChange("password", e.target.value) }}
                 sx={textFieldStyle}
             />
-            <TextField
-                variant='outlined'
+            <DatePicker
                 label="Ngày sinh"
-                name="dob"
                 value={staff.dob}
                 onChange={(e) => {handleInputChange("dob", e.target.value) }}
                 sx={textFieldStyle}

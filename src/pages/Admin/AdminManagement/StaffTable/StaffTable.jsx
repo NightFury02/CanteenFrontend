@@ -148,7 +148,7 @@ EnhancedTableToolbar.propTypes = {
 };
 
 export default function StaffTable(props) {
-    const {headCells, title} = props;
+    const {headCells} = props;
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('id');
     const [selected, setSelected] = React.useState({});
@@ -169,7 +169,7 @@ export default function StaffTable(props) {
             const data = res.data;
             setRows(data.data);
           } catch (error) {
-            console.error('Error fetching expired Staffs:', error);
+            console.error('Error fetching staffs:', error);
           }
       }
       fetchStaffs()
@@ -205,7 +205,7 @@ export default function StaffTable(props) {
         console.log(selected);
         setOpenDeletePopUp(false);
         setSelected({});
-      //   await axios.delete('http://localhost:8080/v1/api/deleteExpiredStaffs', {
+      //   await axios.delete('http://localhost:8080/v1/api/', {
       //   data: { ids: selected },
       // });
       
@@ -213,11 +213,6 @@ export default function StaffTable(props) {
 
     const handleOpenEditChange = (isOpen) => {
       setOpenEditPopUp(isOpen);
-      setSelected({})
-    };
-
-    const handleOpenDeleteChange = (isOpen) => {
-      setOpenDeletePopUp(isOpen);
       setSelected({})
     };
     
@@ -312,10 +307,10 @@ export default function StaffTable(props) {
 
         <PopUp
           title="CẬP NHẬT"
-          openPopUp={openEditPopUp}
-          setOpenPopUp={handleOpenEditChange}
+          isOpen={openEditPopUp}
+          handleCloseBtnClick={() => {setOpenEditPopUp(false); setSelected({})}}
         >
-            {<EditStaffForm
+          {<EditStaffForm
             targetStaff={selected}
             setOpen={handleOpenEditChange}
           />}
@@ -323,8 +318,8 @@ export default function StaffTable(props) {
 
         <PopUp
           title="Xóa nhân viên"
-          openPopUp={openDeletePopUp}
-          setOpenPopUp={handleOpenDeleteChange}
+          isOpen={openDeletePopUp}
+          handleCloseBtnClick={() => {setOpenDeletePopUp(false); setSelected({})}}
         >
           {
             <div className='flex flex-col'>
