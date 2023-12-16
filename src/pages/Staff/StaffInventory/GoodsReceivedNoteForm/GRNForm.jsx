@@ -3,7 +3,7 @@ import CustomButton from '../../../../components/CustomButton/CustomButton'
 
 const GRNForm = ({closePopUp}) => {
     const [inputList, setInputList] = React.useState([
-        {name: '', price: '', quantity: '', expirationDate: ''}
+        {name: '', image:'', price: '', quantity: '', expirationDate: ''}
     ]);
 
     const handleInputChange = (e, index) => {
@@ -14,7 +14,7 @@ const GRNForm = ({closePopUp}) => {
     }
 
     const handleAddRow = () => {
-        setInputList([...inputList, {name: '', price: '', quantity: '', expirationDate: ''}]);
+        setInputList([...inputList, {name: '', image:'', price: '', quantity: '', expirationDate: ''}]);
     }
 
     const handleRemoveRow = (index) => {
@@ -45,7 +45,7 @@ const GRNForm = ({closePopUp}) => {
         >
         {
             inputList.map((row, index) => (
-                <div className='row flex gap-5 my-2'>
+                <div key={index} className='row flex gap-5 my-2'>
                     <div className='input flex flex-col'>
                         <label
                             className='block text-white text-sm font-barlow font-medium leading-6'
@@ -67,6 +67,24 @@ const GRNForm = ({closePopUp}) => {
                     <div className='input flex flex-col'>
                         <label
                             className='block text-white text-sm font-barlow font-medium leading-6'
+                            htmlFor='image'
+                        >
+                            Link ảnh sản phẩm
+                        </label>
+                        <input 
+                            className='block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6'
+                            name='image'
+                            id='image'
+                            value={row.image}
+                            onChange={e => handleInputChange(e, index)}
+                            autoComplete='off'
+                            type='text'
+                        />
+                    </div>
+
+                    <div className='input flex flex-col'>
+                        <label
+                            className='block text-white text-sm font-barlow font-medium leading-6'
                             htmlFor='price'
                         >
                             Đơn giá
@@ -78,7 +96,9 @@ const GRNForm = ({closePopUp}) => {
                             value={row.price}
                             onChange={e => handleInputChange(e, index)}
                             autoComplete='off'
-                            type='number'
+                            type='text'
+                            inputMode="numeric" 
+                            pattern="[0-9]*"
                         />
                     </div>
                     
@@ -96,7 +116,9 @@ const GRNForm = ({closePopUp}) => {
                             value={row.quantity}
                             onChange={e => handleInputChange(e, index)}
                             autoComplete='off'
-                            type='number'
+                            type='text'
+                            inputMode="numeric" 
+                            pattern="[0-9]*"
                         />
                     </div>
 

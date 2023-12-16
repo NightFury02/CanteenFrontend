@@ -10,10 +10,10 @@ const PopUp = (props) => {
         <Dialog 
         open={isOpen} 
         maxWidth="md" 
-        sx={{padding: "16px", position: 'absolute'}}>
+        sx={{position: 'absolute'}}>
             <DialogTitle sx={{backgroundColor: 'background.secondary'}}>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <Typography variant="h6" component="div" style={{ flexGrow: 1, marginRight: '24px', fontSize: '24px' }}>
+                    <Typography component="div" style={{ flexGrow: 1, marginRight: '24px', fontSize: '32px', fontWeight: 'bolder' }}>
                         {title}
                     </Typography>
                     <ActionButton
