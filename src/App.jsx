@@ -8,6 +8,8 @@ import {
   StaffDashboard,
   StaffHome,
   StaffInventory,
+  StaffReport,
+  StaffDailyMenu,
   AdminDashboard,
   AdminManagement,
 } from "./pages";
@@ -23,6 +25,8 @@ function App() {
           <Route path="/user/dashboard" element={<Layout> <UserHome /> </Layout>}/>
           <Route path="/staff/dashboard" element={<Layout> <StaffDashboard /> </Layout>}/>
           <Route path="/staff/inventory" element={<Layout> <StaffInventory /> </Layout>}/>
+          <Route path="/staff/dailymenu" element={<Layout> <StaffDailyMenu /> </Layout>}/>
+          <Route path="/staff/report" element={<Layout> <StaffReport /> </Layout>}/>
           <Route path="/admin/dashboard" element={<Layout> <AdminDashboard /> </Layout>}/>
           <Route path="/admin/management" element={<Layout> <AdminManagement /> </Layout>}/>
         </Routes>

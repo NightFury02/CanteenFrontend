@@ -240,11 +240,6 @@ export default function ExpiredProductTable(props) {
       setSelected([]);
     }
 
-    const handleOpenDeleteChange = (isOpen) => {
-      setOpenDeletePopUp(isOpen);
-      setSelected([]);
-    }
-    
     const isSelected = (id) => selected.indexOf(id) !== -1;
 
     // Avoid a layout jump when reaching the last page with empty rows.
@@ -343,8 +338,8 @@ export default function ExpiredProductTable(props) {
         </Paper>
         <PopUp
           title="Xóa sản phẩm"
-          openPopUp={openDeletePopUp}
-          setOpenPopUp={handleOpenDeleteChange}
+          isOpen={openDeletePopUp}
+          handleCloseBtnClick={() => {setOpenDeletePopUp(false); setSelected([]);}}
         >
           {
             <div className='flex flex-col'>
