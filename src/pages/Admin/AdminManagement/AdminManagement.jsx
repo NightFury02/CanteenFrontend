@@ -1,9 +1,7 @@
 import React from 'react';
 import Header from "../../../components/Header/Header"
-import Table from "../../../components/Table/Table"
 import CustomButton from '../../../components/CustomButton/CustomButton';
 import PopUp from '../../../components/Popup/Popup';
-import PopupButton from '../../../components/PopupButton/PopupButton';
 import StaffTable from './StaffTable/StaffTable';
 import AddStaffForm from './AddStaffForm/AddStaffForm';
 
@@ -65,14 +63,14 @@ const AdminManagement = () => {
                     onAction={() => handleAddOpenChange(true)}
                 />
             </div>
-            
+
             <PopUp
                 title="Thêm nhân viên"
-                openPopUp={openAddPopup}
-                setOpenPopUp={handleAddOpenChange}
+                isOpen={openAddPopup}
+                handleCloseBtnClick={() => handleAddOpenChange(false)}
             >
                 {<AddStaffForm
-                setOpen={handleAddOpenChange}
+                setOpen={() => handleAddOpenChange(false)}
                 />}
             </PopUp>
             <div className="mt-2 p-2">

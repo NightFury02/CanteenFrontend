@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import Header from "../../../components/Header/Header"
-import Table from "../../../components/Table/Table"
 import PopupButton from '../../../components/PopupButton/PopupButton';
 import CurrentDate from '../../../components/CurrentDate/CurrentDate';
 import { MoneyIcon, IncreaseIcon, DecreaseIcon, Management, OrderIcon, FilterIcon } from '../../../assets/svgs';
 import DailyStorageReport from './DailyStorageReport/DailyStorageReport';
+import DailyRevenueReport from './DailyRevenueReport/DailyRevenueReport';
+import MonthlyRevenueReport from './MonthlyRevenueReport/MonthlyRevenueReport';
 
 const AdminDashBoard = () => {
   const headCells = [
@@ -46,7 +46,7 @@ const AdminDashBoard = () => {
     },
   ];
 
-  const getStorageReport = () =>{
+  const getReport = () =>{
     console.log('popup');
   };
 
@@ -91,40 +91,28 @@ const AdminDashBoard = () => {
           Tổng người dùng hôm nay
         </div>
       </div>
-      <div className='bg-dark_bg h-auto p-10 mt-5 rounded-lg text-white'>
+      <div className='bg-dark_bg h-auto p-10 mt-5 rounded-lg text-white grid gap-2'>
         <span className='text-xl'>Báo cáo</span><br></br>
         <PopupButton 
           title={'Báo cáo kho theo ngày'}
-          className="p-2"
-          onAction={getStorageReport}
+          className="p-3 w-80 rounded-lg"
+          onAction={getReport}
         >
-          {<DailyStorageReport headCells={headCells} title={'Báo cáo kho ngày ...'}/>}
+          {<DailyStorageReport headCells={headCells} title={'Báo cáo kho ngày '}/>}
         </PopupButton>
-        <PopupButton
-            title="Báo cáo doanh thu theo ngày"
-            header="Báo cáo doanh thu theo ngày"
-            className="p-3 mt-3 bg-dark_line w-80 rounded-lg"
-            cancelTitle='Thoát'
-            cancelClassName='absolute bottom-2 left-1/2 transform -translate-x-1/2 pt-1 pb-1 pl-16 pr-16 bg-emerald-700 text-white border border-emerald-700 rounded hover:bg-emerald-500'
-            data={<>
-                <div>Họ và tên</div>
-                <input className='w-11/12 pl-2 border border-white rounded bg-dark_bg'></input>
-            </>    
-            }
-            >
-        </PopupButton><br></br>
-        <PopupButton
-            title="Báo cáo doanh thu theo tháng"
-            header="Báo cáo doanh thu theo tháng"
-            className="p-3 mt-3 bg-dark_line w-80 rounded-lg"
-            cancelTitle='Thoát'
-            cancelClassName='absolute bottom-2 left-1/2 transform -translate-x-1/2 pt-1 pb-1 pl-16 pr-16 bg-emerald-700 text-white border border-emerald-700 rounded hover:bg-emerald-500'
-            data={<>
-                <div>Họ và tên</div>
-                <input className='w-11/12 pl-2 border border-white rounded bg-dark_bg'></input>
-            </>    
-            }
-            >
+        <PopupButton 
+          title={'Báo cáo doanh thu theo ngày'}
+          className="p-3 w-80 rounded-lg"
+          onAction={getReport}
+        >
+          {<DailyRevenueReport title={'Báo cáo doanh thu ngày '}/>}
+        </PopupButton>
+        <PopupButton 
+          title={'Báo cáo doanh thu theo tháng'}
+          className="p-3 w-80 rounded-lg"
+          onAction={getReport}
+        >
+          {<MonthlyRevenueReport title={'Báo cáo doanh thu '}/>}
         </PopupButton>
       </div>
     </div>

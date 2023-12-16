@@ -1,6 +1,7 @@
 import {useState} from 'react'
 import {FormControl, FormLabel, TextField} from '@mui/material'
 import CustomButton from '../../../../components/CustomButton/CustomButton'
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 const EditStaffForm = (props) => {
     const {targetStaff, setOpen} = props
@@ -10,8 +11,8 @@ const EditStaffForm = (props) => {
         first_name: targetStaff.first_name || '',
         last_name: targetStaff.last_name || '',
     });
-
-    const handleCancel = () =>{
+    
+    const handleCancel = () => {
         setOpen(false);
     }
 
@@ -34,7 +35,7 @@ const EditStaffForm = (props) => {
     }
     return (
         <form 
-            className="flex flex-col min-w-[700px]"
+            className="flex flex-col min-w-[600px]"
             autoComplete='off'
         >
             <TextField
@@ -55,10 +56,8 @@ const EditStaffForm = (props) => {
                 onChange={(e) => {handleInputChange("first_name", e.target.value) }}
                 sx={textFieldStyle}
             />
-            <TextField
-                variant='outlined'
+            <DatePicker
                 label="Ngày sinh"
-                name="last_name"
                 value={editedStaff.last_name}
                 onChange={(e) => {handleInputChange("last_name", e.target.value) }}
                 sx={textFieldStyle}

@@ -19,3 +19,4 @@ export { default as InvisibleIcon } from "./invisible.svg?react";
 export { default as PadlockIcon } from "./padlock.svg?react";
 export { default as UserIcon } from "./user.svg?react";
 export { default as MenuIcon } from "./menu.svg?react";
+export { default as DeleteIcon } from "./delete.svg?react";
