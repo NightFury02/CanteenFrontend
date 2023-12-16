@@ -5,10 +5,10 @@ import {Dialog, DialogTitle, DialogContent} from '@mui/material';
 import ActionButton from '../ActionButton/ActionButton';
 
 const PopUp = (props) => {
-    const {title, children, openPopUp, setOpenPopUp} = props;
+    const {title, children, isOpen, handleCloseBtnClick} = props;
     return(
         <Dialog 
-        open={openPopUp} 
+        open={isOpen} 
         maxWidth="md" 
         sx={{padding: "16px", position: 'absolute'}}>
             <DialogTitle sx={{backgroundColor: 'background.secondary'}}>
@@ -17,8 +17,8 @@ const PopUp = (props) => {
                         {title}
                     </Typography>
                     <ActionButton
-                        sx={{backgroundColor: 'background.secondary', boxShadow: 'none', px: '6px', minWidth: '0px', border: 'none'}}
-                        onClick={()=>{setOpenPopUp(false)}}>
+                        sx={{backgroundColor: 'background.secondary', boxShadow: 'none', px: '12px', minWidth: '0px', border: 'none'}}
+                        onClick={handleCloseBtnClick}>
                         <CloseIcon />
                     </ActionButton>
                 </div>

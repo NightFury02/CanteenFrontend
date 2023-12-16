@@ -27,7 +27,7 @@ const Layout = ({ children }) => {
   return (
     <>
       {isLogin && (
-        <Container listMenuBasedOnUser={listMenuBasedOnUser[user.role]}>
+        <Container listMenuBasedOnUser={listMenuBasedOnUser['staff']}>
           {children}
         </Container>
       )}

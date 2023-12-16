@@ -3,15 +3,13 @@ import Header from "../../../components/Header/Header"
 import ExpiredProductTable from "./ExpiredProductTable/ExpiredProductTable";
 import InventoryTable from "./InventoryTable/InventoryTable";
 import DeletedProductTable from "./DeletedProductTable/DeletedProductTable";
-import PopupButton from "../../../components/PopupButton/PopupButton";
+import CustomButton from '../../../components/CustomButton/CustomButton';
+import PopUp from '../../../components/Popup/Popup';
+import GRNForm from './GoodReceiveNoteForm/GRNForm';
 
 const StaffInventory = () => {
-  const handleImport = () => {
-    console.log("importing")
-  }
-  const handleExport = () => {
-    console.log("export");
-  }
+  const [isImportPopUpOpen, setImportPopUpOpen] =React.useState(false);
+  const [isExportPopUpOpen, setExportPopUpOpen] =React.useState(false);
 
   const headCells = [
     {
@@ -46,20 +44,20 @@ const StaffInventory = () => {
         <Header heading="Quản lý kho"></Header>
       </div>
       <div className="ms-3">
-        <PopupButton 
+        <CustomButton 
           title={'Tạo phiếu nhập kho'}
           className="p-2 me-5"
-          onAction={handleImport}
+          onAction={() => {setImportPopUpOpen(true)}}
         >
           {<ExpiredProductTable headCells={headCells} title={'Sản phẩm hết hạn'}/>}
-        </PopupButton>
-        <PopupButton 
+        </CustomButton>
+        <CustomButton 
           title={'Tạo phiếu xuất kho'}
           className="p-2"
-          onAction={handleExport}
+          onAction={() => {setExportPopUpOpen(true)}}
         >
           {<InventoryTable headCells={headCells} title={'Kho'}/>}
-        </PopupButton>
+        </CustomButton>
       </div>
       
       <div className="mt-5 p-2">
@@ -73,6 +71,16 @@ const StaffInventory = () => {
       <div className="mt-5 p-2">
         <DeletedProductTable headCells={headCells} title={'Sản phẩm đã bị xóa'}/>
       </div>
+
+      <PopUp
+        title="Phiếu nhập kho"
+        isOpen={isImportPopUpOpen}
+        handleCloseBtnClick={() => setImportPopUpOpen(false)}
+      >
+        <GRNForm 
+          closePopUp={() => setImportPopUpOpen(false)}
+        />
+      </PopUp>
     </>
   );
 };
