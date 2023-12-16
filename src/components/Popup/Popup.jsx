@@ -9,7 +9,7 @@ const PopUp = (props) => {
     return(
         <Dialog 
         open={isOpen} 
-        maxWidth="md" 
+        maxWidth="lg" 
         sx={{position: 'absolute'}}>
             <DialogTitle sx={{backgroundColor: 'background.secondary'}}>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>

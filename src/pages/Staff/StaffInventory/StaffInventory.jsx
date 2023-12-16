@@ -49,16 +49,12 @@ const StaffInventory = () => {
           title={'Tạo phiếu nhập kho'}
           className="p-2 me-5"
           onAction={() => {setImportPopUpOpen(true)}}
-        >
-          {<ExpiredProductTable headCells={headCells} title={'Sản phẩm hết hạn'}/>}
-        </CustomButton>
+        />
         <CustomButton 
           title={'Tạo phiếu xuất kho'}
           className="p-2"
           onAction={() => {setExportPopUpOpen(true)}}
-        >
-          {<InventoryTable headCells={headCells} title={'Kho'}/>}
-        </CustomButton>
+        />
       </div>
       
       <div className="mt-5 p-2">
