@@ -3,12 +3,53 @@ import Header from "../../../components/Header/Header"
 import Table from "../../../components/Table/Table"
 import PopupButton from '../../../components/PopupButton/PopupButton';
 import CurrentDate from '../../../components/CurrentDate/CurrentDate';
-import { MoneyIcon, IncreaseIcon, DecreaseIcon, Management, OrderIcon } from '../../../assets/svgs';
+import { MoneyIcon, IncreaseIcon, DecreaseIcon, Management, OrderIcon, FilterIcon } from '../../../assets/svgs';
+import DailyStorageReport from './DailyStorageReport/DailyStorageReport';
 
 const AdminDashBoard = () => {
-  const popup = () =>{
+  const headCells = [
+    {
+        id: 'id',
+        numeric: false,
+        disablePadding: true,
+        label: 'Mã sản phẩm',
+    },
+    {
+        id: 'first_name',
+        numeric: false,
+        disablePadding: true,
+        label: 'Tên',
+    },
+    {
+        id: 'last_name',
+        numeric: false,
+        disablePadding: true,
+        label: 'Số lượng tồn kho',
+    },
+    {
+        id: 'email',
+        numeric: false,
+        disablePadding: true,
+        label: 'Số lượng nhập kho',
+    },
+    {
+        id: 'export',
+        numeric: false,
+        disablePadding: true,
+        label: 'Số lượng xuất kho',
+    },
+    {
+        id: 'exp',
+        numeric: false,
+        disablePadding: true,
+        label: 'Hạn sử dụng',
+    },
+  ];
+
+  const getStorageReport = () =>{
     console.log('popup');
-  }
+  };
+
   return (
     <div>
       <div className="flex justify-between">
@@ -52,19 +93,13 @@ const AdminDashBoard = () => {
       </div>
       <div className='bg-dark_bg h-auto p-10 mt-5 rounded-lg text-white'>
         <span className='text-xl'>Báo cáo</span><br></br>
-        <PopupButton
-          title="Báo cáo kho theo ngày"
-          header="Báo cáo kho theo ngày"
-          className="p-3 mt-3 bg-dark_line w-80 rounded-lg"
-          cancelTitle='Thoát'
-          cancelClassName='absolute bottom-2 left-1/2 transform -translate-x-1/2 pt-1 pb-1 pl-16 pr-16 bg-emerald-700 text-white border border-emerald-700 rounded hover:bg-emerald-500'
-          data={<>
-              <div>Họ và tên</div>
-              <input className='w-11/12 pl-2 border border-white rounded bg-dark_bg'></input>
-          </>    
-          }
-          >
-        </PopupButton><br></br>
+        <PopupButton 
+          title={'Báo cáo kho theo ngày'}
+          className="p-2"
+          onAction={getStorageReport}
+        >
+          {<DailyStorageReport headCells={headCells} title={'Báo cáo kho ngày ...'}/>}
+        </PopupButton>
         <PopupButton
             title="Báo cáo doanh thu theo ngày"
             header="Báo cáo doanh thu theo ngày"

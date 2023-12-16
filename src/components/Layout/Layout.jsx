@@ -13,7 +13,6 @@ const Layout = ({ children }) => {
   const token = localStorage.getItem("token");
   const clientId = localStorage.getItem("clientId");
   const isLogin = user ? true : false;
-
   useEffect(() => {
     if (token && clientId) {
       userApi.loginSuccess({ token, clientId }).then((res) => {
