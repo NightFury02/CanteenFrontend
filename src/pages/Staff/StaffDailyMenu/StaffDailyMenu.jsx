@@ -39,10 +39,10 @@ const StaffDailyMenu = () => {
         setMenu([]);
     }
 
-    const handleSearch = async (query) => {
-        //console.log(query);
-        if (menu.length > 0) {
-            if (query !== ''){
+    const handleSearchBar = async (query) => {
+        console.log(query);
+        if (originalMenu.length > 0) {
+            if (query !== ""){
                 const searchResult = originalMenu.filter((item) => item.last_name.toLowerCase().includes(query.toLowerCase()));
                 setMenu(searchResult);
             }
@@ -144,7 +144,7 @@ const StaffDailyMenu = () => {
             <Header heading="Menu hàng ngày"></Header>
             <div className='p-3'>
                 <Searchbar
-                  handleSearch={handleSearch}  
+                  handleSearch={handleSearchBar}  
                   placeholder='Tìm tên...'
                 />
             </div>

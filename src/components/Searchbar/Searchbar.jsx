@@ -1,16 +1,18 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {SearchIcon} from '../../assets/svgs';
 
 const Searchbar = ({handleSearch, placeholder = "Search..."}) => {
-    const [keyword, setKeyword] = React.useState('');
+    const [keyword, setKeyword] = React.useState("");
 
-    const handleInputChange = (e) => {
-        setKeyword(e.target.value);
+    const handleInputChange = (event) => {
+        const input = event.target.value;
+        setKeyword(input);
     };
 
     const handleKeyDown = (event) => {
         if (event.key === 'Enter') {
-          handleSearch(keyword !== null ? '' : keyword);
+          handleSearch(keyword);
         }
     };
 
@@ -24,11 +26,16 @@ const Searchbar = ({handleSearch, placeholder = "Search..."}) => {
                 type="text"
                 placeholder={placeholder}
                 value={keyword}
-                onChange={(e) => handleInputChange(e)}
-                onKeyDown={(e) => handleKeyDown(e)}
+                onChange={handleInputChange}
+                onKeyDown={handleKeyDown}
                 aria-label="Search field"
             />
         </div>
     );
 };
+
+Searchbar.propTypes = {
+    handleSearch: PropTypes.func.isRequired,
+    placeholder: PropTypes.string
+}
 export default Searchbar;
