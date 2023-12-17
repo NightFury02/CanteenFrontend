@@ -1,23 +1,21 @@
+import React from 'react';
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
 import {SearchIcon} from '../../assets/svgs';
 
-const Searchbar = ({onSearch}) => {
-    const [keyword, setKeyword] = useState('');
+const Searchbar = ({handleSearch, placeholder = "Search..."}) => {
+    const [keyword, setKeyword] = React.useState("");
 
     const handleInputChange = (event) => {
-        setKeyword(event.target.value);
-    };
-
-    const handleSearch = () => {
-        onSearch(keyword);
+        const input = event.target.value;
+        setKeyword(input);
     };
 
     const handleKeyDown = (event) => {
         if (event.key === 'Enter') {
-          handleSearch();
+          handleSearch(keyword);
         }
     };
+
     return (
         <div className='flex border rounded me-3'>
             <div className='flex justify-center items-center p-1'>
@@ -26,13 +24,18 @@ const Searchbar = ({onSearch}) => {
             <input
                 className='p-1 bg-dark-line outline-none focus:outline-none text-white'
                 type="text"
-                placeholder="Search..."
+                placeholder={placeholder}
                 value={keyword}
                 onChange={handleInputChange}
                 onKeyDown={handleKeyDown}
+                aria-label="Search field"
             />
-            {/* <button onClick={handleSearch}>Search</button> */}
         </div>
     );
 };
+
+Searchbar.propTypes = {
+    handleSearch: PropTypes.func.isRequired,
+    placeholder: PropTypes.string
+}
 export default Searchbar;

@@ -5,15 +5,18 @@ import CustomButton from '../../../components/CustomButton/CustomButton';
 import Popup from '../../../components/Popup/Popup';
 import CreateDailyMenu from './CreateDailyMenu';
 import DailyMenu from './DailyMenu';
+import Searchbar from '../../../components/SearchBar/SearchBar';
 
 const StaffDailyMenu = () => {
     const [isMenuPopUpOpen, setMenuPopUpOpen] = React.useState(false);
     const [isDeletePopUpOpen, setDeletePopUpOpen] = React.useState(false);
     const [menu, setMenu] = React.useState([]);
+    const [originalMenu, setOriginalMenu] = React.useState([]);
 
     React.useEffect(()=>{
         const fetchMenuData = async () => {
-            const data = await axios.get(`https://reqres.in/api/users`);
+            const data = await axios.get(`https://reqres.in/api/users?per_page=12`);
+            setOriginalMenu(data.data.data);
             setMenu(data.data.data);
         };
         fetchMenuData();
@@ -24,15 +27,29 @@ const StaffDailyMenu = () => {
         //use post method here to create new menu
 
         //Get new menu
-        const data = await axios.get(`https://reqres.in/api/users`);
+        const data = await axios.get(`https://reqres.in/api/users?per_page=12`);
+        setOriginalMenu(data.data.data);
         setMenu(data.data.data);
     }
 
     const handleOnDeleteMenu = async () => {
         //Call api to delete menu
-
         setDeletePopUpOpen(false);
+        setOriginalMenu([]);
         setMenu([]);
+    }
+
+    const handleSearchBar = async (query) => {
+        console.log(query);
+        if (originalMenu.length > 0) {
+            if (query !== ""){
+                const searchResult = originalMenu.filter((item) => item.last_name.toLowerCase().includes(query.toLowerCase()));
+                setMenu(searchResult);
+            }
+            else{
+                setMenu(originalMenu);
+            }
+        }
     }
 
     //Temp data for menu:
@@ -120,10 +137,17 @@ const StaffDailyMenu = () => {
         }
     ];
     //console.log(menu)
+
     return (
     <>
-        <div>
-            <Header heading="Menu hàng ngày" hasSearch={false}></Header>
+        <div className='flex justify-between'>
+            <Header heading="Menu hàng ngày"></Header>
+            <div className='p-3'>
+                <Searchbar
+                  handleSearch={handleSearchBar}  
+                  placeholder='Tìm tên...'
+                />
+            </div>
         </div> 
         <div className='ms-3 flex'>
             <CustomButton 
@@ -145,7 +169,7 @@ const StaffDailyMenu = () => {
         <div className='menu border-0 rounded-md ms-3 mt-3'>
             {
                 menu.length > 0 &&
-                <DailyMenu data={tempMenu}></DailyMenu>
+                <DailyMenu data={menu}></DailyMenu>
             }
         </div>
 

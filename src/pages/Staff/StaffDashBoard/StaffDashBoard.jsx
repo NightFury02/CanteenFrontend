@@ -41,7 +41,7 @@ const StaffDashboard = () => {
   return (
   <>
     <div>
-      <Header heading="Dashboard" hasSearch={false}></Header>
+      <Header heading="Dashboard"></Header>
     </div> 
 
     <div className='ms-3'>
