@@ -126,7 +126,7 @@ EnhancedTableToolbar.propTypes = {
   title: PropTypes.string
 };
 
-const OrderList = (props) => {
+const PreorderList = (props) => {
     const {headCells, title} = props;
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('id');
@@ -313,6 +313,7 @@ const OrderList = (props) => {
     };
     
     const handleCancel = () => {
+        console.log("Hủy đơn");
         setOpenCard(false);
     };
 
@@ -489,19 +490,33 @@ const OrderList = (props) => {
                         <TableCell>Tổng</TableCell>
                         <TableCell>{total}đ</TableCell>
                         </TableRow>
+                        <TableRow>
+                        <TableCell>Đã nhận</TableCell>
+                        <TableCell>
+                            <Input
+                            type="number"
+                            value={received}
+                            onChange={(e) => handleReceivedChange(e.target.value)}
+                            />
+                        </TableCell>
+                        </TableRow>
+                        <TableRow>
+                        <TableCell>Tiền thừa</TableCell>
+                        <TableCell>{change}đ</TableCell>
+                        </TableRow>
                     </TableBody>
                     </Table>
                 </TableContainer>
-                {/*<CustomButton
+                <CustomButton
                     title={'Xác nhận thanh toán'}
                     className="p-2 mt-2 w-full"
                     onAction={handleConfirm}
                 />
                 <CustomButton
-                    title={'Hủy'}
+                    title={'Hủy đơn'}
                     className='p-2 mt-2 w-full'
                     onAction={handleCancel}
-                />*/}
+                />
                 </div>
             </Card>
         </Dialog>
@@ -509,4 +524,4 @@ const OrderList = (props) => {
     );
 }
 
-export default OrderList;
+export default PreorderList;

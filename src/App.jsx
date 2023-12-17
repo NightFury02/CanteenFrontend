@@ -5,13 +5,14 @@ import Layout from "./components/Layout/Layout";
 import { Form } from "./containers";
 import {
   UserHome,
-  StaffDashboard,
+  StaffDashBoard,
   StaffHome,
   StaffInventory,
   StaffReport,
   StaffDailyMenu,
+  StaffSetting,
   StaffPreorders,
-  AdminDashboard,
+  AdminDashBoard,
   AdminManagement,
 } from "./pages";
 
@@ -24,12 +25,13 @@ function App() {
           <Route path="/register" element={<Form type="register" />} />
           <Route path="/" element={<Layout> <StaffHome /> </Layout>} />
           <Route path="/user/dashboard" element={<Layout> <UserHome /> </Layout>}/>
-          <Route path="/staff/dashboard" element={<Layout> <StaffDashboard /> </Layout>}/>
+          <Route path="/staff/dashboard" element={<Layout> <StaffDashBoard /> </Layout>}/>
           <Route path="/staff/inventory" element={<Layout> <StaffInventory /> </Layout>}/>
           <Route path="/staff/dailymenu" element={<Layout> <StaffDailyMenu /> </Layout>}/>
           <Route path="/staff/preorders" element={<Layout> <StaffPreorders /> </Layout>}/>
           <Route path="/staff/report" element={<Layout> <StaffReport /> </Layout>}/>
-          <Route path="/admin/dashboard" element={<Layout> <AdminDashboard /> </Layout>}/>
+          <Route path="/staff/setting" element={<Layout> <StaffSetting /> </Layout>}/>
+          <Route path="/admin/dashboard" element={<Layout> <AdminDashBoard /> </Layout>}/>
           <Route path="/admin/management" element={<Layout> <AdminManagement /> </Layout>}/>
         </Routes>
       </BrowserRouter>

@@ -32,12 +32,12 @@ const StaffHome = () => {
     });
     
     setTotal(sum);
-    setChange(sum - received)
+    setChange(received - sum);
   };
 
   const handleReceivedChange = (value) => {
     setReceived(value);
-    setChange(total - value)
+    setChange(value - total);
   }
 
   const handleQuantityChange = (cardId, quantity) => {
@@ -57,12 +57,12 @@ const StaffHome = () => {
     setPage(1);
   };
 
-  const handleImport = () => {
-    console.log("import");
+  const handleConfirm = () => {
+    console.log("confirm");
   };
 
   const handleCancel = () => {
-    console.log("export");
+    console.log("cancel");
   };
 
   React.useEffect(() => {
@@ -289,7 +289,7 @@ const StaffHome = () => {
         <CustomButton
           title={'Xác nhận thanh toán'}
           className="p-2 mt-2 w-full"
-          onAction={handleImport}
+          onAction={handleConfirm}
         />
         <CustomButton
           title={'Hủy'}
