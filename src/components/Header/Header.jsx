@@ -1,12 +1,8 @@
 import CurrentDate from '../CurrentDate/CurrentDate'; 
-import Searchbar from '../SearchBar/SearchBar';
 import PropTypes from 'prop-types';
 
 const Header = (props) => {
-    const {heading, hasSearch = false} = props;
-    const handleSearch = (query) => {
-        console.log('Performing search for:', query);
-    }
+    const {heading} = props;
   return (
     <>
         <div className="flex justify-between">
@@ -18,13 +14,6 @@ const Header = (props) => {
                     <CurrentDate />
                 </div>
             </div>
-            {
-                hasSearch && 
-                <div className='p-3'>
-                    <Searchbar onSearch={handleSearch}/>
-                </div>
-            }
-            
         </div>
     </>
   );
@@ -32,7 +21,6 @@ const Header = (props) => {
 
 Header.propTypes = {
     heading: PropTypes.string,
-    hasSearch: PropTypes.bool
 }
 
 export default Header;

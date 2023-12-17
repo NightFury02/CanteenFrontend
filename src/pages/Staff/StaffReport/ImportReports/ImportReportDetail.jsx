@@ -9,9 +9,9 @@ const ImportReportDetail = ({target}) => {
             <div>Ngày lập phiếu: <span className='text-white'>{target.createDate}</span></div>
             <div>Tổng giá trị: <span className='text-white'>{target.total}</span></div>
 
-            <div className="mt-3 row-container max-h-[800px] overflow-y-auto bg-form border rounded-md"> 
+            <div className="mt-3 row-container max-h-[500px] overflow-y-auto border rounded-md"> 
                 <table className="table-auto w-full">
-                <thead>
+                <thead className='bg-form sticky top-0 z-0'>
                     <tr>
                         <th className='px-4 py-1 text-left'>Mã sản phẩm</th>
                         <th className='px-4 py-1 text-left'>Hình ảnh</th>

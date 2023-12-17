@@ -42,7 +42,7 @@ const StaffInventory = () => {
   return (
     <>
       <div>
-        <Header heading="Quản lý kho" hasSearch={false}></Header>
+        <Header heading="Quản lý kho"></Header>
       </div>
       <div className="ms-3">
         <CustomButton 

@@ -50,7 +50,7 @@ const StaffReport = () => {
   return (
     <>
       <div>
-        <Header heading="Phiếu xuất/nhập kho" hasSearch={true}></Header>
+        <Header heading="Phiếu xuất/nhập kho"></Header>
       </div>
 
       <div className="mt-5 p-2">

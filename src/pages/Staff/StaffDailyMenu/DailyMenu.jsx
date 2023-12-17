@@ -5,19 +5,26 @@ const DailyMenu = ({data}) => {
             <table className="table-auto w-full">
             <thead className='sticky top-0 bg-dark-bg-2 z-10'>
                 <tr>
-                    <th className='px-4 py-3 text-left text-white'>Mã sản phẩm</th>
+                    {/* <th className='px-4 py-3 text-left text-white'>Mã sản phẩm</th>
                     <th className='px-4 py-3 text-left text-white'>Hình ảnh</th>
                     <th className='px-4 py-3 text-left text-white'>Tên sản phẩm</th>
                     <th className='px-4 py-3 text-left text-white'>Giá nhập</th>
                     <th className='px-4 py-3 text-left text-white'>Đơn giá</th>
-                    <th className='px-4 py-3 text-left text-white'>Số lượng</th>
+                    <th className='px-4 py-3 text-left text-white'>Số lượng</th> */}
+
+
+                    <th className='px-4 py-3 text-left text-white'>Mã người dùng</th>
+                    <th className='px-4 py-3 text-left text-white'>Avatar</th>
+                    <th className='px-4 py-3 text-left text-white'>Họ</th>
+                    <th className='px-4 py-3 text-left text-white'>Tên</th>
+                    <th className='px-4 py-3 text-left text-white'>Email</th>
                 </tr>
             </thead>
             <tbody>
                 {   data &&
                     data.map((row, index) => (
-                        <tr key={index} className="border-t border-dark-bg-1">
-                            <td className="p-4">
+                        <tr key={index} className="border-t-2 border-dark-bg-2">
+                            {/* <td className="p-4">
                                 <p className="text-sm font-semibold leading-6 text-white">{row.id}</p>
                             </td>
                             <td className="p-4">
@@ -34,7 +41,24 @@ const DailyMenu = ({data}) => {
                             </td>
                             <td className="p-4">
                                 <p className="text-sm font-semibold leading-6 text-white">{row.quantity}</p>
+                            </td> */}
+
+                            <td className="p-4">
+                                <p className="text-sm font-semibold leading-6 text-white">{row.id}</p>
                             </td>
+                            <td className="p-4">
+                                <img className="h-[60px] w-[60px] flex-none bg-gray-50" src={row.avatar} alt="" />
+                            </td>
+                            <td className="p-4">
+                                <p className="text-sm font-semibold leading-6 text-white">{row.first_name}</p>
+                            </td>
+                            <td className="p-4">
+                                <p className="text-sm font-semibold leading-6 text-white">{row.last_name}</p>
+                            </td>
+                            <td className="p-4">
+                                <p className="text-sm font-semibold leading-6 text-white">{row.email}</p>
+                            </td>
+        
                         </tr>
                     ))
                 }

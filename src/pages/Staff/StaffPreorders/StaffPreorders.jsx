@@ -5,7 +5,7 @@ const StaffPreorders = () => {
     return (
     <>
         <div>
-            <Header heading="Đơn đặt trước" hasSearch={true}></Header>
+            <Header heading="Đơn đặt trước"></Header>
         </div> 
     </>
     )
