@@ -50,7 +50,7 @@ const StaffDailyMenu = () => {
                 setMenu(originalMenu);
             }
         }
-    }
+    };
 
     //Temp data for menu:
     const tempMenu = [
@@ -189,12 +189,12 @@ const StaffDailyMenu = () => {
             {
                 <div className='flex flex-col'>
                 <h2 className='text-white pb-5'>Bạn có chắc chắn muốn xóa menu?</h2>
-                <div className='flex justify-end gap-2'>
+                <div className='flex justify-between gap-2'>
                     <CustomButton
                         title='Hủy'
                         variant='secondary'
                         onAction={()=>{setDeletePopUpOpen(false)}}
-                        className="py-1 px-4"
+                        className="py-1 px-8"
                     />
                     <CustomButton
                         title='Xác nhận'

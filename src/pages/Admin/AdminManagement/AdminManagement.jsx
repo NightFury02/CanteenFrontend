@@ -4,15 +4,13 @@ import CustomButton from '../../../components/CustomButton/CustomButton';
 import PopUp from '../../../components/Popup/Popup';
 import StaffTable from './StaffTable/StaffTable';
 import AddStaffForm from './AddStaffForm/AddStaffForm';
-
-const staffList = [
-    { id: '#041', name: 'Trần Đình Nhật', dob: '12/02/2003', phone: '19001000', address: 'TP.HCM', email: 'nhttrn84@gmail.com', password: '123456' },
-    { id: '#042', name: 'Trần Đình Nhật', dob: '12/02/2003', phone: '19001000', address: 'TP.HCM', email: 'divineneos2016@gmail.com', password: '1234' }
-];
+import Searchbar from '../../../components/SearchBar/SearchBar';
 
 const AdminManagement = () => {
     const [openAddPopup, setOpenAddPopup] = React.useState(false);
-    
+    const [rows, setRows] = React.useState([]);
+    const [originalRows, setOriginalRows] = React.useState([]);
+
     const handleAddOpenChange = (isOpen) => {
         setOpenAddPopup(isOpen);
     };
@@ -25,19 +23,19 @@ const AdminManagement = () => {
             label: 'Mã người dùng',
         },
         {
-            id: 'first_name',
+            id: 'name',
             numeric: false,
             disablePadding: true,
             label: 'Tên nhân viên',
         },
         {
-            id: 'last_name',
+            id: 'dob',
             numeric: false,
             disablePadding: true,
             label: 'Ngày sinh',
         },
         {
-            id: 'email',
+            id: 'phone',
             numeric: false,
             disablePadding: true,
             label: 'Số điện thoại',
@@ -50,10 +48,48 @@ const AdminManagement = () => {
         },
     ];
 
+    React.useEffect(() =>{
+        const fetchStaffs = async () => {
+            const url = `https://reqres.in/api/users`;
+            try {
+                // const res = await axios.get(url);
+                // const data = res.data;
+                const data = [
+                    { id: '#041', name: 'Trần Đình Nhật', dob: '12/02/2003', phone: '19001000', address: 'TP.HCM', email: 'nhttrn84@gmail.com', password: '123456' },
+                    { id: '#042', name: 'Phùng Lê Hoàng Ngọc', dob: '12/02/2003', phone: '19001001', address: 'TP.HCM', email: 'divineneos2016@gmail.com', password: '1234' }
+                ];
+                setRows(data);
+                setOriginalRows(data);
+            } catch (error) {
+            console.error('Error fetching expired products:', error);
+            }
+        }
+        fetchStaffs()
+    }, []);
+
+    const handleSearchBar = async (query) => {
+        console.log(query);
+        if (originalRows.length > 0) {
+            if (query !== ""){
+                const searchResult = originalRows.filter((item) => item.name.toLowerCase().includes(query.toLowerCase()));
+                setRows(searchResult);
+            }
+            else{
+            setRows(originalRows);
+            }
+        }
+    };
+    
     return (
         <div>
-            <div>
-            <Header heading="Danh sách nhân viên"></Header>
+            <div className='flex justify-between'>
+                <Header heading="Quản lý nhân viên"></Header>
+                <div className='p-3'>
+                    <Searchbar
+                    handleSearch={handleSearchBar}  
+                    placeholder='Tìm kiếm nhân viên...'
+                    />
+                </div>
             </div>
             <div className="ml-2">
                 <CustomButton
@@ -74,7 +110,7 @@ const AdminManagement = () => {
                 />}
             </PopUp>
             <div className="mt-2 p-2">
-            <StaffTable headCells={headCells} title={''}/>
+            <StaffTable headCells={headCells} title={''} rows={rows}/>
             </div>
         </div>
     );

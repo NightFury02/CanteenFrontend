@@ -5,6 +5,8 @@ import { Input, Typography, Breadcrumbs, Link, Table, TableBody, TableCell, Tabl
 import CustomButton from "../../../components/CustomButton/CustomButton";
 import Header from "../../../components/Header/Header";
 import { DeleteIcon } from '../../../assets/svgs/index';
+import Searchbar from '../../../components/SearchBar/SearchBar';
+import PopUp from '../../../components/Popup/Popup';
 
 const itemsPerPage = 6;
 
@@ -16,13 +18,15 @@ const useStyles = (isActive) => ({
 });
 
 const StaffHome = () => {
-  const [rows, setRows] = React.useState([]);
+  const [menu, setMenu] = React.useState([]);
+  const [originalMenu, setOriginalMenu] = React.useState([]);
   const [currentCategory, setCurrentCategory] = React.useState('Các món ăn');
   const [page, setPage] = React.useState(1);
   const [selectedCards, setSelectedCards] = React.useState([]);
   const [received, setReceived] = React.useState(0);
   const [total, setTotal] = React.useState(0);
   const [change, setChange] = React.useState(0);
+  const [confirmPopup, setConfirmPopup] = React.useState(false);
 
   // Function to calculate the total value
   const calculateTotal = (selectedCards) => {
@@ -58,40 +62,51 @@ const StaffHome = () => {
   };
 
   const handleConfirm = () => {
-    console.log("confirm");
+    setConfirmPopup(true);
   };
+
+  const handleConfirmPopup = () => {
+    setConfirmPopup(false);
+    console.log("confirm");
+  }
 
   const handleCancel = () => {
     console.log("cancel");
   };
 
   React.useEffect(() => {
-    const fetchFoods = async () => {
-      const url = `https://reqres.in/api/users?per_page=12`;
-      try {
-        const res = await axios.get(url);
-        const data = res.data;
-        setRows(data.data);
-      } catch (error) {
-        console.error('Error fetching Reports:', error);
-      }
-    };
+    const fetchMenuData = async () => {
+      const data = await axios.get(`https://reqres.in/api/users?per_page=12`);
+      setOriginalMenu(data.data.data);
+      setMenu(data.data.data);
+  };
+  fetchMenuData();
+}, [])
 
-    fetchFoods();
-  }, []);
-
+  const handleSearchBar = async (query) => {
+    console.log(query);
+    if (originalMenu.length > 0) {
+        if (query !== ""){
+            const searchResult = originalMenu.filter((item) => item.last_name.toLowerCase().includes(query.toLowerCase()));
+            setMenu(searchResult);
+        }
+        else{
+            setMenu(originalMenu);
+        }
+    }
+  }
   const titles = ['Các món ăn', 'Các món khác'];
 
-  const pageCount = Math.ceil(rows.length / itemsPerPage);
+  const pageCount = Math.ceil(menu.length / itemsPerPage);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
 
-  const handleCardClick = (row) => {
-    if (!selectedCards.some((card) => card.id === row.id)) {
+  const handleCardClick = (item) => {
+    if (!selectedCards.some((card) => card.id === item.id)) {
       setSelectedCards((prevSelectedCards) => {
-        const newCard = { ...row, quantity: 1, total: parseInt(row.id) * 10000 };
+        const newCard = { ...item, quantity: 1, total: parseInt(item.id) * 10000 };
         const updatedSelectedCards = [...prevSelectedCards, newCard];
         calculateTotal(updatedSelectedCards);
         return updatedSelectedCards;
@@ -117,11 +132,15 @@ const StaffHome = () => {
 
   return (
     <div className="relative grid grid-cols-3 gap-x-16">
+      <Header className='col-span-1' heading="Tên nhân viên"></Header>
+      <div className='col-span-1 p-3'>
+            <Searchbar
+              handleSearch={handleSearchBar}  
+              placeholder='Tìm tên...'
+            />
+      </div>
+      <div></div>
       <div className="col-span-2">
-        <div>
-          <Header heading="Tên nhân viên" />
-        </div>
-
         <div className="ms-3">
           <Breadcrumbs aria-label="breadcrumb" className="p-2 me-5">
             {titles.map((title, index) => (
@@ -145,8 +164,8 @@ const StaffHome = () => {
               Chọn món
             </CardHeader>
             <Grid container spacing={3}>
-              {(rows.slice((page - 1) * itemsPerPage, page * itemsPerPage) || []).map((row) => (
-                <Grid item key={row.id} xs={12} sm={6} md={4}>
+              {(menu.slice((page - 1) * itemsPerPage, page * itemsPerPage) || []).map((item) => (
+                <Grid item key={item.id} xs={12} sm={6} md={4}>
                   <Card sx={{ 
                     border: 'rounded',
                     color: 'white', 
@@ -156,13 +175,13 @@ const StaffHome = () => {
                       cursor: 'pointer',
                       bgcolor: 'background.tertiary',
                   },}}
-                    onClick={() => handleCardClick(row)}
+                    onClick={() => handleCardClick(item)}
                   >
-                    <CardMedia component="img" image={row.avatar} alt={row.email} />
+                    <CardMedia component="img" image={item.avatar} alt={item.email} />
                     <CardContent sx={{ textAlign: 'center' }}>
-                      <Typography>{row.id}</Typography>
-                      <Typography>{row.first_name}</Typography>
-                      <Typography>{row.last_name}</Typography>
+                      <Typography>{item.id}</Typography>
+                      <Typography>{item.first_name}</Typography>
+                      <Typography>{item.last_name}</Typography>
                     </CardContent>
                   </Card>
                 </Grid>
@@ -184,7 +203,7 @@ const StaffHome = () => {
 
       <Card className="col-span-1 fixed right-6 w-1/4 h-screen p-4 rounded-lg" sx={{ color: 'white', minWidth: '400', backgroundColor: 'background.secondary' }}>
         <Typography variant="h5">Mã đơn #34562</Typography>
-        <div style={{ display: 'grid', gridTemplateColumns: '45% 30% 20%', gridColumnGap: '10px', gridRowGap: '8px', marginBottom: '16px', fontWeight: 'bold' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '45% 30% 20%', gridColumnGap: '10px', griditemGap: '8px', marginBottom: '16px', fontWeight: 'bold' }}>
             <Typography>Sản phẩm</Typography>
             <Typography>Số lượng</Typography>
             <Typography>Giá</Typography>
@@ -192,7 +211,7 @@ const StaffHome = () => {
         <div style={{ maxHeight: 'calc(100vh - 320px)', overflowY: 'auto' }}>
           {selectedCards.map((selectedCard) => (
             <div key={selectedCard.id}>
-              {/* First Row */}
+              {/* First item */}
               <div style={{ display: 'grid', gridTemplateColumns: '50% 20% 20%', gridColumnGap: '10px', marginBottom: '2px', alignItems: 'center' }}>
                 <Card sx={{ 
                   backgroundColor: 'background.secondary',
@@ -229,7 +248,7 @@ const StaffHome = () => {
                 />
                 <Typography>{parseInt(selectedCard.quantity) * parseInt(selectedCard.id)* 10000}</Typography>
               </div>
-              {/* Second Row */}
+              {/* Second item */}
               <div style={{ display: 'grid', gridTemplateColumns: '70% 20%', gridColumnGap: '16px',  marginBottom: '4px', alignItems: 'center' }}>
               <Input
                   type="text"
@@ -266,22 +285,23 @@ const StaffHome = () => {
         <Table sx={{ minWidth: 300, bgcolor: 'background.secondary' }}>
           <TableBody>
             <TableRow>
-              <TableCell>Tổng</TableCell>
-              <TableCell>{total}đ</TableCell>
+              <TableCell sx={{color: 'white', minWidth: 150}}>Tổng</TableCell>
+              <TableCell sx={{color: 'white'}}>{total}đ</TableCell>
             </TableRow>
             <TableRow>
-              <TableCell>Đã nhận</TableCell>
+              <TableCell sx={{color: 'white', minWidth: 150}}>Đã nhận</TableCell>
               <TableCell>
                 <Input
                   type="number"
                   value={received}
                   onChange={(e) => handleReceivedChange(e.target.value)}
+                  style={{color: 'white'}}
                 />
               </TableCell>
             </TableRow>
             <TableRow>
-              <TableCell>Tiền thừa</TableCell>
-              <TableCell>{change}đ</TableCell>
+              <TableCell sx={{color: 'white', minWidth: 150}}>Tiền thừa</TableCell>
+              <TableCell sx={{color: 'white'}}>{change}đ</TableCell>
             </TableRow>
           </TableBody>
         </Table>
@@ -298,6 +318,30 @@ const StaffHome = () => {
         />
         </div>
       </Card>
+      <PopUp
+        title="Xác nhận"
+        isOpen={confirmPopup}
+        handleCloseBtnClick={() => {setConfirmPopup(false);}}
+      >
+        {
+          <div className='flex flex-col'>
+            <h2 className='text-white pb-5'>Bạn có muốn xác nhận thanh toán?</h2>
+            <div className='flex justify-between gap-2'>
+              <CustomButton
+                title='Hủy'
+                variant='secondary'
+                onAction={()=>{setConfirmPopup(false);}}
+                className="py-1 px-8"
+              />
+              <CustomButton
+                title='Xác nhận'
+                onAction={handleConfirmPopup}
+                className="py-1 px-4"
+              />
+            </div>
+          </div>
+        }
+      </PopUp>
     </div>
   );
 };

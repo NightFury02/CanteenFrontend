@@ -4,8 +4,8 @@ import CustomButton from "../../../components/CustomButton/CustomButton";
 import axios from "axios";
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
-const StaffSetting = () => {
-  const [staff, setStaff] = React.useState({
+const UserSetting = () => {
+  const [user, setUser] = React.useState({
     id: '',
     name: '',
     dob: '',
@@ -16,32 +16,32 @@ const StaffSetting = () => {
   });
 
   React.useEffect(() => {
-    const fetchStaff = async () => {
+    const fetchuser = async () => {
       const url = `https://reqres.in/api/users?per_page=1`;
       try {
         const res = await axios.get(url);
         const data = res.data;
-        setStaff(data.data[0]);
+        setUser(data.data[0]);
       } catch (error) {
         console.error('Error fetching Reports:', error);
       }
     };
 
-    fetchStaff();
+    fetchuser();
   }, []);
 
   const handleInputChange = (field, value) => {
-    setStaff((prevStaff) => ({
-      ...prevStaff,
+    setUser((prevuser) => ({
+      ...prevuser,
       [field]: value,
     }));
   };
 
   const handleSave = async () => {
-    console.log(staff);
+    console.log(user);
     /*try {
-      const url = `https://reqres.in/api/users/${staff.id}`;
-      await axios.put(url, staff);
+      const url = `https://reqres.in/api/users/${user.id}`;
+      await axios.put(url, user);
       console.log("User information updated successfully!");
     } catch (error) {
       console.error("Error updating user information:", error);
@@ -53,13 +53,13 @@ const StaffSetting = () => {
   };
   return (
     <div>
-      {staff && (
+      {user && (
         <div className="flex flex-col min-w-[700px]">
           <TextField
                 variant='outlined'
                 label="Họ và tên"
                 name="name"
-                value={staff.name}
+                value={user.name}
                 onChange={(e) => {handleInputChange("name", e.target.value) }}
                 sx={textFieldStyle}
             />
@@ -67,7 +67,7 @@ const StaffSetting = () => {
                 variant='outlined'
                 label="Email"
                 name="email"
-                value={staff.email}
+                value={user.email}
                 onChange={(e) => {handleInputChange("email", e.target.value) }}
                 sx={textFieldStyle}
             />
@@ -76,13 +76,13 @@ const StaffSetting = () => {
                 label="Mật khẩu"
                 name="password"
                 type="password"
-                value={staff.password}
+                value={user.password}
                 onChange={(e) => {handleInputChange("password", e.target.value) }}
                 sx={textFieldStyle}
             />
             <DatePicker
                 label="Ngày sinh"
-                value={staff.dob}
+                value={user.dob}
                 onChange={(e) => {handleInputChange("dob", e.target.value) }}
                 sx={textFieldStyle}
             />
@@ -90,7 +90,7 @@ const StaffSetting = () => {
                 variant='outlined'
                 label="Số điện thoại"
                 name="phone"
-                value={staff.phone}
+                value={user.phone}
                 onChange={(e) => {handleInputChange("phone", e.target.value) }}
                 sx={textFieldStyle}
             />
@@ -98,7 +98,7 @@ const StaffSetting = () => {
                 variant='outlined'
                 label="Địa chỉ"
                 name="address"
-                value={staff.address}
+                value={user.address}
                 onChange={(e) => {handleInputChange("address", e.target.value) }}
                 sx={textFieldStyle}
             />
@@ -114,4 +114,4 @@ const StaffSetting = () => {
   );
 };
 
-export default StaffSetting;
+export default UserSetting;

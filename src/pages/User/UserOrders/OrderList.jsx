@@ -127,19 +127,166 @@ EnhancedTableToolbar.propTypes = {
 };
 
 const OrderList = (props) => {
-    const {headCells, title, rows} = props;
+    const {headCells, title} = props;
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('id');
     const [selected, setSelected] = React.useState({});
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(25);
+    const [rows, setRows] = React.useState([]);
     const [openCard, setOpenCard] = React.useState(false);
     const [selectedRowData, setSelectedRowData] = React.useState(null);
+    const [dialogPosition, setDialogPosition] = React.useState({ top: 0, left: 0 });
     const [received, setReceived] = React.useState(0);
     const [total, setTotal] = React.useState(0);
     const [change, setChange] = React.useState(0);
 
-    
+    React.useEffect(() => {
+      const fetchExpiredProducts = async () => {
+          const url = `https://reqres.in/api/users`;
+          try {
+            // const res = await axios.get(url);
+            // const data = res.data;
+            const data = [
+                {
+                    id: '1', 
+                    staffName: 'Phung Le Hoang Ngoc', 
+                    createDate: '2023-12-20', 
+                    total: 1500000, 
+                    data: [
+                        {
+                            id: '1223',
+                            name: 'Táo',
+                            image: 'https://waapple.org/wp-content/uploads/2021/06/Variety_Granny-Smith-transparent-658x677.png',
+                            price: 10000,
+                            quantity: 200,
+                            expirationDate: '2023-12-29'
+                        },
+                        {
+                            id: '1224',
+                            name: 'Coca',
+                            image: 'https://thegioidouong.net/wp-content/uploads/2021/06/coca-300ml-chai-nhua.jpg',
+                            price: 15000,
+                            quantity: 150,
+                            expirationDate: '2024-01-01'
+                        },
+                        {
+                            id: '1225',
+                            name: 'Oreo',
+                            image: 'https://cooponline.vn/wp-content/uploads/2020/04/banh-quy-socola-oreo-socola-119-6g-20220927.jpg',
+                            price: 15000,
+                            quantity: 150,
+                            expirationDate: '2024-01-01'
+                        }
+                    ]
+                },
+
+                {
+                    id: '2', 
+                    staffName: 'Phung Le Hoang Ngoc', 
+                    createDate: '2023-12-20', 
+                    total: 1500000, 
+                    data: [
+                        {
+                            id: '1223',
+                            name: 'Táo',
+                            image: 'https://waapple.org/wp-content/uploads/2021/06/Variety_Granny-Smith-transparent-658x677.png',
+                            price: 10000,
+                            quantity: 200,
+                            expirationDate: '2023-12-29'
+                        },
+                        {
+                            id: '1224',
+                            name: 'Coca',
+                            image: 'https://thegioidouong.net/wp-content/uploads/2021/06/coca-300ml-chai-nhua.jpg',
+                            price: 15000,
+                            quantity: 150,
+                            expirationDate: '2024-01-01'
+                        },
+                        {
+                            id: '1225',
+                            name: 'Oreo',
+                            image: 'https://cooponline.vn/wp-content/uploads/2020/04/banh-quy-socola-oreo-socola-119-6g-20220927.jpg',
+                            price: 15000,
+                            quantity: 150,
+                            expirationDate: '2024-01-01'
+                        }
+                    ]
+                },
+
+                {
+                    id: '3', 
+                    staffName: 'Phung Le Hoang Ngoc', 
+                    createDate: '2023-12-20', 
+                    total: 1500000, 
+                    data: [
+                        {
+                            id: '1223',
+                            name: 'Táo',
+                            image: 'https://waapple.org/wp-content/uploads/2021/06/Variety_Granny-Smith-transparent-658x677.png',
+                            price: 10000,
+                            quantity: 200,
+                            expirationDate: '2023-12-29'
+                        },
+                        {
+                            id: '1224',
+                            name: 'Coca',
+                            image: 'https://thegioidouong.net/wp-content/uploads/2021/06/coca-300ml-chai-nhua.jpg',
+                            price: 15000,
+                            quantity: 150,
+                            expirationDate: '2024-01-01'
+                        },
+                        {
+                            id: '1225',
+                            name: 'Oreo',
+                            image: 'https://cooponline.vn/wp-content/uploads/2020/04/banh-quy-socola-oreo-socola-119-6g-20220927.jpg',
+                            price: 15000,
+                            quantity: 150,
+                            expirationDate: '2024-01-01'
+                        }
+                    ]
+                },
+
+                {
+                    id: '4', 
+                    staffName: 'Phung Le Hoang Ngoc', 
+                    createDate: '2023-12-20', 
+                    total: 1500000, 
+                    data: [
+                        {
+                            id: '1223',
+                            name: 'Táo',
+                            image: 'https://waapple.org/wp-content/uploads/2021/06/Variety_Granny-Smith-transparent-658x677.png',
+                            price: 10000,
+                            quantity: 200,
+                            expirationDate: '2023-12-29'
+                        },
+                        {
+                            id: '1224',
+                            name: 'Coca',
+                            image: 'https://thegioidouong.net/wp-content/uploads/2021/06/coca-300ml-chai-nhua.jpg',
+                            price: 15000,
+                            quantity: 150,
+                            expirationDate: '2024-01-01'
+                        },
+                        {
+                            id: '1225',
+                            name: 'Oreo',
+                            image: 'https://cooponline.vn/wp-content/uploads/2020/04/banh-quy-socola-oreo-socola-119-6g-20220927.jpg',
+                            price: 15000,
+                            quantity: 150,
+                            expirationDate: '2024-01-01'
+                        }
+                    ]
+                }
+            ]
+            setRows(data);
+          } catch (error) {
+            console.error('Error fetching expired products:', error);
+          }
+      }
+      fetchExpiredProducts()
+    }, []);
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -345,16 +492,11 @@ const OrderList = (props) => {
                     </TableBody>
                     </Table>
                 </TableContainer>
-                {/*<CustomButton
-                    title={'Xác nhận thanh toán'}
-                    className="p-2 mt-2 w-full"
-                    onAction={handleConfirm}
-                />
                 <CustomButton
-                    title={'Hủy'}
+                    title={'Hủy đơn'}
                     className='p-2 mt-2 w-full'
                     onAction={handleCancel}
-                />*/}
+                />
                 </div>
             </Card>
         </Dialog>

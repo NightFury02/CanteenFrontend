@@ -8,6 +8,10 @@ const listMenuBasedOnUser = {
     },
     {
       path: "/user/orders",
+      icon: NotificationIcon,
+    },
+    {
+      path: "/user/setting",
       icon: SettingIcon,
     },
   ],
