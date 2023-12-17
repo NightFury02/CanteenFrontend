@@ -136,7 +136,7 @@ export default function DailyStorageReport(props) {
           }
       }
       fetchReports()
-    }, []);
+    }, [selectedDate]);
 
     const handleDateChange = (event) => {
         const newDate = event.target.value;
@@ -174,12 +174,15 @@ export default function DailyStorageReport(props) {
         <Paper sx={{ width: '100%', mb: 2 }}>
             <EnhancedTableToolbar 
                 title={title}
-                date={<><Input 
-                  type="date" 
-                  value={selectedDate}
-                  max={currentDate}
-                  onChange={handleDateChange}
-                /></>}
+                date={
+                  <Input 
+                    type="date" 
+                    value={selectedDate}
+                    max={currentDate}
+                    onChange={handleDateChange}
+                    className='text-[1.5rem] font-barlow'
+                  />
+                }
             />
             <TableContainer>
               <Table
