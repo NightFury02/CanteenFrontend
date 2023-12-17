@@ -14,14 +14,11 @@ import TableSortLabel from '@mui/material/TableSortLabel';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
+import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
 import { visuallyHidden } from '@mui/utils';
-import PopUp from '../../../../components/Popup/Popup';
-import CustomButton from '../../../../components/CustomButton/CustomButton';
-import EditStaffForm from '../EditStaffForm/EditStaffForm';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -52,7 +49,7 @@ function stableSort(array, comparator) {
 }
 
 function EnhancedTableHead(props) {
-  const { order, orderBy, onRequestSort, headCells } = props;
+  const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, headCells } = props;
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };
@@ -61,6 +58,15 @@ function EnhancedTableHead(props) {
     <TableHead>
       <TableRow>
         <TableCell padding="checkbox">
+          <Checkbox
+            indeterminate={numSelected > 0 && numSelected < rowCount}
+            checked={rowCount > 0 && numSelected === rowCount}
+            onChange={onSelectAllClick}
+            inputProps={{
+              'aria-label': 'select all desserts',
+            }}
+            sx={{color: 'text.primary'}}
+          />
         </TableCell>
         {headCells.map((headCell) => (
           <TableCell
@@ -90,28 +96,40 @@ function EnhancedTableHead(props) {
 }
 
 EnhancedTableHead.propTypes = {
+  numSelected: PropTypes.number.isRequired,
   onRequestSort: PropTypes.func.isRequired,
+  onSelectAllClick: PropTypes.func.isRequired,
   order: PropTypes.oneOf(['asc', 'desc']).isRequired,
   orderBy: PropTypes.string.isRequired,
+  rowCount: PropTypes.number.isRequired,
   headCells: PropTypes.arrayOf(PropTypes.object)
 };
 
 function EnhancedTableToolbar(props) {
-  const { selected, handleDeleteIconClick, handleEditIconClick, title } = props;
+  const { numSelected, handleDelete, title } = props;
 
   return (
     <Toolbar
       sx={{
         pl: { sm: 2 },
         pr: { xs: 1, sm: 1 },
-        ...(selected && {
+        ...(numSelected > 0 && {
           bgcolor: (theme) =>
             alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
         }),
         bgcolor: 'background.secondary'
       }}
     >
-      {(
+      {numSelected > 0 ? (
+        <Typography
+          sx={{ flex: '1 1 100%' }}
+          color="inherit"
+          variant="subtitle1"
+          component="div"
+        >
+          {numSelected} selected
+        </Typography>
+      ) : (
         <Typography
           sx={{ flex: '1 1 100%', color: '#EA7C69', fontWeight: 'fontWeight.tableTitle', fontSize: 'fontSize.tableTitle' }}
           variant="h1"
@@ -122,40 +140,53 @@ function EnhancedTableToolbar(props) {
         </Typography>
       )}
 
-      {selected && (
-        <>
-            <Tooltip title="Delete">
-              <IconButton onClick={handleDeleteIconClick}>
-                  <DeleteIcon sx={{color: 'text.white', fontSize: 'fontSize.icon'}}/>
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Edit">
-              <IconButton onClick={handleEditIconClick}>
-                  <EditIcon sx={{color: 'text.white', fontSize: 'fontSize.icon'}}/>
-              </IconButton>
-            </Tooltip>
-        </>
+      {numSelected > 0 && (
+        <Tooltip title="Delete">
+          <IconButton onClick={handleDelete}>
+            <DeleteIcon sx={{color: 'text.white', fontSize: 'fontSize.icon'}}/>
+          </IconButton>
+        </Tooltip>
       )}
     </Toolbar>
   );
 }
 
 EnhancedTableToolbar.propTypes = {
-  selected: PropTypes.bool,
-  handleDeleteIconClick: PropTypes.func.isRequired,
-  handleEditIconClick: PropTypes.func.isRequired,
-  title: PropTypes.string
+  numSelected: PropTypes.number.isRequired,
+  handleDelete: PropTypes.func.isRequired,
+  title: PropTypes.string.isRequired
 };
 
-export default function StaffTable(props) {
-    const {headCells, rows} = props;
+export default function ExpiredProductTable(props) {
+    const {headCells, title} = props;
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('id');
-    const [selected, setSelected] = React.useState({});
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
-    const [openEditPopUp, setOpenEditPopUp] = React.useState(false);
-    const [openDeletePopUp, setOpenDeletePopUp] = React.useState(false);
+    const [selected, setSelected] = React.useState([]);
+    const [rows, setRows] = React.useState([]);
+    const [totalRow, setTotalRow] = React.useState(0);
+    const [paginationController, setController] = React.useState({
+        page: 0,
+        rowsPerPage: 5
+    })
+
+    React.useEffect(() => {
+        const fetchExpiredProducts = async () => {
+            const url = `https://reqres.in/api/users?page=${paginationController.page + 1}&per_page=${paginationController.rowsPerPage}`;
+            try {
+              const res = await axios.get(url);
+              const data = res.data;
+              setRows(data.data);
+              setTotalRow(data.total);
+            } catch (error) {
+              console.error('Error fetching expired products:', error);
+            }
+        }
+        fetchExpiredProducts()
+    },[paginationController]);
+
+    // console.log(rows);
+    // console.log(paginationController.page)
+    // console.log(paginationController.rowsPerPage)
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -163,84 +194,102 @@ export default function StaffTable(props) {
         setOrderBy(property);
     };
 
-    //Handle on row click
-    const handleClick = (event, row) => {
-        //if row is already selected, remove it from selected
-        if (selected === row){
-            setSelected({});
+    const handleSelectAllClick = (event) => {
+        if (event.target.checked) {
+            const newSelected = rows.map((n) => n.id);
+            setSelected(newSelected);
+            return;
         }
-        else{
-            setSelected(row);
+        setSelected([]);
+    };
+
+    const handleClick = (event, id) => {
+        const selectedIndex = selected.indexOf(id);
+        let newSelected = [];
+
+        if (selectedIndex === -1) {
+            newSelected = newSelected.concat(selected, id);
+        } else if (selectedIndex === 0) {
+            newSelected = newSelected.concat(selected.slice(1));
+        } else if (selectedIndex === selected.length - 1) {
+            newSelected = newSelected.concat(selected.slice(0, -1));
+        } else if (selectedIndex > 0) {
+            newSelected = newSelected.concat(
+            selected.slice(0, selectedIndex),
+            selected.slice(selectedIndex + 1),);
         }
+        setSelected(newSelected);
     };
 
     const handleChangePage = (event, newPage) => {
-      setPage(newPage);
+        setController({
+            ...paginationController,
+            page: newPage
+        })
     };
 
     const handleChangeRowsPerPage = (event) => {
-      setRowsPerPage(parseInt(event.target.value, 10));
-      setPage(0);
+        setController({
+            ...paginationController,
+            rowsPerPage: parseInt(event.target.value, 10),
+            page: 0
+        })
     };
 
-    const handleOnDelete = async () => {
-        console.log(selected);
-        setOpenDeletePopUp(false);
-        setSelected({});
-      //   await axios.delete('http://localhost:8080/v1/api/', {
-      //   data: { ids: selected },
-      // });
-      
+    const handleOnDeleteIconClick = async () => {
+        await axios.delete('http://localhost:8080/v1/api/deleteExpiredProducts', {
+        data: { ids: selected },
+      });
+      setSelected([]); // Clear the selection after deletion
     }
-
-    const handleOpenEditChange = (isOpen) => {
-      setOpenEditPopUp(isOpen);
-      setSelected({})
-    };
     
-    const isSelected = (row) => selected === row;
+    const isSelected = (id) => selected.indexOf(id) !== -1;
 
     // Avoid a layout jump when reaching the last page with empty rows.
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+    const emptyRows =
+    paginationController.page > 0 ? Math.max(0, (1 + paginationController.page) * paginationController.rowsPerPage - totalRow) : 0;
 
     //console.log(emptyRows);
-    const visibleRows = stableSort(rows, getComparator(order, orderBy)).slice(
-      page * rowsPerPage,
-      page * rowsPerPage + rowsPerPage,
+
+    const visibleRows = React.useMemo(
+        () =>
+        stableSort(rows, getComparator(order, orderBy)).slice(
+            paginationController.page * paginationController.rowsPerPage,
+            paginationController.page * paginationController.rowsPerPage + paginationController.rowsPerPage,
+        ),
+        [order, orderBy, paginationController.page, paginationController.rowsPerPage],
     );
 
-    //console.log(visibleRows);
+    console.log(visibleRows);
 
     return (
-      <Box sx={{ width: '100%' }}>
+        <Box sx={{ width: '100%' }}>
         <Paper sx={{ width: '100%', mb: 2 }}>
-            <EnhancedTableToolbar 
-                selected={Object.keys(selected).length === 0 ? false : true} 
-                handleDeleteIconClick={()=> {setOpenDeletePopUp(true)}} 
-                title={''}
-                handleEditIconClick={() => {setOpenEditPopUp(true)}}
-             />
+            <EnhancedTableToolbar numSelected={selected.length} handleDelete={handleOnDeleteIconClick} title={title} />
             <TableContainer>
-              <Table
-                  sx={{ minWidth: 750, bgcolor: 'background.secondary' }}
-                  aria-labelledby="tableTitle"
-                  size={'medium'}
-              >
+            <Table
+                sx={{ minWidth: 750, bgcolor: 'background.secondary' }}
+                aria-labelledby="tableTitle"
+                size={'medium'}
+            >
                 <EnhancedTableHead
+                    numSelected={selected.length}
                     order={order}
                     orderBy={orderBy}
+                    onSelectAllClick={handleSelectAllClick}
                     onRequestSort={handleRequestSort}
+                    rowCount={rows.length}
                     headCells={headCells}
                 />
                 <TableBody>
-                {visibleRows.map((row, index) => {
-                    const isItemSelected = isSelected(row);
+                {rows.map((row, index) => {
+                    const isItemSelected = isSelected(row.id);
                     const labelId = `enhanced-table-checkbox-${index}`;
 
                     return (
                     <TableRow
                         hover
-                        onClick={(event) => handleClick(event, row)}
+                        onClick={(event) => handleClick(event, row.id)}
                         role="checkbox"
                         aria-checked={isItemSelected}
                         tabIndex={-1}
@@ -248,7 +297,16 @@ export default function StaffTable(props) {
                         selected={isItemSelected}
                         sx={{ cursor: 'pointer' }}
                     >
-                        <TableCell padding="checkbox"></TableCell>
+                        <TableCell padding="checkbox">
+                        <Checkbox
+                            color="primary"
+                            checked={isItemSelected}
+                            inputProps={{
+                                'aria-labelledby': labelId,
+                            }}
+                            sx={{color: 'text.white'}}
+                        />
+                        </TableCell>
                         {headCells.map((cell, index) => (
                             <TableCell
                                 key={cell.id}
@@ -273,55 +331,19 @@ export default function StaffTable(props) {
                     </TableRow>
                 )}
                 </TableBody>
-              </Table>
+            </Table>
             </TableContainer>
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={rows.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
+                count={totalRow}
+                rowsPerPage={paginationController.rowsPerPage}
+                page={paginationController.page}
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
                 sx={{bgcolor: 'background.secondary', color: 'text.white'}}
             />
         </Paper>
-
-        <PopUp
-          title="CẬP NHẬT"
-          isOpen={openEditPopUp}
-          handleCloseBtnClick={() => {setOpenEditPopUp(false); setSelected({})}}
-        >
-          {<EditStaffForm
-            targetStaff={selected}
-            setOpen={handleOpenEditChange}
-          />}
-        </PopUp>
-
-        <PopUp
-          title="Xóa nhân viên"
-          isOpen={openDeletePopUp}
-          handleCloseBtnClick={() => {setOpenDeletePopUp(false); setSelected({})}}
-        >
-          {
-            <div className='flex flex-col'>
-              <h2 className='text-white pb-5'>Bạn có chắc chắn muốn xóa nhân viên này?</h2>
-              <div className='flex justify-end gap-2'>
-                <CustomButton
-                  title='Hủy'
-                  variant='secondary'
-                  onAction={()=>{setOpenDeletePopUp(false); setSelected({})}}
-                  className="py-1 px-4"
-                />
-                <CustomButton
-                  title='Xác nhận'
-                  onAction={handleOnDelete}
-                  className="py-1 px-4"
-                />
-              </div>
-            </div>
-          }
-        </PopUp>
-      </Box>
+        </Box>
     );
 }

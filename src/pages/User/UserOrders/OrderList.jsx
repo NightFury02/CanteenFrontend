@@ -8,7 +8,6 @@ import { Card, CardMedia, CardContent, CardHeader, CardActions } from '@mui/mate
 import {Input, Toolbar, Typography, Box, Paper, Button, Grid, Pagination, Stack } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 import CustomButton from '../../../components/CustomButton/CustomButton';
-import PopUp from '../../../components/Popup/Popup';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -127,20 +126,167 @@ EnhancedTableToolbar.propTypes = {
   title: PropTypes.string
 };
 
-const PreorderList = (props) => {
-    const {headCells, title, rows} = props;
+const OrderList = (props) => {
+    const {headCells, title} = props;
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('id');
     const [selected, setSelected] = React.useState({});
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(25);
+    const [rows, setRows] = React.useState([]);
     const [openCard, setOpenCard] = React.useState(false);
     const [selectedRowData, setSelectedRowData] = React.useState(null);
+    const [dialogPosition, setDialogPosition] = React.useState({ top: 0, left: 0 });
     const [received, setReceived] = React.useState(0);
     const [total, setTotal] = React.useState(0);
     const [change, setChange] = React.useState(0);
-    const [openPopupCancel, setOpenPopupCancel] = React.useState(false);
-    const [confirmPopup, setConfirmPopup] = React.useState(false);
+
+    React.useEffect(() => {
+      const fetchExpiredProducts = async () => {
+          const url = `https://reqres.in/api/users`;
+          try {
+            // const res = await axios.get(url);
+            // const data = res.data;
+            const data = [
+                {
+                    id: '1', 
+                    staffName: 'Phung Le Hoang Ngoc', 
+                    createDate: '2023-12-20', 
+                    total: 1500000, 
+                    data: [
+                        {
+                            id: '1223',
+                            name: 'Táo',
+                            image: 'https://waapple.org/wp-content/uploads/2021/06/Variety_Granny-Smith-transparent-658x677.png',
+                            price: 10000,
+                            quantity: 200,
+                            expirationDate: '2023-12-29'
+                        },
+                        {
+                            id: '1224',
+                            name: 'Coca',
+                            image: 'https://thegioidouong.net/wp-content/uploads/2021/06/coca-300ml-chai-nhua.jpg',
+                            price: 15000,
+                            quantity: 150,
+                            expirationDate: '2024-01-01'
+                        },
+                        {
+                            id: '1225',
+                            name: 'Oreo',
+                            image: 'https://cooponline.vn/wp-content/uploads/2020/04/banh-quy-socola-oreo-socola-119-6g-20220927.jpg',
+                            price: 15000,
+                            quantity: 150,
+                            expirationDate: '2024-01-01'
+                        }
+                    ]
+                },
+
+                {
+                    id: '2', 
+                    staffName: 'Phung Le Hoang Ngoc', 
+                    createDate: '2023-12-20', 
+                    total: 1500000, 
+                    data: [
+                        {
+                            id: '1223',
+                            name: 'Táo',
+                            image: 'https://waapple.org/wp-content/uploads/2021/06/Variety_Granny-Smith-transparent-658x677.png',
+                            price: 10000,
+                            quantity: 200,
+                            expirationDate: '2023-12-29'
+                        },
+                        {
+                            id: '1224',
+                            name: 'Coca',
+                            image: 'https://thegioidouong.net/wp-content/uploads/2021/06/coca-300ml-chai-nhua.jpg',
+                            price: 15000,
+                            quantity: 150,
+                            expirationDate: '2024-01-01'
+                        },
+                        {
+                            id: '1225',
+                            name: 'Oreo',
+                            image: 'https://cooponline.vn/wp-content/uploads/2020/04/banh-quy-socola-oreo-socola-119-6g-20220927.jpg',
+                            price: 15000,
+                            quantity: 150,
+                            expirationDate: '2024-01-01'
+                        }
+                    ]
+                },
+
+                {
+                    id: '3', 
+                    staffName: 'Phung Le Hoang Ngoc', 
+                    createDate: '2023-12-20', 
+                    total: 1500000, 
+                    data: [
+                        {
+                            id: '1223',
+                            name: 'Táo',
+                            image: 'https://waapple.org/wp-content/uploads/2021/06/Variety_Granny-Smith-transparent-658x677.png',
+                            price: 10000,
+                            quantity: 200,
+                            expirationDate: '2023-12-29'
+                        },
+                        {
+                            id: '1224',
+                            name: 'Coca',
+                            image: 'https://thegioidouong.net/wp-content/uploads/2021/06/coca-300ml-chai-nhua.jpg',
+                            price: 15000,
+                            quantity: 150,
+                            expirationDate: '2024-01-01'
+                        },
+                        {
+                            id: '1225',
+                            name: 'Oreo',
+                            image: 'https://cooponline.vn/wp-content/uploads/2020/04/banh-quy-socola-oreo-socola-119-6g-20220927.jpg',
+                            price: 15000,
+                            quantity: 150,
+                            expirationDate: '2024-01-01'
+                        }
+                    ]
+                },
+
+                {
+                    id: '4', 
+                    staffName: 'Phung Le Hoang Ngoc', 
+                    createDate: '2023-12-20', 
+                    total: 1500000, 
+                    data: [
+                        {
+                            id: '1223',
+                            name: 'Táo',
+                            image: 'https://waapple.org/wp-content/uploads/2021/06/Variety_Granny-Smith-transparent-658x677.png',
+                            price: 10000,
+                            quantity: 200,
+                            expirationDate: '2023-12-29'
+                        },
+                        {
+                            id: '1224',
+                            name: 'Coca',
+                            image: 'https://thegioidouong.net/wp-content/uploads/2021/06/coca-300ml-chai-nhua.jpg',
+                            price: 15000,
+                            quantity: 150,
+                            expirationDate: '2024-01-01'
+                        },
+                        {
+                            id: '1225',
+                            name: 'Oreo',
+                            image: 'https://cooponline.vn/wp-content/uploads/2020/04/banh-quy-socola-oreo-socola-119-6g-20220927.jpg',
+                            price: 15000,
+                            quantity: 150,
+                            expirationDate: '2024-01-01'
+                        }
+                    ]
+                }
+            ]
+            setRows(data);
+          } catch (error) {
+            console.error('Error fetching expired products:', error);
+          }
+      }
+      fetchExpiredProducts()
+    }, []);
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -162,22 +308,11 @@ const PreorderList = (props) => {
     }
 
     const handleConfirm = () => {
-        setConfirmPopup(true);
-    };
-
-    const handleConfirmPopup = () => {
-        console.log('confirm');
-        setConfirmPopup(false);
+        console.log("confirm");
         setOpenCard(false);
-    }
+    };
     
     const handleCancel = () => {
-        setOpenPopupCancel(true);
-    };
-
-    const handleConfirmDelete = () => {
-        console.log(selected);
-        setOpenPopupCancel(false);
         setOpenCard(false);
     };
 
@@ -354,29 +489,9 @@ const PreorderList = (props) => {
                         <TableCell sx={{color: 'white', minWidth: 150}}>Tổng</TableCell>
                         <TableCell sx={{color: 'white'}}>{total}đ</TableCell>
                         </TableRow>
-                        <TableRow>
-                        <TableCell sx={{color: 'white', minWidth: 150}}>Đã nhận</TableCell>
-                        <TableCell>
-                            <Input
-                            type="number"
-                            value={received}
-                            onChange={(e) => handleReceivedChange(e.target.value)}
-                            style={{color: 'white'}}
-                            />
-                        </TableCell>
-                        </TableRow>
-                        <TableRow>
-                        <TableCell sx={{color: 'white', minWidth: 150}}>Tiền thừa</TableCell>
-                        <TableCell sx={{color: 'white'}}>{change}đ</TableCell>
-                        </TableRow>
                     </TableBody>
                     </Table>
                 </TableContainer>
-                <CustomButton
-                    title={'Xác nhận thanh toán'}
-                    className="p-2 mt-2 w-full"
-                    onAction={handleConfirm}
-                />
                 <CustomButton
                     title={'Hủy đơn'}
                     className='p-2 mt-2 w-full'
@@ -385,56 +500,8 @@ const PreorderList = (props) => {
                 </div>
             </Card>
         </Dialog>
-        <PopUp
-        title="Xác nhận hủy"
-        isOpen={openPopupCancel}
-        handleCloseBtnClick={() => {setOpenPopupCancel(false);}}
-        >
-        {
-            <div className='flex flex-col'>
-            <h2 className='text-white pb-5'>Xác nhận hủy bỏ đơn hàng</h2>
-            <div className='flex justify-between gap-2'>
-                <CustomButton
-                title='Hủy'
-                variant='secondary'
-                onAction={()=>{setOpenPopupCancel(false);}}
-                className="py-1 px-8"
-                />
-                <CustomButton
-                title='Xác nhận'
-                onAction={handleConfirmDelete}
-                className="py-1 px-4"
-                />
-            </div>
-            </div>
-        }
-        </PopUp>
-        <PopUp
-          title="Xác nhận"
-          isOpen={confirmPopup}
-          handleCloseBtnClick={() => {setConfirmPopup(false);}}
-        >
-          {
-            <div className='flex flex-col'>
-              <h2 className='text-white pb-5'>Bạn có muốn xác nhận thanh toán?</h2>
-              <div className='flex justify-between gap-2'>
-                <CustomButton
-                  title='Hủy'
-                  variant='secondary'
-                  onAction={()=>{setConfirmPopup(false);}}
-                  className="py-1 px-8"
-                />
-                <CustomButton
-                  title='Xác nhận'
-                  onAction={handleConfirmPopup}
-                  className="py-1 px-4"
-                />
-              </div>
-            </div>
-          }
-        </PopUp>
     </Box>
     );
 }
 
-export default PreorderList;
+export default OrderList;

@@ -9,33 +9,33 @@ import GRNForm from './GoodsReceivedNoteForm/GRNForm';
 import GDNForm from './GoodsDeliveryNoteForm/GDNForm';
 
 const StaffInventory = () => {
-  const [isImportPopUpOpen, setImportPopUpOpen] =React.useState(false);
-  const [isExportPopUpOpen, setExportPopUpOpen] =React.useState(false);
-
+  const [isImportPopUpOpen, setImportPopUpOpen] = React.useState(false);
+  const [isExportPopUpOpen, setExportPopUpOpen] = React.useState(false);
+ 
   const headCells = [
     {
       id: 'id',
       numeric: false,
       disablePadding: true,
-      label: 'Mã người dùng',
+      label: 'Mã sản phẩm',
     },
     {
-      id: 'email',
-      numeric: true,
-      disablePadding: true,
-      label: 'Email',
-    },
-    {
-      id: 'first_name',
-      numeric: true,
-      disablePadding: true,
-      label: 'Họ',
-    },
-    {
-      id: 'last_name',
-      numeric: true,
+      id: 'name',
+      numeric: false,
       disablePadding: true,
       label: 'Tên',
+    },
+    {
+      id: 'quantity',
+      numeric: true,
+      disablePadding: true,
+      label: 'Số lượng',
+    },
+    {
+      id: 'expirationDate',
+      numeric: false,
+      disablePadding: true,
+      label: 'Hạn sử dụng',
     },
   ];
 

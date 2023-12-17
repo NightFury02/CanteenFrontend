@@ -5,6 +5,8 @@ import Layout from "./components/Layout/Layout";
 import { Form } from "./containers";
 import {
   UserHome,
+  UserOrders,
+  UserSetting,
   StaffDashBoard,
   StaffHome,
   StaffInventory,
@@ -14,6 +16,8 @@ import {
   StaffPreorders,
   AdminDashBoard,
   AdminManagement,
+  AdminInventory,
+  AdminOrders,
 } from "./pages";
 
 function App() {
@@ -25,6 +29,8 @@ function App() {
           <Route path="/register" element={<Form type="register" />} />
           <Route path="/" element={<Layout> <StaffHome /> </Layout>} />
           <Route path="/user/dashboard" element={<Layout> <UserHome /> </Layout>}/>
+          <Route path="/user/orders" element={<Layout> <UserOrders /> </Layout>}/>
+          <Route path="/user/setting" element={<Layout> <UserSetting /> </Layout>}/>
           <Route path="/staff/dashboard" element={<Layout> <StaffDashBoard /> </Layout>}/>
           <Route path="/staff/inventory" element={<Layout> <StaffInventory /> </Layout>}/>
           <Route path="/staff/dailymenu" element={<Layout> <StaffDailyMenu /> </Layout>}/>
@@ -33,6 +39,8 @@ function App() {
           <Route path="/staff/setting" element={<Layout> <StaffSetting /> </Layout>}/>
           <Route path="/admin/dashboard" element={<Layout> <AdminDashBoard /> </Layout>}/>
           <Route path="/admin/management" element={<Layout> <AdminManagement /> </Layout>}/>
+          <Route path="/admin/inventory" element={<Layout> <AdminInventory /> </Layout>}/>
+          <Route path="/admin/orders" element={<Layout> <AdminOrders /> </Layout>}/>
         </Routes>
       </BrowserRouter>
     </LocalizationProvider>
