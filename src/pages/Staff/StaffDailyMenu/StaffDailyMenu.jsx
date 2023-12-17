@@ -145,6 +145,7 @@ const StaffDailyMenu = () => {
             <div className='p-3'>
                 <Searchbar
                   handleSearch={handleSearch}  
+                  placeholder='Tìm tên...'
                 />
             </div>
         </div> 

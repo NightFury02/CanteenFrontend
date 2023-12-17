@@ -1,7 +1,7 @@
 import React from 'react';
 import {SearchIcon} from '../../assets/svgs';
 
-const Searchbar = ({handleSearch}) => {
+const Searchbar = ({handleSearch, placeholder = "Search..."}) => {
     const [keyword, setKeyword] = React.useState('');
 
     const handleInputChange = (e) => {
@@ -22,7 +22,7 @@ const Searchbar = ({handleSearch}) => {
             <input
                 className='p-1 bg-dark-line outline-none focus:outline-none text-white'
                 type="text"
-                placeholder="Search..."
+                placeholder={placeholder}
                 value={keyword}
                 onChange={(e) => handleInputChange(e)}
                 onKeyDown={(e) => handleKeyDown(e)}
