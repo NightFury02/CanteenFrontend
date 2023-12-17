@@ -7,7 +7,7 @@ const Container = ({ listMenuBasedOnUser, children }) => {
     <main className="w-full h-[100vh] flex bg-dark-line">
       <aside
         className="w-[104px] max-h-screen bg-dark-bg-2 flex flex-col items-center 
-      gap-10 rounded-tr-[10px] rounded-br-[10px] overflow-auto"
+      gap-10 rounded-tr-[10px] rounded-br-[10px] overflow-y-auto"
       >
         {/* Logo */}
         <div className="mt-4 p-4 bg-[#EB966A]/30 rounded-lg">
