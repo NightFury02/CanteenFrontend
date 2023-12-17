@@ -4,8 +4,8 @@ import PropTypes from 'prop-types';
 import { alpha } from '@mui/material/styles';
 import { Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import { Table, TableBody, TableCell, TableContainer, TableRow, TableHead, TableSortLabel, TablePagination } from '@mui/material';
-import { Card, CardMedia, CardContent, CardHeader, CardActions } from '@mui/material';
-import {Input, Toolbar, Typography, Box, Paper, Button, Grid, Pagination, Stack } from '@mui/material';
+import { Card, CardMedia, CardContent } from '@mui/material';
+import {Input, Toolbar, Typography, Box, Paper } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 import CustomButton from '../../../components/CustomButton/CustomButton';
 import PopUp from '../../../components/Popup/Popup';
@@ -108,16 +108,6 @@ function EnhancedTableToolbar(props) {
           {title}
         </Typography>
       )}
-
-      {/* {selected && (
-        <>
-            <Tooltip title="Edit">
-              <IconButton onClick={handleEditIconClick}>
-                  <EditIcon sx={{color: 'text.white', fontSize: 'fontSize.icon'}}/>
-              </IconButton>
-            </Tooltip>
-        </>
-      )} */}
     </Toolbar>
   );
 }
