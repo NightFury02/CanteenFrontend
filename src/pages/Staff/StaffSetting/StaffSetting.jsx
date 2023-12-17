@@ -1,47 +1,61 @@
-import {useState} from 'react'
-import {FormControl, FormLabel, TextField} from '@mui/material'
-import CustomButton from '../../../../components/CustomButton/CustomButton'
+import React from "react";
+import {Input, TextField, Toolbar, Typography, Box, Paper, Button, Grid, Pagination, Stack } from '@mui/material';
+import CustomButton from "../../../components/CustomButton/CustomButton";
+import axios from "axios";
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
-const AddStaffForm = (props) => {
-    const {setOpen} = props;
-    const [staff, setStaff] = useState({
-        id: '',
-        name: '',
-        dob: '',
-        phone: '',
-        address: '',
-        email: '',
-        password: '',
-    });
+const StaffSetting = () => {
+  const [staff, setStaff] = React.useState({
+    id: '',
+    name: '',
+    dob: '',
+    phone: '',
+    address: '',
+    email: '',
+    password: '',
+  });
 
-    const handleCancel = () =>{
-        setOpen(false);
+  React.useEffect(() => {
+    const fetchStaff = async () => {
+      const url = `https://reqres.in/api/users?per_page=1`;
+      try {
+        const res = await axios.get(url);
+        const data = res.data;
+        setStaff(data.data[0]);
+      } catch (error) {
+        console.error('Error fetching Reports:', error);
+      }
     };
 
-    const handleSubmit = () => {
-        console.log(staff);
-        setOpen(false);
-    };
+    fetchStaff();
+  }, []);
 
-    const handleInputChange = (name, value) => {
-        setStaff((previous) => (
-            {
-                ...previous,
-                [name]: value
-            }
-        ))
-    };
+  const handleInputChange = (field, value) => {
+    setStaff((prevStaff) => ({
+      ...prevStaff,
+      [field]: value,
+    }));
+  };
 
-    const textFieldStyle = {
-        marginBottom: '2rem',
-    };
-    return (
-        <form 
-            className="flex flex-col min-w-[700px]"
-            autoComplete='off'
-        >
-            <TextField
+  const handleSave = async () => {
+    console.log(staff);
+    /*try {
+      const url = `https://reqres.in/api/users/${staff.id}`;
+      await axios.put(url, staff);
+      console.log("User information updated successfully!");
+    } catch (error) {
+      console.error("Error updating user information:", error);
+    }*/
+  };
+
+  const textFieldStyle = {
+    marginBottom: '2rem',
+  };
+  return (
+    <div>
+      {staff && (
+        <div className="flex flex-col min-w-[700px]">
+          <TextField
                 variant='outlined'
                 label="Họ và tên"
                 name="name"
@@ -88,19 +102,15 @@ const AddStaffForm = (props) => {
                 sx={textFieldStyle}
             />
             <CustomButton
-                title='Hủy'
-                variant='secondary'
-                onAction={handleCancel}
-                className="p-2"
-            />
-            <CustomButton
-                title='Xác nhận'
+                title='Lưu'
                 variant='tertiary'
-                onAction={handleSubmit}
+                onAction={handleSave}
                 className="p-2"
             />
-        </form>
-    )
-}
+        </div>
+      )}
+    </div>
+  );
+};
 
-export default AddStaffForm
+export default StaffSetting;
