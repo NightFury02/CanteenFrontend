@@ -1,13 +1,32 @@
 import axios from "axios";
-import { BASE_URL} from "./configApi";
+import { ORDER_URL} from "./configApi";
 
 class OrderApi{
-    async getOrderDetail(id){
+    async getAllOrders({ token, clientId }){
         try{
-            const orderDetail = await axios.get(`${BASE_URL}/order/details`)
+            const orders = await axios.get(
+                `${ORDER_URL}`,
+                {},
+                {
+                    headers: configHeader({ token, clientId }),
+                }
+            );
+            return orders.data;
+        }
+        catch(e){
+
+        }
+    }
+
+    async createOrder(id){
+        try{
+            const orderDetail = await axios.get(`${ORDER_URL}/new`);
+            console.log(orderDetail);
         }
         catch(e){
 
         }
     }
 }
+
+export default new OrderApi();

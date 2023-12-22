@@ -4,6 +4,7 @@ import OrderList from './OrderList';
 import CustomButton from '../../../components/CustomButton/CustomButton';
 import PopUp from '../../../components/Popup/Popup';
 import Searchbar from '../../../components/SearchBar/SearchBar';
+import orderApi from "../../../api/orderApi";
 
 const StaffDashboard = () => {
   const [openMonthlyPopup, setOpenMonthlyPopup] = React.useState(false);
@@ -48,6 +49,10 @@ const StaffDashboard = () => {
         try {
           // const res = await axios.get(url);
           // const data = res.data;
+          const token = localStorage.getItem("token");
+          const clientId = localStorage.getItem("clientId");
+          const orders = orderApi.getAllOrders({token, clientId});
+          console.log(orders);
           const data = [
               {
                   id: '1', 
