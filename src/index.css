@@ -11,6 +11,12 @@
   color: #ea7c69 !important;
 }
 
+/* Add styles for disabled state */
+.button:disabled {
+  opacity: 0.5; 
+  cursor: not-allowed; 
+}
+
 /* animation */
 
 @keyframes anvil {

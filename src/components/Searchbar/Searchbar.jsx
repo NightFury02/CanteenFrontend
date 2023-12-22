@@ -17,12 +17,12 @@ const Searchbar = ({handleSearch, placeholder = "Search..."}) => {
     };
 
     return (
-        <div className='flex border rounded me-3'>
-            <div className='flex justify-center items-center p-1'>
-                <SearchIcon className="w-[20px] h-[20px]"/>
+        <div className='flex border-2 me-3'>
+            <div className='flex justify-center items-center p-1 bg-dark-line'>
+                <SearchIcon className="w-[20px] h-[20px] "/>
             </div>
             <input
-                className='p-1 bg-dark-line outline-none focus:outline-none text-white'
+                className='p-1 bg-dark-line outline-none  text-white'
                 type="text"
                 placeholder={placeholder}
                 value={keyword}

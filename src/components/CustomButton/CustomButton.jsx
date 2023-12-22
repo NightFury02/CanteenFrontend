@@ -5,6 +5,7 @@ const CustomButton = ({
     title,
     variant = 'primary',
     onAction,
+    disabled = false,
     className: customClass 
 }) => {
     const primaryButtonClass = 'bg-primary border-0 border-primary rounded shadow-lg shadow-brown text-white hover:bg-primary/70';
@@ -44,6 +45,7 @@ const CustomButton = ({
           onActionFunc(e);
         }}
         className={classes}
+        disabled={disabled}
       >
         <span>{title}</span>
       </button>

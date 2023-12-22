@@ -181,6 +181,100 @@ export default function ExpiredProductTable(props) {
     //Handle pop up
     const [openDeletePopUp, setOpenDeletePopUp] = React.useState(false);
     
+    //Example data
+    const data = [
+      {
+          _id: '657d768648a0c356cab63ff6',
+          item_name: 'Táo',
+          item_type: 'inventory',
+          item_price: 10000,
+          item_quantity: 200,
+          item_image: 'https://waapple.org/wp-content/uploads/2021/06/Variety_Granny-Smith-transparent-658x677.png',
+          item_cost: 8000,
+          item_expirationDate: '2023-12-29'
+      },
+      {
+          _id: '657d768648a0c356cab63ff7',
+          item_name: 'Coca',
+          item_type: 'inventory',
+          item_price: 10000,
+          item_quantity: 150,
+          item_image: 'https://thegioidouong.net/wp-content/uploads/2021/06/coca-300ml-chai-nhua.jpg',
+          item_cost: 8000,
+          item_expirationDate: '2024-01-01'
+      },
+      {
+          _id: '657d768648a0c356cab63ff8',
+          item_name: 'Oreo',
+          item_type: 'inventory',
+          item_price: 15000,
+          item_quantity: 150,
+          item_image: 'https://cooponline.vn/wp-content/uploads/2020/04/banh-quy-socola-oreo-socola-119-6g-20220927.jpg',
+          item_cost: 8000,
+          item_expirationDate: '2024-01-01'
+      },
+      {
+          _id: '657d768648a0c356cab63ff9',
+          item_name: 'Táo',
+          item_type: 'inventory',
+          item_price: 10000,
+          item_quantity: 200,
+          item_image: 'https://waapple.org/wp-content/uploads/2021/06/Variety_Granny-Smith-transparent-658x677.png',
+          item_cost: 8000,
+          item_expirationDate: '2023-12-29'
+      },
+      {
+          _id: '657d768648a0c356cab63ff10',
+          item_name: 'Coca',
+          item_type: 'inventory',
+          item_price: 10000,
+          item_quantity: 150,
+          item_image: 'https://thegioidouong.net/wp-content/uploads/2021/06/coca-300ml-chai-nhua.jpg',
+          item_cost: 8000,
+          item_expirationDate: '2024-01-01'
+      },
+      {
+          _id: '657d768648a0c356cab63ff11',
+          item_name: 'Oreo',
+          item_type: 'inventory',
+          item_price: 15000,
+          item_quantity: 150,
+          item_image: 'https://cooponline.vn/wp-content/uploads/2020/04/banh-quy-socola-oreo-socola-119-6g-20220927.jpg',
+          item_cost: 8000,
+          item_expirationDate: '2024-01-01'
+      },
+      {
+          _id: '657d768648a0c356cab63ff12',
+          item_name: 'Táo',
+          item_type: 'inventory',
+          item_price: 10000,
+          item_quantity: 200,
+          item_image: 'https://waapple.org/wp-content/uploads/2021/06/Variety_Granny-Smith-transparent-658x677.png',
+          item_cost: 8000,
+          item_expirationDate: '2023-12-29'
+      },
+      {
+          _id: '657d768648a0c356cab63ff13',
+          item_name: 'Coca',
+          item_type: 'inventory',
+          item_price: 10000,
+          item_quantity: 150,
+          item_image: 'https://thegioidouong.net/wp-content/uploads/2021/06/coca-300ml-chai-nhua.jpg',
+          item_cost: 8000,
+          item_expirationDate: '2024-01-01'
+      },
+      {
+          _id: '657d768648a0c356cab63ff14',
+          item_name: 'Oreo',
+          item_type: 'inventory',
+          item_price: 15000,
+          item_quantity: 150,
+          item_image: 'https://cooponline.vn/wp-content/uploads/2020/04/banh-quy-socola-oreo-socola-119-6g-20220927.jpg',
+          item_cost: 8000,
+          item_expirationDate: '2024-01-01'
+      }
+    ];
+
     //Fetch data
     React.useEffect(() =>{
       const fetchProducts = async () => {
@@ -188,89 +282,7 @@ export default function ExpiredProductTable(props) {
           try {
               // const res = await axios.get(url);
               // const data = res.data;
-              const data = [
-                {
-                    id: '1223',
-                    name: 'Táo',
-                    image: 'https://waapple.org/wp-content/uploads/2021/06/Variety_Granny-Smith-transparent-658x677.png',
-                    cost: 8000,
-                    price: 10000,
-                    quantity: 200,
-                    expirationDate: '2023-12-29'
-                },
-                {
-                    id: '1224',
-                    name: 'Coca',
-                    image: 'https://thegioidouong.net/wp-content/uploads/2021/06/coca-300ml-chai-nhua.jpg',
-                    cost: 10000,
-                    price: 15000,
-                    quantity: 150,
-                    expirationDate: '2024-01-01'
-                },
-                {
-                    id: '1225',
-                    name: 'Oreo',
-                    image: 'https://cooponline.vn/wp-content/uploads/2020/04/banh-quy-socola-oreo-socola-119-6g-20220927.jpg',
-                    cost: 10000,
-                    price: 15000,
-                    quantity: 150,
-                    expirationDate: '2024-01-01'
-                },
-                {
-                    id: '1226',
-                    name: 'Táo',
-                    image: 'https://waapple.org/wp-content/uploads/2021/06/Variety_Granny-Smith-transparent-658x677.png',
-                    cost: 8000,
-                    price: 10000,
-                    quantity: 200,
-                    expirationDate: '2023-12-29'
-                },
-                {
-                    id: '1227',
-                    name: 'Coca',
-                    image: 'https://thegioidouong.net/wp-content/uploads/2021/06/coca-300ml-chai-nhua.jpg',
-                    cost: 10000,
-                    price: 15000,
-                    quantity: 150,
-                    expirationDate: '2024-01-01'
-                },
-                {
-                    id: '1228',
-                    name: 'Oreo',
-                    image: 'https://cooponline.vn/wp-content/uploads/2020/04/banh-quy-socola-oreo-socola-119-6g-20220927.jpg',
-                    cost: 10000,
-                    price: 15000,
-                    quantity: 150,
-                    expirationDate: '2024-01-01'
-                },
-                {
-                    id: '1229',
-                    name: 'Táo',
-                    image: 'https://waapple.org/wp-content/uploads/2021/06/Variety_Granny-Smith-transparent-658x677.png',
-                    cost: 8000,
-                    price: 10000,
-                    quantity: 200,
-                    expirationDate: '2023-12-29'
-                },
-                {
-                    id: '1230',
-                    name: 'Coca',
-                    image: 'https://thegioidouong.net/wp-content/uploads/2021/06/coca-300ml-chai-nhua.jpg',
-                    cost: 10000,
-                    price: 15000,
-                    quantity: 150,
-                    expirationDate: '2024-01-01'
-                },
-                {
-                    id: '1231',
-                    name: 'Oreo',
-                    image: 'https://cooponline.vn/wp-content/uploads/2020/04/banh-quy-socola-oreo-socola-119-6g-20220927.jpg',
-                    cost: 10000,
-                    price: 15000,
-                    quantity: 150,
-                    expirationDate: '2024-01-01'
-                }
-            ];
+              
               setRows(data);
               setOriginalRows(data);
           } catch (error) {
@@ -303,7 +315,7 @@ export default function ExpiredProductTable(props) {
 
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
-            const newSelected = rows.map((n) => n.id);
+            const newSelected = rows.map((n) => n._id);
             setSelected(newSelected);
             return;
         }
@@ -386,17 +398,17 @@ export default function ExpiredProductTable(props) {
                 />
                 <TableBody>
                 {visibleRows.map((row, index) => {
-                    const isItemSelected = isSelected(row.id);
+                    const isItemSelected = isSelected(row._id);
                     const labelId = `enhanced-table-checkbox-${index}`;
 
                     return (
                     <TableRow
                         hover
-                        onClick={(event) => handleClick(event, row.id)}
+                        onClick={(event) => handleClick(event, row._id)}
                         role="checkbox"
                         aria-checked={isItemSelected}
                         tabIndex={-1}
-                        key={row.id}
+                        key={row._id}
                         selected={isItemSelected}
                         sx={{ cursor: 'pointer' }}
                     >
@@ -410,17 +422,62 @@ export default function ExpiredProductTable(props) {
                             sx={{color: 'text.white'}}
                         />
                         </TableCell>
-                        {headCells.map((cell, index) => (
-                            <TableCell
-                                key={cell.id}
-                                id={labelId}
-                                scope="row"
-                                padding='none'
-                                sx={{color: 'text.white', paddingTop: '1rem', paddingBottom: '1rem'}}
-                            >
-                            {row[cell.id]}
-                            </TableCell>
-                        ))}
+                        
+                        <TableCell
+                          id={labelId}
+                          scope="row"
+                          padding='none'
+                          sx={{color: 'text.white', paddingTop: '1rem', paddingBottom: '1rem'}}
+                        >
+                            {
+                              row._id
+                            }
+                        </TableCell>
+
+                        <TableCell
+                          id={labelId}
+                          scope="row"
+                          padding='none'
+                          sx={{color: 'text.white', paddingTop: '1rem', paddingBottom: '1rem'}}
+                        >
+                            {
+                              <img src={row.item_image} className='h-[60px] w-[60px] flex-none bg-gray-50'></img>
+                            }
+                        </TableCell>
+
+                        <TableCell
+                          id={labelId}
+                          scope="row"
+                          padding='none'
+                          sx={{color: 'text.white', paddingTop: '1rem', paddingBottom: '1rem'}}
+                        >
+                            {
+                              row.item_name
+                            }
+                        </TableCell>
+
+                        <TableCell
+                          id={labelId}
+                          scope="row"
+                          padding='none'
+                          sx={{color: 'text.white', paddingTop: '1rem', paddingBottom: '1rem'}}
+                        >
+                            {
+                              row.item_quantity
+                            }
+                        </TableCell>
+
+                        <TableCell
+                          id={labelId}
+                          scope="row"
+                          padding='none'
+                          sx={{color: 'text.white', paddingTop: '1rem', paddingBottom: '1rem'}}
+                        >
+                            {
+                              row.item_expirationDate
+                            }
+                        </TableCell>
+
                     </TableRow>
                     );
                 })}
