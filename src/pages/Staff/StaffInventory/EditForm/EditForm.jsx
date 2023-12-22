@@ -3,7 +3,7 @@ import {FormControl, FormLabel, TextField} from '@mui/material'
 import CustomButton from '../../../../components/CustomButton/CustomButton'
 
 const EditForm = (props) => {
-    const {targetProduct, onSubmit} = props
+    const {targetProduct, onSubmit, onClose} = props
     const [editedProduct, setEditedProduct] = useState({
         _id: targetProduct._id || '', 
         item_name: targetProduct.item_name || '',
@@ -326,7 +326,7 @@ const EditForm = (props) => {
             <CustomButton
                 title='Hủy'
                 variant='delete'
-                onAction={() => setOpen(false)}
+                onAction={onClose}
                 className="p-2 mt-3"
             />
 

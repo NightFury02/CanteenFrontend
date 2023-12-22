@@ -526,6 +526,7 @@ export default function InventoryTable(props) {
           {<EditForm
             targetProduct={selected}
             onSubmit={handleEditPopUpSubmit}
+            onClose={()=>{setOpenEditPopUp(false); setSelected({})}}
           />}
         </PopUp>
 
