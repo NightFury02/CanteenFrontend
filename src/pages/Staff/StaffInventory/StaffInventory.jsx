@@ -14,25 +14,31 @@ const StaffInventory = () => {
  
   const headCells = [
     {
-      id: 'id',
+      id: '_id',
       numeric: false,
       disablePadding: true,
       label: 'Mã sản phẩm',
     },
     {
-      id: 'name',
+      id: 'item_image',
       numeric: false,
       disablePadding: true,
-      label: 'Tên',
+      label: 'Ảnh',
     },
     {
-      id: 'quantity',
+      id: 'item_name',
+      numeric: false,
+      disablePadding: true,
+      label: 'Tên sản phẩm',
+    },
+    {
+      id: 'item_quantity',
       numeric: true,
       disablePadding: true,
       label: 'Số lượng',
     },
     {
-      id: 'expirationDate',
+      id: 'item_expirationDate',
       numeric: false,
       disablePadding: true,
       label: 'Hạn sử dụng',
@@ -63,10 +69,6 @@ const StaffInventory = () => {
 
       <div className="mt-5 p-2">
         <ExpiredProductTable headCells={headCells} title={'Sản phẩm hết hạn'}/>
-      </div>
-
-      <div className="mt-5 p-2">
-        <DeletedProductTable headCells={headCells} title={'Sản phẩm đã bị xóa'}/>
       </div>
 
       <PopUp
