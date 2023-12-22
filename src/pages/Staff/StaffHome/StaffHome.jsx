@@ -202,13 +202,12 @@ const StaffHome = () => {
       </div>
 
       <Card className="col-span-1 fixed right-6 w-1/4 h-screen p-4 rounded-lg" sx={{ color: 'white', minWidth: '400', backgroundColor: 'background.secondary' }}>
-        <Typography variant="h5">Mã đơn #34562</Typography>
         <div style={{ display: 'grid', gridTemplateColumns: '45% 30% 20%', gridColumnGap: '10px', griditemGap: '8px', marginBottom: '16px', fontWeight: 'bold' }}>
             <Typography>Sản phẩm</Typography>
             <Typography>Số lượng</Typography>
             <Typography>Giá</Typography>
           </div>
-        <div style={{ maxHeight: 'calc(100vh - 320px)', overflowY: 'auto' }}>
+        <div style={{ maxHeight: 'calc(100vh - 300px)', overflowY: 'auto' }}>
           {selectedCards.map((selectedCard) => (
             <div key={selectedCard.id}>
               {/* First item */}
@@ -282,7 +281,7 @@ const StaffHome = () => {
 
         <div className="absolute left-4 bottom-6">
         <TableContainer>
-        <Table sx={{ minWidth: 300, bgcolor: 'background.secondary' }}>
+        <Table sx={{ minWidth: 300, bgcolor: 'background.secondary' }} size="small">
           <TableBody>
             <TableRow>
               <TableCell sx={{color: 'white', minWidth: 150}}>Tổng</TableCell>

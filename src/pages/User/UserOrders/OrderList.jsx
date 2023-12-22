@@ -422,7 +422,7 @@ const OrderList = (props) => {
                     <Typography>Số lượng</Typography>
                     <Typography>Giá</Typography>
                 </div>
-                <div style={{ maxHeight: 'calc(100vh - 320px)', overflowY: 'auto' }}>
+                <div style={{ maxHeight: 'calc(100vh - 100px)', overflowY: 'auto' }}>
                     {selectedRowData && selectedRowData.map((selectedCard) => (
                         <div key={selectedCard.id}>
                         {/* First Row */}
@@ -483,7 +483,7 @@ const OrderList = (props) => {
                 </div>
                 <div className="absolute left-4 bottom-6">
                 <TableContainer>
-                    <Table sx={{ minWidth: 300, bgcolor: 'background.secondary' }}>
+                    <Table sx={{ minWidth: 300, bgcolor: 'background.secondary' }} size="small">
                     <TableBody>
                         <TableRow>
                         <TableCell sx={{color: 'white', minWidth: 150}}>Tổng</TableCell>

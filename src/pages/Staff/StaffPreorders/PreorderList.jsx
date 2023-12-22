@@ -338,7 +338,7 @@ const PreorderList = (props) => {
                 </div>
                 <div className="absolute left-4 bottom-6">
                 <TableContainer>
-                    <Table sx={{ minWidth: 300, bgcolor: 'background.secondary' }}>
+                    <Table sx={{ minWidth: 300, bgcolor: 'background.secondary' }} size="small">
                     <TableBody>
                         <TableRow>
                         <TableCell sx={{color: 'white', minWidth: 150}}>Tổng</TableCell>
