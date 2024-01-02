@@ -1,5 +1,5 @@
 import * as React from 'react';
-import axios from 'axios';
+import InventoryApi from "../../../../api/inventoryApi";
 import PropTypes from 'prop-types';
 import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -174,105 +174,15 @@ export default function InventoryTable(props) {
     //Handle delete pop uo
     const [openDeletePopUp, setOpenDeletePopUp] = React.useState(false)
 
-    const data = [
-      {
-          _id: '657d768648a0c356cab63ff6',
-          item_name: 'Táo',
-          item_type: 'inventory',
-          item_price: 10000,
-          item_quantity: 200,
-          item_image: 'https://waapple.org/wp-content/uploads/2021/06/Variety_Granny-Smith-transparent-658x677.png',
-          item_cost: 8000,
-          item_expirationDate: '2023-12-29'
-      },
-      {
-          _id: '657d768648a0c356cab63ff7',
-          item_name: 'Coca',
-          item_type: 'inventory',
-          item_price: 10000,
-          item_quantity: 150,
-          item_image: 'https://thegioidouong.net/wp-content/uploads/2021/06/coca-300ml-chai-nhua.jpg',
-          item_cost: 8000,
-          item_expirationDate: '2024-01-01'
-      },
-      {
-          _id: '657d768648a0c356cab63ff8',
-          item_name: 'Oreo',
-          item_type: 'inventory',
-          item_price: 15000,
-          item_quantity: 150,
-          item_image: 'https://cooponline.vn/wp-content/uploads/2020/04/banh-quy-socola-oreo-socola-119-6g-20220927.jpg',
-          item_cost: 8000,
-          item_expirationDate: '2024-01-01'
-      },
-      {
-          _id: '657d768648a0c356cab63ff9',
-          item_name: 'Táo',
-          item_type: 'inventory',
-          item_price: 10000,
-          item_quantity: 200,
-          item_image: 'https://waapple.org/wp-content/uploads/2021/06/Variety_Granny-Smith-transparent-658x677.png',
-          item_cost: 8000,
-          item_expirationDate: '2023-12-29'
-      },
-      {
-          _id: '657d768648a0c356cab63ff10',
-          item_name: 'Coca',
-          item_type: 'inventory',
-          item_price: 10000,
-          item_quantity: 150,
-          item_image: 'https://thegioidouong.net/wp-content/uploads/2021/06/coca-300ml-chai-nhua.jpg',
-          item_cost: 8000,
-          item_expirationDate: '2024-01-01'
-      },
-      {
-          _id: '657d768648a0c356cab63ff11',
-          item_name: 'Oreo',
-          item_type: 'inventory',
-          item_price: 15000,
-          item_quantity: 150,
-          item_image: 'https://cooponline.vn/wp-content/uploads/2020/04/banh-quy-socola-oreo-socola-119-6g-20220927.jpg',
-          item_cost: 8000,
-          item_expirationDate: '2024-01-01'
-      },
-      {
-          _id: '657d768648a0c356cab63ff12',
-          item_name: 'Táo',
-          item_type: 'inventory',
-          item_price: 10000,
-          item_quantity: 200,
-          item_image: 'https://waapple.org/wp-content/uploads/2021/06/Variety_Granny-Smith-transparent-658x677.png',
-          item_cost: 8000,
-          item_expirationDate: '2023-12-29'
-      },
-      {
-          _id: '657d768648a0c356cab63ff13',
-          item_name: 'Coca',
-          item_type: 'inventory',
-          item_price: 10000,
-          item_quantity: 150,
-          item_image: 'https://thegioidouong.net/wp-content/uploads/2021/06/coca-300ml-chai-nhua.jpg',
-          item_cost: 8000,
-          item_expirationDate: '2024-01-01'
-      },
-      {
-          _id: '657d768648a0c356cab63ff14',
-          item_name: 'Oreo',
-          item_type: 'inventory',
-          item_price: 15000,
-          item_quantity: 150,
-          item_image: 'https://cooponline.vn/wp-content/uploads/2020/04/banh-quy-socola-oreo-socola-119-6g-20220927.jpg',
-          item_cost: 8000,
-          item_expirationDate: '2024-01-01'
-      }
-    ];
+    //Token and client id
+    const token = localStorage.getItem('token');
+    const clientId = localStorage.getItem('clientId');
+
     React.useEffect(() =>{
       const fetchProducts = async () => {
-          const url = `https://reqres.in/api/users`;
           try {
-              // const res = await axios.get(url);
-              // const data = res.data;
-              
+              const res = await InventoryApi.getAllInventoryItems({token, clientId});
+              const data = res.data;
               setRows(data);
               setOriginalRows(data);
           } catch (error) {
@@ -325,51 +235,18 @@ export default function InventoryTable(props) {
         console.log(selected);
         setOpenDeletePopUp(false);
         setSelected({});
-      //   await axios.delete('http://localhost:8080/v1/api/deleteExpiredProducts', {
-      //   data: { ids: selected },
-      // });
-      
     };
 
-    const handleEditPopUpSubmit = (editedProduct) => {
+    const handleEditPopUpSubmit = async(editedProduct) => {
       setOpenEditPopUp(false);
       //Post data
+      //console.log(editedProduct);
+
       //Fetch data again => update rows
-      console.log(editedProduct);
-      const newData = [
-        {
-            _id: '657d768648a0c356cab63ff6',
-            item_name: 'Táo',
-            item_type: 'inventory',
-            item_price: 10000,
-            item_quantity: 200,
-            item_image: 'https://waapple.org/wp-content/uploads/2021/06/Variety_Granny-Smith-transparent-658x677.png',
-            item_cost: 8000,
-            item_expirationDate: '2023-12-29'
-        },
-        {
-            _id: '657d768648a0c356cab63ff7',
-            item_name: 'Coca',
-            item_type: 'inventory',
-            item_price: 10000,
-            item_quantity: 150,
-            item_image: 'https://thegioidouong.net/wp-content/uploads/2021/06/coca-300ml-chai-nhua.jpg',
-            item_cost: 8000,
-            item_expirationDate: '2024-01-01'
-        },
-        {
-            _id: '657d768648a0c356cab63ff8',
-            item_name: 'Oreo',
-            item_type: 'inventory',
-            item_price: 15000,
-            item_quantity: 150,
-            item_image: 'https://cooponline.vn/wp-content/uploads/2020/04/banh-quy-socola-oreo-socola-119-6g-20220927.jpg',
-            item_cost: 8000,
-            item_expirationDate: '2024-01-01'
-        },
-      ]
-      setRows(newData);
-      setOriginalRows(newData);
+      const res = await InventoryApi.getAllInventoryItems({token, clientId});
+      const data = res.data;
+      setRows(data);
+      setOriginalRows(data);
       setSelected({})
     };
     
@@ -425,18 +302,7 @@ export default function InventoryTable(props) {
                         sx={{ cursor: 'pointer' }}
                     >
                         <TableCell padding="checkbox"></TableCell>
-                        {/* {headCells.map((cell, index) => (
-                            <TableCell
-                                key={cell.id}
-                                id={labelId}
-                                scope="row"
-                                padding='none'
-                                sx={{color: 'text.white', paddingTop: '1rem', paddingBottom: '1rem'}}
-                            >
-                            {row[cell.id]}
-                            </TableCell>
-                        ))} */}
-
+                        
                         <TableCell
                           id={labelId}
                           scope="row"
@@ -455,7 +321,7 @@ export default function InventoryTable(props) {
                           sx={{color: 'text.white', paddingTop: '1rem', paddingBottom: '1rem'}}
                         >
                             {
-                              <img src={row.item_image} className='h-[60px] w-[60px] flex-none bg-gray-50'></img>
+                              row.inventoryItem_name
                             }
                         </TableCell>
 
@@ -466,7 +332,7 @@ export default function InventoryTable(props) {
                           sx={{color: 'text.white', paddingTop: '1rem', paddingBottom: '1rem'}}
                         >
                             {
-                              row.item_name
+                              row.inventoryItem_quantity
                             }
                         </TableCell>
 
@@ -477,18 +343,7 @@ export default function InventoryTable(props) {
                           sx={{color: 'text.white', paddingTop: '1rem', paddingBottom: '1rem'}}
                         >
                             {
-                              row.item_quantity
-                            }
-                        </TableCell>
-
-                        <TableCell
-                          id={labelId}
-                          scope="row"
-                          padding='none'
-                          sx={{color: 'text.white', paddingTop: '1rem', paddingBottom: '1rem'}}
-                        >
-                            {
-                              row.item_expirationDate
+                              row.inventoryItem_exp
                             }
                         </TableCell>
                     </TableRow>

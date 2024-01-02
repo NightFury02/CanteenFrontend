@@ -1,11 +1,11 @@
 import axios from "axios";
-import { ORDER_URL} from "./configApi";
+import { LOCAL_URL} from "./configApi";
 
 class OrderApi{
     async getAllOrders({ token, clientId }){
         try{
             const res = await axios.get(
-                `${ORDER_URL}`,
+                `${LOCAL_URL}`,
                 {},
                 {
                     headers: configHeader({ token, clientId }),
@@ -25,7 +25,7 @@ class OrderApi{
     async createOrder(listItems){
         try{
             const res = await axios.post(
-                `${ORDER_URL}/new`,
+                `${LOCAL_URL}/new`,
                 listItems,
                 {
                     headers: configHeader({ token, clientId })

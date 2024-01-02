@@ -20,25 +20,19 @@ const StaffInventory = () => {
       label: 'Mã sản phẩm',
     },
     {
-      id: 'item_image',
-      numeric: false,
-      disablePadding: true,
-      label: 'Ảnh',
-    },
-    {
-      id: 'item_name',
+      id: 'inventoryItem_name',
       numeric: false,
       disablePadding: true,
       label: 'Tên sản phẩm',
     },
     {
-      id: 'item_quantity',
+      id: 'inventoryItem_quantity',
       numeric: true,
       disablePadding: true,
       label: 'Số lượng',
     },
     {
-      id: 'item_expirationDate',
+      id: 'inventoryItem_exp',
       numeric: false,
       disablePadding: true,
       label: 'Hạn sử dụng',

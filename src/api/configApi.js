@@ -9,4 +9,4 @@ const configHeader = ({ token, clientId }) => {
   };
 };
 
-export { BASE_URL, ORDER_URL, configHeader };
+export { BASE_URL, LOCAL_URL, configHeader };

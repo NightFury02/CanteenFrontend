@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { Container } from "../../containers";
 import { listMenuBasedOnUser } from "../../constants";
 import { useEffect } from "react";
-import userApi from "../../api/userApi";
+import UserApi from "../../api/userApi";
 
 const Layout = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -15,7 +15,7 @@ const Layout = ({ children }) => {
   const isLogin = user ? true : false;
   useEffect(() => {
     if (token && clientId) {
-      userApi.loginSuccess({ token, clientId }).then((res) => {
+      UserApi.loginSuccess({ token, clientId }).then((res) => {
         setUser(res?.data?.user);
       });
     } else {
