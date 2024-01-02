@@ -1,10 +1,10 @@
 import axios from "axios";
-import { BASE_URL, configHeader } from "./configApi";
+import { LOCAL_URL, BASE_URL, configHeader } from "./configApi";
 
 class UserApi {
   async register(data) {
     try {
-      const res = await axios.post(`${BASE_URL}/auth/signup`, data);
+      const res = await axios.post(`${LOCAL_URL}/auth/signup`, data);
 
       return res.data;
     } catch (error) {
@@ -18,7 +18,7 @@ class UserApi {
 
   async login(data) {
     try {
-      const res = await axios.post(`${BASE_URL}/auth/login`, data);
+      const res = await axios.post(`${LOCAL_URL}/auth/login`, data);
 
       return res.data;
     } catch (error) {
@@ -33,7 +33,7 @@ class UserApi {
   async loginSuccess({ token, clientId }) {
     try {
       const res = await axios.post(
-        `${BASE_URL}/auth/login-success`,
+        `${LOCAL_URL}/auth/login-success`,
         {},
         {
           headers: configHeader({ token, clientId }),
@@ -53,7 +53,7 @@ class UserApi {
   async logout({ token, clientId }) {
     try {
       const res = await axios.post(
-        `${BASE_URL}/auth/logout`,
+        `${LOCAL_URL}/auth/logout`,
         {},
         {
           headers: configHeader({ token, clientId }),
