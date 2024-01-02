@@ -4,27 +4,41 @@ import { ORDER_URL} from "./configApi";
 class OrderApi{
     async getAllOrders({ token, clientId }){
         try{
-            const orders = await axios.get(
+            const res = await axios.get(
                 `${ORDER_URL}`,
                 {},
                 {
                     headers: configHeader({ token, clientId }),
                 }
             );
-            return orders.data;
+            return res.data;
         }
-        catch(e){
-
+        catch (error) {
+            console.log(error);
+            return {
+              error: true,
+              response: error?.response,
+            };
         }
     }
 
-    async createOrder(id){
+    async createOrder(listItems){
         try{
-            const orderDetail = await axios.get(`${ORDER_URL}/new`);
-            console.log(orderDetail);
+            const res = await axios.post(
+                `${ORDER_URL}/new`,
+                listItems,
+                {
+                    headers: configHeader({ token, clientId })
+                }
+            );
+            return res.data;
         }
-        catch(e){
-
+        catch (error) {
+            console.log(error);
+            return {
+              error: true,
+              response: error?.response,
+            };
         }
     }
 }
