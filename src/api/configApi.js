@@ -1,5 +1,5 @@
 const BASE_URL = "https://canteen-lzfp.onrender.com/v1/api";
-const LOCAL_URL = "http://localhost:8080/v1/api";
+const LOCAL_URL = "http://localhost:8000/v1/api";
 
 const configHeader = ({ token, clientId }) => {
   return {
