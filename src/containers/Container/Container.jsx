@@ -1,8 +1,29 @@
-import { NavLink } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { NavLink, Navigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import { Logo, LogoutIcon } from "../../assets/svgs";
+import PopUp from "../../components/Popup/Popup";
+import CustomButton from "../../components/CustomButton/CustomButton";
+import UserApi from "../../api/userApi";
 
 const Container = ({ listMenuBasedOnUser, children }) => {
+  const [isLogOutPopUpOpen, setLogOutPopUpOpen] = useState(false);
+  const navigate = useNavigate();
+  const handleOnLogOut = async () => {
+    setLogOutPopUpOpen(false);
+    try{
+      const token = localStorage.getItem('token');
+      const clientId = localStorage.getItem('clientId');
+      UserApi.logout({token, clientId}).then(() => {
+        navigate("/login");
+      });
+    }
+    catch(err){
+      //
+    }
+  }
+
   return (
     <main className="w-full h-[100vh] flex bg-dark-line">
       <aside
@@ -32,7 +53,7 @@ const Container = ({ listMenuBasedOnUser, children }) => {
         </ul>
 
         <button>{
-          <LogoutIcon className="fill-primary w-[20px] h-[20px] mb-10"></LogoutIcon>
+          <LogoutIcon className="fill-primary w-[20px] h-[20px] mb-10" onClick={()=>{setLogOutPopUpOpen(true)}}></LogoutIcon>
         }</button>
       </aside>
 
@@ -41,6 +62,31 @@ const Container = ({ listMenuBasedOnUser, children }) => {
           {children}
         </div>
       </section>
+
+      <PopUp
+        title="Đăng xuất"
+        isOpen={isLogOutPopUpOpen}
+        handleCloseBtnClick={() => {setLogOutPopUpOpen(false)}}
+      >
+        {
+          <div className='flex flex-col'>
+            <h2 className='text-white pb-5'>Bạn có chắc chắn muốn đăng xuất?</h2>
+            <div className='flex justify-between gap-2'>
+                <CustomButton
+                    title='Hủy'
+                    variant='secondary'
+                    onAction={() => {setLogOutPopUpOpen(false)}}
+                    className="py-1 px-8"
+                />
+                <CustomButton
+                    title='Xác nhận'
+                    onAction={handleOnLogOut}
+                    className="py-1 px-4"
+                />
+            </div>
+          </div>
+        }
+      </PopUp>
     </main>
   );
 };
