@@ -47,12 +47,32 @@ const StaffDashboard = () => {
     const fetchOrderList = async () => {
         const url = `https://reqres.in/api/users`;
         try {
-          // const res = await axios.get(url);
-          // const data = res.data;
           const token = localStorage.getItem("token");
           const clientId = localStorage.getItem("clientId");
-          const orders = orderApi.getAllOrders({token, clientId});
+          
+          const orders = await orderApi.getAllOrders({token, clientId});
           console.log(orders);
+
+          const listItems = [];
+          const timeReceive = "1:30AM";
+          //const newOrder = await orderApi.createOrder({token, clientId}, listItems, timeReceive);
+          //console.log(newOrder);
+
+          const orderID = '65944b7c134678d146e3e890';
+          //const deleteID = "659449f5134678d146e3e81c2";
+
+          const confirmPayment = await orderApi.confirmPayment({token, clientId}, orderID);
+          console.log(confirmPayment);
+
+          //const deleteOrder = await orderApi.deleteOrder({token, clientId}, deleteID);
+          //console.log(deleteOrder);
+
+          const orderDetail = await orderApi.getOrderDetail({token, clientId}, orderID);
+          console.log(orderDetail);
+
+          const getAllOrdersOfUser = await orderApi.getAllOrdersOfUser({token, clientId}, clientId);
+          console.log(getAllOrdersOfUser);
+
           const data = [
               {
                   id: '1', 
