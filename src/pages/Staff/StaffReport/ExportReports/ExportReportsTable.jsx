@@ -17,6 +17,7 @@ import Paper from '@mui/material/Paper';
 import { visuallyHidden } from '@mui/utils';
 import PopUp from '../../../../components/Popup/Popup';
 import ExportReportDetail from './ExportReportDetail';
+import DateRangePicker from '../../../../components/DateRangePicker/DateRangePicker';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -133,7 +134,11 @@ const ExportReportsTable = (props) => {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const [rows, setRows] = React.useState([]);
-
+    const [filterDate, setDateRange] = React.useState({
+      start: "",
+      end: "",
+    });
+    
     //Handle edit pop up
     const [openEditPopUp, setOpenEditPopUp] = React.useState(false)
 
@@ -156,6 +161,23 @@ const ExportReportsTable = (props) => {
       }
       fetchGDNList()
     }, []);
+
+    const handleDateRange = (dateRange) => {
+      console.log(dateRange);
+      setDateRange(dateRange);
+    }
+
+    const handleResetFilter = (dateRange) => {
+      setDateRange(dateRange);
+    }
+
+    //Filter based on the range
+    const filteredData = filterDate.start && filterDate.end ? rows.filter((row) => {
+      const createDate = new Date(row.createdAt).getTime();
+      const startDate = new Date(filterDate.start).getTime();
+      const endDate = new Date(filterDate.end).getTime();
+      return createDate >= startDate && createDate <= endDate;
+    }): rows;
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -199,6 +221,7 @@ const ExportReportsTable = (props) => {
     return (
       <Box sx={{ width: '100%' }}>
         <Paper sx={{ width: '100%', mb: 2 }}>
+            <DateRangePicker getDateRange={handleDateRange} resetFilter={handleResetFilter}/>
             <EnhancedTableToolbar 
                 selected={Object.keys(selected).length === 0 ? false : true} 
                 title={title}
