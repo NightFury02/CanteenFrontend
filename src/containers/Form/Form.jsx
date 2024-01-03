@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
-import userApi from "../../api/userApi";
+import UserApi from "../../api/userApi";
 import { background } from "../../assets/imgs";
 import { Loading, Login, Register } from "../../components";
 import PropTypes from "prop-types";
@@ -24,7 +24,7 @@ const Form = ({ type = "login" }) => {
 
   const onSubmitForm = async (e) => {
     e.preventDefault();
-    const apiFn = type === "login" ? userApi.login : userApi.register;
+    const apiFn = type === "login" ? UserApi.login : UserApi.register;
     const data = {};
 
     // Create data body to fetch api

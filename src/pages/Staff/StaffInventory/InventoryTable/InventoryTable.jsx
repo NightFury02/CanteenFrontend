@@ -1,5 +1,5 @@
 import * as React from 'react';
-import axios from 'axios';
+import InventoryApi from "../../../../api/inventoryApi";
 import PropTypes from 'prop-types';
 import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -17,10 +17,8 @@ import Paper from '@mui/material/Paper';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
 import { visuallyHidden } from '@mui/utils';
 import PopUp from '../../../../components/Popup/Popup';
-import EditForm from '../EditForm/EditForm';
 import CustomButton from '../../../../components/CustomButton/CustomButton';
 import Searchbar from '../../../../components/SearchBar/SearchBar';
 
@@ -98,7 +96,7 @@ EnhancedTableHead.propTypes = {
 };
 
 function EnhancedTableToolbar(props) {
-  const { selected, handleDeleteIconClick, handleEditIconClick, title, handleSearchBar } = props;
+  const { selected, handleDeleteIconClick, title, handleSearchBar } = props;
 
   return (
     <Toolbar
@@ -141,11 +139,6 @@ function EnhancedTableToolbar(props) {
                   <DeleteIcon sx={{color: 'text.white', fontSize: 'fontSize.icon'}}/>
               </IconButton>
             </Tooltip>
-            <Tooltip title="Edit">
-              <IconButton onClick={handleEditIconClick}>
-                  <EditIcon sx={{color: 'text.white', fontSize: 'fontSize.icon'}}/>
-              </IconButton>
-            </Tooltip>
         </>
       )}
     </Toolbar>
@@ -155,126 +148,40 @@ function EnhancedTableToolbar(props) {
 EnhancedTableToolbar.propTypes = {
   selected: PropTypes.bool,
   handleDeleteIconClick: PropTypes.func.isRequired,
-  handleEditIconClick: PropTypes.func.isRequired,
   title: PropTypes.string
 };
 
 export default function InventoryTable(props) {
-    const {headCells, title} = props;
+    const {
+      headCells, 
+      title, 
+      inventoryTableRows,
+      setInventoryTableRows,
+      inventoryTableOriginalRows,
+      setInventoryTableOriginalRows,
+      setExpiredTableRows,
+      setExpiredTableOriginalRows
+    } = props;
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('id');
     const [selected, setSelected] = React.useState({});
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
-    const [rows, setRows] = React.useState([]);
-    const [originalRows, setOriginalRows] = React.useState([]);
 
-    //Handle edit pop up
-    const [openEditPopUp, setOpenEditPopUp] = React.useState(false)
-    //Handle delete pop uo
+    //Handle delete pop up
     const [openDeletePopUp, setOpenDeletePopUp] = React.useState(false)
 
-    const data = [
-      {
-          _id: '657d768648a0c356cab63ff6',
-          item_name: 'Táo',
-          item_type: 'inventory',
-          item_price: 10000,
-          item_quantity: 200,
-          item_image: 'https://waapple.org/wp-content/uploads/2021/06/Variety_Granny-Smith-transparent-658x677.png',
-          item_cost: 8000,
-          item_expirationDate: '2023-12-29'
-      },
-      {
-          _id: '657d768648a0c356cab63ff7',
-          item_name: 'Coca',
-          item_type: 'inventory',
-          item_price: 10000,
-          item_quantity: 150,
-          item_image: 'https://thegioidouong.net/wp-content/uploads/2021/06/coca-300ml-chai-nhua.jpg',
-          item_cost: 8000,
-          item_expirationDate: '2024-01-01'
-      },
-      {
-          _id: '657d768648a0c356cab63ff8',
-          item_name: 'Oreo',
-          item_type: 'inventory',
-          item_price: 15000,
-          item_quantity: 150,
-          item_image: 'https://cooponline.vn/wp-content/uploads/2020/04/banh-quy-socola-oreo-socola-119-6g-20220927.jpg',
-          item_cost: 8000,
-          item_expirationDate: '2024-01-01'
-      },
-      {
-          _id: '657d768648a0c356cab63ff9',
-          item_name: 'Táo',
-          item_type: 'inventory',
-          item_price: 10000,
-          item_quantity: 200,
-          item_image: 'https://waapple.org/wp-content/uploads/2021/06/Variety_Granny-Smith-transparent-658x677.png',
-          item_cost: 8000,
-          item_expirationDate: '2023-12-29'
-      },
-      {
-          _id: '657d768648a0c356cab63ff10',
-          item_name: 'Coca',
-          item_type: 'inventory',
-          item_price: 10000,
-          item_quantity: 150,
-          item_image: 'https://thegioidouong.net/wp-content/uploads/2021/06/coca-300ml-chai-nhua.jpg',
-          item_cost: 8000,
-          item_expirationDate: '2024-01-01'
-      },
-      {
-          _id: '657d768648a0c356cab63ff11',
-          item_name: 'Oreo',
-          item_type: 'inventory',
-          item_price: 15000,
-          item_quantity: 150,
-          item_image: 'https://cooponline.vn/wp-content/uploads/2020/04/banh-quy-socola-oreo-socola-119-6g-20220927.jpg',
-          item_cost: 8000,
-          item_expirationDate: '2024-01-01'
-      },
-      {
-          _id: '657d768648a0c356cab63ff12',
-          item_name: 'Táo',
-          item_type: 'inventory',
-          item_price: 10000,
-          item_quantity: 200,
-          item_image: 'https://waapple.org/wp-content/uploads/2021/06/Variety_Granny-Smith-transparent-658x677.png',
-          item_cost: 8000,
-          item_expirationDate: '2023-12-29'
-      },
-      {
-          _id: '657d768648a0c356cab63ff13',
-          item_name: 'Coca',
-          item_type: 'inventory',
-          item_price: 10000,
-          item_quantity: 150,
-          item_image: 'https://thegioidouong.net/wp-content/uploads/2021/06/coca-300ml-chai-nhua.jpg',
-          item_cost: 8000,
-          item_expirationDate: '2024-01-01'
-      },
-      {
-          _id: '657d768648a0c356cab63ff14',
-          item_name: 'Oreo',
-          item_type: 'inventory',
-          item_price: 15000,
-          item_quantity: 150,
-          item_image: 'https://cooponline.vn/wp-content/uploads/2020/04/banh-quy-socola-oreo-socola-119-6g-20220927.jpg',
-          item_cost: 8000,
-          item_expirationDate: '2024-01-01'
-      }
-    ];
+    //Token and client id
+    const token = localStorage.getItem('token');
+    const clientId = localStorage.getItem('clientId');
+
     React.useEffect(() =>{
       const fetchProducts = async () => {
-          const url = `https://reqres.in/api/users`;
           try {
-              // const res = await axios.get(url);
-              // const data = res.data;
-              
-              setRows(data);
-              setOriginalRows(data);
+              const res = await InventoryApi.getAllInventoryItems({token, clientId});
+              const data = res.data;
+              setInventoryTableRows(data);
+              setInventoryTableOriginalRows(data);
           } catch (error) {
           console.error('Error fetching expired products:', error);
           }
@@ -283,16 +190,16 @@ export default function InventoryTable(props) {
     }, []);
 
     const handleSearchBar = async (query) => {
-        console.log(query);
-        if (originalRows.length > 0) {
-            if (query !== ""){
-                const searchResult = originalRows.filter((item) => item.item_name.toLowerCase().includes(query.toLowerCase()));
-                setRows(searchResult);
-            }
-            else{
-            setRows(originalRows);
-            }
+      console.log(query);
+      if (inventoryTableOriginalRows.length > 0) {
+        if (query !== ""){
+          const searchResult = inventoryTableOriginalRows.filter((item) => item.inventoryItem_name.toLowerCase().includes(query.toLowerCase()));
+          setInventoryTableRows(searchResult);
         }
+        else{
+          setInventoryTableRows(inventoryTableOriginalRows);
+        }
+      }
     };
 
     const handleRequestSort = (event, property) => {
@@ -321,65 +228,46 @@ export default function InventoryTable(props) {
       setPage(0);
     };
 
-    const handleOnDelete = async () => {
+    const handleOnDelete = () => {
         console.log(selected);
+        const deleteProducts = async () => {
+          try {
+            const body = {
+              "userId": clientId,
+              "item_list": [
+                {
+                  inventoryItem: selected._id
+                }
+              ]
+            }
+            const res = await InventoryApi.deleteInventoryItems({token, clientId}, body);
+            console.log(res);
+            const newData = await InventoryApi.getAllInventoryItems({token, clientId});
+
+            //Update inventory table
+            setInventoryTableRows(newData.data);
+            setInventoryTableOriginalRows(newData.data);
+
+            //Update expired table
+            setExpiredTableRows(newData.data);
+            setExpiredTableOriginalRows(newData.data);
+
+          } catch (error) {
+            console.error('Error fetching expired products:', error);
+          }
+        }
+        deleteProducts()
         setOpenDeletePopUp(false);
         setSelected({});
-      //   await axios.delete('http://localhost:8080/v1/api/deleteExpiredProducts', {
-      //   data: { ids: selected },
-      // });
-      
-    };
-
-    const handleEditPopUpSubmit = (editedProduct) => {
-      setOpenEditPopUp(false);
-      //Post data
-      //Fetch data again => update rows
-      console.log(editedProduct);
-      const newData = [
-        {
-            _id: '657d768648a0c356cab63ff6',
-            item_name: 'Táo',
-            item_type: 'inventory',
-            item_price: 10000,
-            item_quantity: 200,
-            item_image: 'https://waapple.org/wp-content/uploads/2021/06/Variety_Granny-Smith-transparent-658x677.png',
-            item_cost: 8000,
-            item_expirationDate: '2023-12-29'
-        },
-        {
-            _id: '657d768648a0c356cab63ff7',
-            item_name: 'Coca',
-            item_type: 'inventory',
-            item_price: 10000,
-            item_quantity: 150,
-            item_image: 'https://thegioidouong.net/wp-content/uploads/2021/06/coca-300ml-chai-nhua.jpg',
-            item_cost: 8000,
-            item_expirationDate: '2024-01-01'
-        },
-        {
-            _id: '657d768648a0c356cab63ff8',
-            item_name: 'Oreo',
-            item_type: 'inventory',
-            item_price: 15000,
-            item_quantity: 150,
-            item_image: 'https://cooponline.vn/wp-content/uploads/2020/04/banh-quy-socola-oreo-socola-119-6g-20220927.jpg',
-            item_cost: 8000,
-            item_expirationDate: '2024-01-01'
-        },
-      ]
-      setRows(newData);
-      setOriginalRows(newData);
-      setSelected({})
     };
     
     const isSelected = (row) => selected === row;
 
     // Avoid a layout jump when reaching the last page with empty rows.
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - inventoryTableRows.length) : 0;
 
     //console.log(emptyRows);
-    const visibleRows = stableSort(rows, getComparator(order, orderBy)).slice(
+    const visibleRows = stableSort(inventoryTableRows, getComparator(order, orderBy)).slice(
       page * rowsPerPage,
       page * rowsPerPage + rowsPerPage,
     );
@@ -393,7 +281,6 @@ export default function InventoryTable(props) {
                 selected={Object.keys(selected).length === 0 ? false : true} 
                 handleDeleteIconClick={()=> {setOpenDeletePopUp(true)}} 
                 title={title}
-                handleEditIconClick={() => {setOpenEditPopUp(true)}}
                 handleSearchBar={handleSearchBar}
              />
             <TableContainer>
@@ -425,18 +312,7 @@ export default function InventoryTable(props) {
                         sx={{ cursor: 'pointer' }}
                     >
                         <TableCell padding="checkbox"></TableCell>
-                        {/* {headCells.map((cell, index) => (
-                            <TableCell
-                                key={cell.id}
-                                id={labelId}
-                                scope="row"
-                                padding='none'
-                                sx={{color: 'text.white', paddingTop: '1rem', paddingBottom: '1rem'}}
-                            >
-                            {row[cell.id]}
-                            </TableCell>
-                        ))} */}
-
+                        
                         <TableCell
                           id={labelId}
                           scope="row"
@@ -455,7 +331,7 @@ export default function InventoryTable(props) {
                           sx={{color: 'text.white', paddingTop: '1rem', paddingBottom: '1rem'}}
                         >
                             {
-                              <img src={row.item_image} className='h-[60px] w-[60px] flex-none bg-gray-50'></img>
+                              row.inventoryItem_name
                             }
                         </TableCell>
 
@@ -466,7 +342,7 @@ export default function InventoryTable(props) {
                           sx={{color: 'text.white', paddingTop: '1rem', paddingBottom: '1rem'}}
                         >
                             {
-                              row.item_name
+                              row.inventoryItem_quantity
                             }
                         </TableCell>
 
@@ -477,7 +353,7 @@ export default function InventoryTable(props) {
                           sx={{color: 'text.white', paddingTop: '1rem', paddingBottom: '1rem'}}
                         >
                             {
-                              row.item_quantity
+                              row.cost
                             }
                         </TableCell>
 
@@ -488,7 +364,7 @@ export default function InventoryTable(props) {
                           sx={{color: 'text.white', paddingTop: '1rem', paddingBottom: '1rem'}}
                         >
                             {
-                              row.item_expirationDate
+                              row.inventoryItem_exp
                             }
                         </TableCell>
                     </TableRow>
@@ -509,7 +385,7 @@ export default function InventoryTable(props) {
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={rows.length}
+                count={inventoryTableRows.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
@@ -517,18 +393,6 @@ export default function InventoryTable(props) {
                 sx={{bgcolor: 'background.secondary', color: 'text.white'}}
             />
         </Paper>
-
-        <PopUp
-          title="CẬP NHẬT"
-          isOpen={openEditPopUp}
-          handleCloseBtnClick={() => {setOpenEditPopUp(false); setSelected({})}}
-        >
-          {<EditForm
-            targetProduct={selected}
-            onSubmit={handleEditPopUpSubmit}
-            onClose={()=>{setOpenEditPopUp(false); setSelected({})}}
-          />}
-        </PopUp>
 
         <PopUp
           title="Xóa sản phẩm"
