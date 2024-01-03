@@ -56,8 +56,23 @@ const Form = ({ type = "login" }) => {
 
     localStorage.setItem("token", res?.data?.token);
     localStorage.setItem("clientId", res?.data?.user?._id);
+    const token = localStorage.getItem("token");
+    const clientId = localStorage.getItem("clientId");
+    const response = await UserApi.loginSuccess({token, clientId});
+    const role = response.data?.user?.role;
     setLoading(false);
-    return navigate("/");
+    if (role === "admin"){
+      return navigate('/admin/home');
+    }
+    else if (role === "staff"){
+      return navigate('/staff/home');
+    }
+    else if (role === "user"){
+      return navigate('/user/home');
+    }
+    else {
+      return navigate('/');
+    }
   };
 
   return (

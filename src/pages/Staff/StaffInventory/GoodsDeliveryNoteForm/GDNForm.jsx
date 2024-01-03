@@ -1,48 +1,41 @@
 import React from 'react';
-import axios from 'axios';
+import InventoryApi from '../../../../api/inventoryApi';
 import CustomButton from '../../../../components/CustomButton/CustomButton'
 
 const GDNForm = ({closePopUp}) => {
     const [inputList, setInputList] = React.useState([
-        {id: '', name: '', salePrice: '', saleQuantity: ''}
+        {inventoryItem: '', price: '', item_quantity: ''}
     ]);
 
-    const [originalList, setOriginalList] = React.useState([
-        {id: '1', name: 'Chuối', image: '', price: 23000, quantity: 400, exirationDate: '12-20-2023'},
-        {id: '2', name: 'Táo', image: '', price: 23000, quantity: 400, exirationDate: '12-20-2023'},
-        {id: '3', name: 'Coca', image: '', price: 23000, quantity: 400, exirationDate: '12-20-2023'},
-        {id: '4', name: '7up', image: '', price: 23000, quantity: 400, exirationDate: '12-20-2023'},
-        {id: '5', name: 'Oreo', image: '', price: 23000, quantity: 400, exirationDate: '12-20-2023'},
-        {id: '6', name: 'Kẹo mút', image: '', price: 23000, quantity: 400, exirationDate: '12-20-2023'},
-        {id: '7', name: 'Cam', image: '', price: 23000, quantity: 400, exirationDate: '12-20-2023'},
-        {id: '8', name: 'Sting', image: '', price: 23000, quantity: 400, exirationDate: '12-20-2023'},
-        {id: '9', name: 'Red Bull', image: '', price: 23000, quantity: 400, exirationDate: '12-20-2023'},
-    ]);
+    const [originalList, setOriginalList] = React.useState([]);
 
     //Get list of products in the inventory
-    // React.useEffect(() => {
-    //     const getOriginalList = async () => {
-    //         try{
-    //             const list = await axios.get('');
-    //             setOriginalList(list);
-    //         }
-    //         catch(e){
-    //             console.log(e);
-    //         }
-    //     }
-    //     getOriginalList();
-    // }, [])
+    React.useEffect(() => {
+        const getOriginalList = async () => {
+            const token = localStorage.getItem('token');
+            const clientId = localStorage.getItem('clientId');
+            try{
+                const res = await InventoryApi.getAllInventoryItems({token, clientId});
+                const data = res.data;
+                setOriginalList(data);
+            }
+            catch(e){
+                console.log(e);
+            }
+        }
+        getOriginalList();
+    }, [])
 
     const handleNameInputChange = (e, index) => {
         const { value } = e.target;
         const list = [...inputList];
 
         const selectedProductId = value;
-        const selectedProduct = originalList.find(product => product.id === selectedProductId);
+        const selectedProduct = originalList.find(product => product._id === selectedProductId);
         
         if (selectedProduct) {
-            list[index]['id'] = selectedProduct.id;
-            list[index]['name'] = selectedProduct.name;
+            list[index]['id'] = selectedProduct._id;
+            list[index]['name'] = selectedProduct.inventoryItem_name;
             setInputList(list);
         }
     };

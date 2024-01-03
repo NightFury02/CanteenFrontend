@@ -3,7 +3,7 @@ import { HomeIcon, SettingIcon, EditIcon, LogoutIcon, Management, NotificationIc
 const listMenuBasedOnUser = {
   user: [
     {
-      path: "/",
+      path: "/user/home",
       icon: HomeIcon,
     },
     {
@@ -17,7 +17,7 @@ const listMenuBasedOnUser = {
   ],
   staff: [
     {
-      path: "/",
+      path: "/staff/home",
       icon: HomeIcon,
     },
     {
@@ -47,7 +47,7 @@ const listMenuBasedOnUser = {
   ],
   admin: [
     {
-      path: "/",
+      path: "/admin/home",
       icon: HomeIcon,
     },
     {
