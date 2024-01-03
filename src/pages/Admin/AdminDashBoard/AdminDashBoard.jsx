@@ -55,14 +55,14 @@ const AdminDashBoard = () => {
       <div className="flex justify-between">
         <div className="flex flex-col p-3">
             <div className="font-barlow text-4xl text-white">
-              Dashboard
+              Báo cáo
             </div>
             <div className="mt-2">
               <CurrentDate />
             </div>
         </div>
       </div>
-      <div className="flex gap-4">
+      {/*<div className="flex gap-4">
         <div className='box-border text-white bg-dark_bg border-dark_bg h-fit w-fit p-5 border-4 rounded-lg'>
           <div className='flex items-center gap-2'>
             <MoneyIcon className='w-8 bg-dark_line m-1 rounded-md'/>
@@ -90,9 +90,8 @@ const AdminDashBoard = () => {
           <span className='text-3xl'>1,234</span><br></br>
           Tổng người dùng hôm nay
         </div>
-      </div>
+      </div>*/}
       <div className='bg-dark_bg h-auto p-10 mt-5 rounded-lg text-white grid gap-2'>
-        <span className='text-xl'>Báo cáo</span><br></br>
         <PopupButton 
           title={'Báo cáo kho theo ngày'}
           className="p-3 w-80 rounded-lg"

@@ -1,10 +1,10 @@
 import axios from "axios";
-import { BASE_URL, LOCAL_URL, configHeader} from "./configApi";
+import { BASE_URL, configHeader} from "./configApi";
 
 class ReportApi{
     async createDailyInventoryReport({ token, clientId }){
         try{
-            const res = await axios.post(`${LOCAL_URL}/report/inventoryD/new`,
+            const res = await axios.post(`${BASE_URL}/report/inventoryD/new`,
             {
                 "userId": clientId,
             },
@@ -24,7 +24,7 @@ class ReportApi{
 
     async createDailyIncomeReport({ token, clientId }){
         try{
-            const res = await axios.post(`${LOCAL_URL}/report/incomeD/new`,
+            const res = await axios.post(`${BASE_URL}/report/incomeD/new`,
             {
                 "userId": clientId,
             },
@@ -44,7 +44,7 @@ class ReportApi{
 
     async createMonthlyIncomeReport({ token, clientId }){
         try{
-            const res = await axios.post(`${LOCAL_URL}/report/incomeM/new`,
+            const res = await axios.post(`${BASE_URL}/report/incomeM/new`,
             {
                 "userId": clientId,
             },
@@ -64,7 +64,7 @@ class ReportApi{
 
     async getAllDailyInventoryReport({ token, clientId }){
         try{
-            const res = await axios.get(`${LOCAL_URL}/report/inventoryD/all`, {
+            const res = await axios.get(`${BASE_URL}/report/inventoryD/all`, {
                 headers: configHeader({ token, clientId }),
             });
             return res.data;
@@ -74,13 +74,14 @@ class ReportApi{
             return {
               error: true,
               response: error?.response,
+              data: []
             };
         }
     }
 
     async getAllDailyIncomeReport({ token, clientId }){
         try{
-            const res = await axios.get(`${LOCAL_URL}/report/incomeD/all`, {
+            const res = await axios.get(`${BASE_URL}/report/incomeD/all`, {
                 headers: configHeader({ token, clientId }),
             });
             return res.data;
@@ -90,13 +91,14 @@ class ReportApi{
             return {
               error: true,
               response: error?.response,
+              data: []
             };
         }
     }
 
     async getAllMonthlyIncomeReport({ token, clientId }){
         try{
-            const res = await axios.get(`${LOCAL_URL}/report/incomeM/all`, {
+            const res = await axios.get(`${BASE_URL}/report/incomeM/all`, {
                 headers: configHeader({ token, clientId }),
             });
             return res.data;
@@ -106,6 +108,7 @@ class ReportApi{
             return {
               error: true,
               response: error?.response,
+              data: []
             };
         }
     }

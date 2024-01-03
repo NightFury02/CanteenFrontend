@@ -8,6 +8,10 @@ import { Card, CardMedia, CardContent, CardHeader, CardActions } from '@mui/mate
 import {Input, Toolbar, Typography, Box, Paper, Button, Grid, Pagination, Stack } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 import CustomButton from '../../../components/CustomButton/CustomButton';
+import orderApi from "../../../api/orderApi";
+
+const token = localStorage.getItem("token");
+const clientId = localStorage.getItem("clientId");
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -127,166 +131,18 @@ EnhancedTableToolbar.propTypes = {
 };
 
 const OrderList = (props) => {
-    const {headCells, title} = props;
+    const {headCells, title, rows} = props;
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('id');
     const [selected, setSelected] = React.useState({});
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(25);
-    const [rows, setRows] = React.useState([]);
     const [openCard, setOpenCard] = React.useState(false);
     const [selectedRowData, setSelectedRowData] = React.useState(null);
-    const [dialogPosition, setDialogPosition] = React.useState({ top: 0, left: 0 });
     const [received, setReceived] = React.useState(0);
     const [total, setTotal] = React.useState(0);
     const [change, setChange] = React.useState(0);
 
-    React.useEffect(() => {
-      const fetchExpiredProducts = async () => {
-          const url = `https://reqres.in/api/users`;
-          try {
-            // const res = await axios.get(url);
-            // const data = res.data;
-            const data = [
-                {
-                    id: '1', 
-                    staffName: 'Phung Le Hoang Ngoc', 
-                    createDate: '2023-12-20', 
-                    total: 1500000, 
-                    data: [
-                        {
-                            id: '1223',
-                            name: 'Táo',
-                            image: 'https://waapple.org/wp-content/uploads/2021/06/Variety_Granny-Smith-transparent-658x677.png',
-                            price: 10000,
-                            quantity: 200,
-                            expirationDate: '2023-12-29'
-                        },
-                        {
-                            id: '1224',
-                            name: 'Coca',
-                            image: 'https://thegioidouong.net/wp-content/uploads/2021/06/coca-300ml-chai-nhua.jpg',
-                            price: 15000,
-                            quantity: 150,
-                            expirationDate: '2024-01-01'
-                        },
-                        {
-                            id: '1225',
-                            name: 'Oreo',
-                            image: 'https://cooponline.vn/wp-content/uploads/2020/04/banh-quy-socola-oreo-socola-119-6g-20220927.jpg',
-                            price: 15000,
-                            quantity: 150,
-                            expirationDate: '2024-01-01'
-                        }
-                    ]
-                },
-
-                {
-                    id: '2', 
-                    staffName: 'Phung Le Hoang Ngoc', 
-                    createDate: '2023-12-20', 
-                    total: 1500000, 
-                    data: [
-                        {
-                            id: '1223',
-                            name: 'Táo',
-                            image: 'https://waapple.org/wp-content/uploads/2021/06/Variety_Granny-Smith-transparent-658x677.png',
-                            price: 10000,
-                            quantity: 200,
-                            expirationDate: '2023-12-29'
-                        },
-                        {
-                            id: '1224',
-                            name: 'Coca',
-                            image: 'https://thegioidouong.net/wp-content/uploads/2021/06/coca-300ml-chai-nhua.jpg',
-                            price: 15000,
-                            quantity: 150,
-                            expirationDate: '2024-01-01'
-                        },
-                        {
-                            id: '1225',
-                            name: 'Oreo',
-                            image: 'https://cooponline.vn/wp-content/uploads/2020/04/banh-quy-socola-oreo-socola-119-6g-20220927.jpg',
-                            price: 15000,
-                            quantity: 150,
-                            expirationDate: '2024-01-01'
-                        }
-                    ]
-                },
-
-                {
-                    id: '3', 
-                    staffName: 'Phung Le Hoang Ngoc', 
-                    createDate: '2023-12-20', 
-                    total: 1500000, 
-                    data: [
-                        {
-                            id: '1223',
-                            name: 'Táo',
-                            image: 'https://waapple.org/wp-content/uploads/2021/06/Variety_Granny-Smith-transparent-658x677.png',
-                            price: 10000,
-                            quantity: 200,
-                            expirationDate: '2023-12-29'
-                        },
-                        {
-                            id: '1224',
-                            name: 'Coca',
-                            image: 'https://thegioidouong.net/wp-content/uploads/2021/06/coca-300ml-chai-nhua.jpg',
-                            price: 15000,
-                            quantity: 150,
-                            expirationDate: '2024-01-01'
-                        },
-                        {
-                            id: '1225',
-                            name: 'Oreo',
-                            image: 'https://cooponline.vn/wp-content/uploads/2020/04/banh-quy-socola-oreo-socola-119-6g-20220927.jpg',
-                            price: 15000,
-                            quantity: 150,
-                            expirationDate: '2024-01-01'
-                        }
-                    ]
-                },
-
-                {
-                    id: '4', 
-                    staffName: 'Phung Le Hoang Ngoc', 
-                    createDate: '2023-12-20', 
-                    total: 1500000, 
-                    data: [
-                        {
-                            id: '1223',
-                            name: 'Táo',
-                            image: 'https://waapple.org/wp-content/uploads/2021/06/Variety_Granny-Smith-transparent-658x677.png',
-                            price: 10000,
-                            quantity: 200,
-                            expirationDate: '2023-12-29'
-                        },
-                        {
-                            id: '1224',
-                            name: 'Coca',
-                            image: 'https://thegioidouong.net/wp-content/uploads/2021/06/coca-300ml-chai-nhua.jpg',
-                            price: 15000,
-                            quantity: 150,
-                            expirationDate: '2024-01-01'
-                        },
-                        {
-                            id: '1225',
-                            name: 'Oreo',
-                            image: 'https://cooponline.vn/wp-content/uploads/2020/04/banh-quy-socola-oreo-socola-119-6g-20220927.jpg',
-                            price: 15000,
-                            quantity: 150,
-                            expirationDate: '2024-01-01'
-                        }
-                    ]
-                }
-            ]
-            setRows(data);
-          } catch (error) {
-            console.error('Error fetching expired products:', error);
-          }
-      }
-      fetchExpiredProducts()
-    }, []);
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -295,11 +151,12 @@ const OrderList = (props) => {
     };
 
     //Handle on row click
-    const handleClick = (event, row) => {
+    const handleClick = async (event, row) => {
         setSelected(row);
         setOpenCard(true);
-        setSelectedRowData(row.data);
-        setTotal(row.total)
+        const res = await orderApi.getOrderDetail({token, clientId}, row._id);
+        setTotal(row.order_total_price);
+        setSelectedRowData(res.data);
     };
 
     const handleReceivedChange = (value) => {
@@ -312,7 +169,9 @@ const OrderList = (props) => {
         setOpenCard(false);
     };
     
-    const handleCancel = () => {
+    const handleCancel = async () => {
+        const deleteOrder = await orderApi.deleteOrder({token, clientId}, selected._id);
+        console.log(deleteOrder);
         setOpenCard(false);
     };
 
@@ -373,7 +232,7 @@ const OrderList = (props) => {
                         role="checkbox"
                         aria-checked={isItemSelected}
                         tabIndex={-1}
-                        key={row.id}
+                        key={row._id}
                         selected={isItemSelected}
                         sx={{ cursor: 'pointer' }}
                     >
@@ -416,7 +275,7 @@ const OrderList = (props) => {
         </Paper>
         <Dialog open={openCard} onClose={handleCloseCard} maxWidth="md" fullWidth>
             <Card className="col-span-1 fixed right-6 top-2 h-screen w-1/4 p-4 rounded-lg" sx={{ color: 'white', minWidth: '400', backgroundColor: 'background.secondary' }}>
-                <Typography variant="h5">Mã đơn {selected.id}</Typography>
+                <Typography variant="h5">Mã đơn {selected._id}</Typography>
                 <div style={{ display: 'grid', gridTemplateColumns: '45% 30% 20%', gridColumnGap: '10px', gridRowGap: '8px', marginBottom: '16px', fontWeight: 'bold' }}>
                     <Typography>Sản phẩm</Typography>
                     <Typography>Số lượng</Typography>
@@ -424,7 +283,7 @@ const OrderList = (props) => {
                 </div>
                 <div style={{ maxHeight: 'calc(100vh - 100px)', overflowY: 'auto' }}>
                     {selectedRowData && selectedRowData.map((selectedCard) => (
-                        <div key={selectedCard.id}>
+                        <div key={selectedCard._id}>
                         {/* First Row */}
                         <div style={{ display: 'grid', gridTemplateColumns: '45% 20% 25%', gridColumnGap: '10px', marginBottom: '2px', alignItems: 'center' }}>
                             <Card sx={{ 
@@ -435,16 +294,16 @@ const OrderList = (props) => {
                                 maxHeight: '40px', }}>
                                 <CardMedia
                                 component="img" 
-                                image={selectedCard.image}
-                                alt={selectedCard.id}
+                                image={selectedCard.item_image}
+                                alt={selectedCard._id}
                                 sx={{
                                     maxWidth: '40px',
                                     maxHeight: '40px',
                                 }}
                                 />
                                 <CardContent sx={{ textAlign: 'center', fontSize: 10 }}>
-                                <Typography>{selectedCard.name}</Typography>
-                                <Typography>{selectedCard.price}đ</Typography>
+                                <Typography>{selectedCard.item_name}</Typography>
+                                <Typography>{selectedCard.item_price}đ</Typography>
                                 </CardContent>
                             </Card>
                             <Typography
@@ -458,9 +317,9 @@ const OrderList = (props) => {
                                     padding: '6px',
                                 }}
                                 >
-                                {selectedCard.quantity || 1}
+                                {selectedCard.item_quantity || 1}
                             </Typography>
-                            <Typography>{parseInt(selectedCard.quantity) * parseInt(selectedCard.price)}đ</Typography>
+                            <Typography>{parseInt(selectedCard.item_quantity) * parseInt(selectedCard.item_price)}đ</Typography>
                         </div>
                         {/* Second Row */}
                         <div style={{ display: 'grid', gridTemplateColumns: '70% 20%', gridColumnGap: '16px',  marginBottom: '4px', alignItems: 'center' }}>
