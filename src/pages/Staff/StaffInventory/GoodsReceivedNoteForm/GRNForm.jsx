@@ -1,9 +1,13 @@
 import React from 'react';
 import CustomButton from '../../../../components/CustomButton/CustomButton'
 
-const GRNForm = ({closePopUp}) => {
+const GRNForm = ({closePopUp, onSubmit}) => {
     const [inputList, setInputList] = React.useState([
-        {name: '', image:'', price: '', quantity: '', expirationDate: ''}
+        { inventoryItem_name: '', cost: '', inventoryItem_quantity: '', inventoryItem_exp: '' }
+    ]);
+
+    const [errors, setErrors] = React.useState([
+        { inventoryItem_name: 'Không được bỏ trống', cost: 'Không được bỏ trống', inventoryItem_quantity: 'Không được bỏ trống', inventoryItem_exp: 'Không được bỏ trống' }
     ]);
 
     const handleInputChange = (e, index) => {
@@ -11,16 +15,76 @@ const GRNForm = ({closePopUp}) => {
         const list = [...inputList];
         list[index][name] = value;
         setInputList(list);
+
+        //Handle validation
+        const errorList = [...errors];
+        if (name === 'inventoryItem_name')
+        {
+            if (value.trim() === ''){
+                errorList[index][name] = "Không được bỏ trống";
+            }
+            else{
+                errorList[index][name] = "";
+            }
+            setErrors(errorList);
+        }
+        else if (name === 'cost')
+        {
+            if (value.trim() === ''){
+                errorList[index][name] = "Không được bỏ trống";
+            }
+            else if (isNaN(Number(value))){
+                errorList[index][name] = "Giá phải là số";
+            }
+            else if (Number(value) < 0){
+                errorList[index][name] = "Giá không được âm";
+            }
+            else{
+                errorList[index][name] = "";
+            }
+            setErrors(errorList);
+        }
+        else if (name === 'inventoryItem_quantity')
+        {
+            if (value.trim() === ''){
+                errorList[index][name] = "Không được bỏ trống";
+            }
+            else if (isNaN(Number(value))){
+                errorList[index][name] = "Số lượng phải là số";
+            }
+            else if (Number(value) < 0){
+                errorList[index][name] = "Số lượng không được âm";
+            }
+            else{
+                errorList[index][name] = "";
+            }
+            setErrors(errorList);
+        }
+        else if (name === 'inventoryItem_exp')
+        {
+            if (value.trim() === ''){
+                errorList[index][name] = "Không được bỏ trống";
+            }
+            else{
+                errorList[index][name] = "";
+            }
+            setErrors(errorList);
+        }
     }
 
     const handleAddRow = () => {
-        setInputList([...inputList, {name: '', image:'', price: '', quantity: '', expirationDate: ''}]);
+        setInputList([...inputList, {inventoryItem_name: '', cost: '', inventoryItem_quantity: '', inventoryItem_exp: ''}]);
+        setErrors([...errors, {inventoryItem_name: 'Không được bỏ trống', cost: 'Không được bỏ trống', inventoryItem_quantity: 'Không được bỏ trống', inventoryItem_exp: 'Không được bỏ trống'}]);
     }
 
     const handleRemoveRow = (index) => {
         const list = [...inputList];
         list.splice(index, 1);
         setInputList(list);
+
+        const errorList = [...errors];
+        errorList.splice(index, 1);
+        setErrors(errorList);
     }
 
     const handleCloseButton = () => {
@@ -28,7 +92,15 @@ const GRNForm = ({closePopUp}) => {
     }
 
     const handleCreateImportNote = () => {
-        console.log(inputList);
+        const submitList = inputList.map(item => {
+            return {
+                ...item,
+                cost: parseInt(item.cost),
+                inventoryItem_quantity: parseInt(item.inventoryItem_quantity)
+            }
+        })
+        console.log(submitList);
+        onSubmit(submitList);
         closePopUp();
     }
 
@@ -49,101 +121,97 @@ const GRNForm = ({closePopUp}) => {
                     <div className='input flex flex-col'>
                         <label
                             className='block text-white text-sm font-barlow font-medium leading-6'
-                            htmlFor='name'
+                            htmlFor='inventoryItem_name'
                         >
                             Tên sản phẩm
                         </label>
                         <input 
                             className='block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6'
-                            name='name'
-                            id='name'
-                            value={row.name}
+                            name='inventoryItem_name'
+                            id='inventoryItem_name'
+                            value={row.inventoryItem_name}
                             onChange={e => handleInputChange(e, index)}
                             autoComplete='off'
                             type='text'
                         />
+                        <div style={{ minHeight: '1.5rem' }}>
+                            {
+                                errors[index].inventoryItem_name &&
+                                <span className="text-red-500 text-sm">{errors[index].inventoryItem_name}</span>
+                            }
+                        </div>
                     </div>
 
                     <div className='input flex flex-col'>
                         <label
                             className='block text-white text-sm font-barlow font-medium leading-6'
-                            htmlFor='image'
-                        >
-                            Link ảnh sản phẩm
-                        </label>
-                        <input 
-                            className='block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6'
-                            name='image'
-                            id='image'
-                            value={row.image}
-                            onChange={e => handleInputChange(e, index)}
-                            autoComplete='off'
-                            type='text'
-                        />
-                    </div>
-
-                    <div className='input flex flex-col'>
-                        <label
-                            className='block text-white text-sm font-barlow font-medium leading-6'
-                            htmlFor='price'
+                            htmlFor='cost'
                         >
                             Đơn giá
                         </label>
                         <input 
                             className='block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6'
-                            name='price'
-                            id='price'
-                            value={row.price}
+                            name='cost'
+                            id='cost'
+                            value={row.cost}
                             onChange={e => handleInputChange(e, index)}
                             autoComplete='off'
                             type='text'
-                            inputMode="numeric" 
-                            pattern="[0-9]*"
                         />
+                        {
+                            errors[index].cost &&
+                            <span className="text-red-500 text-sm mt-1">{errors[index].cost}</span>
+                        }
                     </div>
                     
                     <div className='input flex flex-col'>
                         <label
                             className='block text-white text-sm font-barlow font-medium leading-6'
-                            htmlFor='quantity'
+                            htmlFor='inventoryItem_quantity'
                         >
                             Số lượng
                         </label>
                         <input 
                             className='block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6'
-                            name='quantity'
-                            id='quantity'
-                            value={row.quantity}
+                            name='inventoryItem_quantity'
+                            id='inventoryItem_quantity'
+                            value={row.inventoryItem_quantity}
                             onChange={e => handleInputChange(e, index)}
                             autoComplete='off'
                             type='text'
-                            inputMode="numeric" 
-                            pattern="[0-9]*"
                         />
+                        {
+                            errors[index].inventoryItem_quantity &&
+                            <span className="text-red-500 text-sm mt-1">{errors[index].inventoryItem_quantity}</span>
+                        }
                     </div>
 
                     <div className='input flex flex-col'>
                         <label
                             className='block text-white text-sm font-barlow font-medium leading-6'
-                            htmlFor='expirationDate'
+                            htmlFor='inventoryItem_exp'
                         >
                             Hạn sử dụng
                         </label>
                         <input 
                             className='block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6'
-                            name='expirationDate'
-                            id='expirationDate'
-                            value={row.expirationDate}
+                            name='inventoryItem_exp'
+                            id='inventoryItem_exp'
+                            value={row.inventoryItem_exp}
                             onChange={e => handleInputChange(e, index)}
                             autoComplete='off'
                             type='date'
                         />
+                        {
+                            errors[index].inventoryItem_exp &&
+                            <span className="text-red-500 text-sm mt-1">{errors[index].inventoryItem_exp}</span>
+                        }
                     </div>
 
                     {
                         //Keep at least one row
                         inputList.length !== 1 && 
-                        <div className='flex items-end'>
+                        <div className='flex items-center'>
                             <CustomButton
                                 title='Xóa'
                                 variant='danger'
@@ -171,6 +239,11 @@ const GRNForm = ({closePopUp}) => {
                 variant='tertiary'
                 onAction={handleCreateImportNote}
                 className="py-1.5"
+                disabled = {
+                    errors.some(errorObj => {
+                        return Object.values(errorObj).some(errorMessage => errorMessage !== '');
+                    })
+                }
             />
         </div>
     </div>

@@ -32,7 +32,7 @@ class InventoryApi{
 
     async createGoodReceiveNote({token, clientId}, data){
         try {
-            const res = await axios.post(`${LOCAL_URL}/inventoryItems/all`, data, {headers: configHeader({ token, clientId })})
+            const res = await axios.post(`${LOCAL_URL}/inventoryAct/come`, data, {headers: configHeader({ token, clientId })})
             return res.data;
         } 
         catch (error) {

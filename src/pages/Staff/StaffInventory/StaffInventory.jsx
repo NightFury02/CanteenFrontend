@@ -1,4 +1,5 @@
 import React from 'react';
+import InventoryApi from '../../../api/inventoryApi';
 import Header from "../../../components/Header/Header"
 import ExpiredProductTable from "./ExpiredProductTable/ExpiredProductTable";
 import InventoryTable from "./InventoryTable/InventoryTable";
@@ -52,6 +53,37 @@ const StaffInventory = () => {
     },
   ];
 
+  const handleCreateGRN = (list) => {
+    const createGoodReceiveNote = async() => {
+      try {
+        const token = localStorage.getItem('token');
+        const clientId = localStorage.getItem('clientId');
+        const body = {
+          "userId": clientId,
+          "item_list": list
+        }
+        const res = await InventoryApi.createGoodReceiveNote({token, clientId}, body);
+
+        //Update Inventory Table
+        const invenRes = await InventoryApi.getAllInventoryItems({token, clientId});
+        const data = invenRes.data;
+        setInventoryTableRows(data);
+        setInventoryTableOriginalRows(data);
+
+        //Update expired product table
+        // const invenRes = await InventoryApi.getAllInventoryItems({token, clientId});
+        // const data = invenRes.data;
+        setExpiredTableRows(data);
+        setExpiredTableOriginalRows(data);
+      } 
+      catch (error) {
+        //
+      }
+    }
+
+    createGoodReceiveNote();
+  }
+
   return (
     <>
       <div>
@@ -103,6 +135,7 @@ const StaffInventory = () => {
       >
         <GRNForm 
           closePopUp={() => setImportPopUpOpen(false)}
+          onSubmit={handleCreateGRN}
         />
       </PopUp>
 
