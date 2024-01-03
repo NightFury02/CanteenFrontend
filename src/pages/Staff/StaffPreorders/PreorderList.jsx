@@ -9,6 +9,10 @@ import {Input, Toolbar, Typography, Box, Paper } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 import CustomButton from '../../../components/CustomButton/CustomButton';
 import PopUp from '../../../components/Popup/Popup';
+import orderApi from "../../../api/orderApi";
+
+const token = localStorage.getItem("token");
+const clientId = localStorage.getItem("clientId");
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -139,11 +143,12 @@ const PreorderList = (props) => {
     };
 
     //Handle on row click
-    const handleClick = (event, row) => {
+    const handleClick = async (event, row) => {
         setSelected(row);
         setOpenCard(true);
-        setSelectedRowData(row.data);
-        setTotal(row.total)
+        const res = await orderApi.getOrderDetail({token, clientId}, row._id);
+        setTotal(row.order_total_price);
+        setSelectedRowData(res.data);
     };
 
     const handleReceivedChange = (value) => {
@@ -155,8 +160,9 @@ const PreorderList = (props) => {
         setConfirmPopup(true);
     };
 
-    const handleConfirmPopup = () => {
-        console.log('confirm');
+    const handleConfirmPopup = async () => {
+        const confirmPayment = await orderApi.confirmPayment({token, clientId}, orderID);
+        //console.log(confirmPayment);
         setConfirmPopup(false);
         setOpenCard(false);
     }
@@ -165,8 +171,9 @@ const PreorderList = (props) => {
         setOpenPopupCancel(true);
     };
 
-    const handleConfirmDelete = () => {
-        console.log(selected);
+    const handleConfirmDelete = async () => {
+        const deleteOrder = await orderApi.deleteOrder({token, clientId}, selected._id);
+        //console.log(deleteOrder);
         setOpenPopupCancel(false);
         setOpenCard(false);
     };
@@ -228,7 +235,7 @@ const PreorderList = (props) => {
                         role="checkbox"
                         aria-checked={isItemSelected}
                         tabIndex={-1}
-                        key={row.id}
+                        key={row._id}
                         selected={isItemSelected}
                         sx={{ cursor: 'pointer' }}
                     >
@@ -271,7 +278,7 @@ const PreorderList = (props) => {
         </Paper>
         <Dialog open={openCard} onClose={handleCloseCard} maxWidth="md" fullWidth>
             <Card className="col-span-1 fixed right-6 top-2 h-screen w-1/4 p-4 rounded-lg" sx={{ color: 'white', minWidth: '400', backgroundColor: 'background.secondary' }}>
-                <Typography variant="h5">Mã đơn {selected.id}</Typography>
+                <Typography variant="h5">Mã đơn {selected._id}</Typography>
                 <div style={{ display: 'grid', gridTemplateColumns: '45% 30% 20%', gridColumnGap: '10px', gridRowGap: '8px', marginBottom: '16px', fontWeight: 'bold' }}>
                     <Typography>Sản phẩm</Typography>
                     <Typography>Số lượng</Typography>
@@ -279,7 +286,7 @@ const PreorderList = (props) => {
                 </div>
                 <div style={{ maxHeight: 'calc(100vh - 320px)', overflowY: 'auto' }}>
                     {selectedRowData && selectedRowData.map((selectedCard) => (
-                        <div key={selectedCard.id}>
+                        <div key={selectedCard._id}>
                         {/* First Row */}
                         <div style={{ display: 'grid', gridTemplateColumns: '45% 20% 25%', gridColumnGap: '10px', marginBottom: '2px', alignItems: 'center' }}>
                             <Card sx={{ 
@@ -290,16 +297,16 @@ const PreorderList = (props) => {
                                 maxHeight: '40px', }}>
                                 <CardMedia
                                 component="img" 
-                                image={selectedCard.image}
-                                alt={selectedCard.id}
+                                image={selectedCard.item_image}
+                                alt={selectedCard._id}
                                 sx={{
                                     maxWidth: '40px',
                                     maxHeight: '40px',
                                 }}
                                 />
                                 <CardContent sx={{ textAlign: 'center', fontSize: 10 }}>
-                                <Typography>{selectedCard.name}</Typography>
-                                <Typography>{selectedCard.price}đ</Typography>
+                                <Typography>{selectedCard.item_name}</Typography>
+                                <Typography>{selectedCard.item_price}đ</Typography>
                                 </CardContent>
                             </Card>
                             <Typography
@@ -315,7 +322,7 @@ const PreorderList = (props) => {
                                 >
                                 {selectedCard.quantity || 1}
                             </Typography>
-                            <Typography>{parseInt(selectedCard.quantity) * parseInt(selectedCard.price)}đ</Typography>
+                            <Typography>{parseInt(selectedCard.item_quantity) * parseInt(selectedCard.item_price)}đ</Typography>
                         </div>
                         {/* Second Row */}
                         <div style={{ display: 'grid', gridTemplateColumns: '70% 20%', gridColumnGap: '16px',  marginBottom: '4px', alignItems: 'center' }}>
