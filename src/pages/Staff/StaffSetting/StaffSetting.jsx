@@ -80,7 +80,8 @@ const StaffSetting = () => {
                 onChange={(e) => {handleInputChange("password", e.target.value) }}
                 sx={textFieldStyle}
             />
-            <DatePicker
+            <TextField
+                type="date"
                 label="Ngày sinh"
                 value={staff.dob}
                 onChange={(e) => {handleInputChange("dob", e.target.value) }}

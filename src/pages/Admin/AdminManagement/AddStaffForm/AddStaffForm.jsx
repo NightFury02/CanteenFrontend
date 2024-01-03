@@ -2,13 +2,17 @@ import {useState} from 'react'
 import {FormControl, FormLabel, TextField} from '@mui/material'
 import CustomButton from '../../../../components/CustomButton/CustomButton'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import userApi from '../../../../api/userApi';
+
+const token = localStorage.getItem("token");
+const clientId = localStorage.getItem("clientId");
 
 const AddStaffForm = (props) => {
     const {setOpen} = props;
     const [staff, setStaff] = useState({
-        id: '',
+        _id: '', 
         name: '',
-        dob: '',
+        birthday: '',
         phone: '',
         address: '',
         email: '',
@@ -19,8 +23,14 @@ const AddStaffForm = (props) => {
         setOpen(false);
     };
 
-    const handleSubmit = () => {
-        console.log(staff);
+    const handleSubmit = async () => {
+        const attributes = {
+            birthday: staff.birthday,
+            phone: staff.phone,
+            address: staff.address
+        };
+        const addStaff = await userApi.createStaff({token, clientId}, staff.password, staff.email, staff.name, attributes);
+        console.log(addStaff);
         setOpen(false);
     };
 
@@ -61,14 +71,16 @@ const AddStaffForm = (props) => {
                 variant='outlined'
                 label="Mật khẩu"
                 name="password"
+                type="password"
                 value={staff.password}
                 onChange={(e) => {handleInputChange("password", e.target.value) }}
                 sx={textFieldStyle}
             />
-            <DatePicker
+            <TextField
+                type="date"
                 label="Ngày sinh"
-                value={staff.dob}
-                onChange={(e) => {handleInputChange("dob", e.target.value) }}
+                value={staff.birthday}
+                onChange={(e) => {handleInputChange("birthday", e.target.value) }}
                 sx={textFieldStyle}
             />
             <TextField

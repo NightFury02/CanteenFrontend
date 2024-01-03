@@ -66,7 +66,7 @@ const AdminOrders = () => {
   return (
   <>
     <div className='flex justify-between'>
-      <Header heading="Quản lý đơn hàng"></Header>
+      <Header heading="Danh sách đơn hàng"></Header>
       <div className='p-3'>
           <Searchbar
             handleSearch={handleSearchBar}  

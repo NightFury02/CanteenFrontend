@@ -1,23 +1,34 @@
 import {useState} from 'react'
-import {FormControl, FormLabel, TextField} from '@mui/material'
+import {FormControl, FormLabel, TextField, Input} from '@mui/material'
 import CustomButton from '../../../../components/CustomButton/CustomButton'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import userApi from '../../../../api/userApi';
+
+const token = localStorage.getItem("token");
+const clientId = localStorage.getItem("clientId");
 
 const EditStaffForm = (props) => {
     const {targetStaff, setOpen} = props
     const [editedStaff, setEditedStaff] = useState({
-        id: targetStaff.id || '', 
-        email: targetStaff.email || '',
-        first_name: targetStaff.first_name || '',
-        last_name: targetStaff.last_name || '',
+        _id: targetStaff._id || '', 
+        name: targetStaff.name || '',
+        birthday: targetStaff.birthday || '',
+        phone: targetStaff.phone || '',
+        address: targetStaff.address || '',
     });
     
     const handleCancel = () => {
         setOpen(false);
     }
-
-    const handleSubmit = () => {
-        console.log(editedStaff);
+    
+    const handleSubmit = async () => {
+        const attributes = {
+            "address": editedStaff.address,
+            "birthday": editedStaff.birthday,
+            "phone": editedStaff.phone
+        };
+        const updatedInfo = await userApi.updateInfo({token, clientId}, attributes, targetStaff.password);
+        console.log(updatedInfo);
         setOpen(false);
     }
 
@@ -41,8 +52,8 @@ const EditStaffForm = (props) => {
             <TextField
                 variant='outlined'
                 label="Mã nhân viên"
-                name="id"
-                defaultValue={targetStaff.id}
+                name="_id"
+                defaultValue={targetStaff._id}
                 sx={textFieldStyle}
                 InputProps={{
                     readOnly: true,
@@ -51,31 +62,33 @@ const EditStaffForm = (props) => {
             <TextField
                 variant='outlined'
                 label="Tên nhân viên"
-                name="first_name"
-                value={editedStaff.first_name}
-                onChange={(e) => {handleInputChange("first_name", e.target.value) }}
+                name="name"
+                value={editedStaff.name}
+                onChange={(e) => {handleInputChange("name", e.target.value) }}
                 sx={textFieldStyle}
             />
-            <DatePicker
+            <TextField
                 label="Ngày sinh"
-                value={editedStaff.last_name}
-                onChange={(e) => {handleInputChange("last_name", e.target.value) }}
+                name="birthday"
+                type="date" 
+                value={editedStaff.birthday}
+                onChange={(e) => {handleInputChange("birthday", e.target.value) }}
                 sx={textFieldStyle}
             />
             <TextField
                 variant='outlined'
                 label="Số điện thoại"
-                name="email"
-                value={editedStaff.email}
-                onChange={(e) => {handleInputChange("email", e.target.value) }}
+                name="phone"
+                value={editedStaff.phone}
+                onChange={(e) => {handleInputChange("phone", e.target.value) }}
                 sx={textFieldStyle}
             />
             <TextField
                 variant='outlined'
                 label="Địa chỉ"
-                name="email"
-                value={editedStaff.email}
-                onChange={(e) => {handleInputChange("email", e.target.value) }}
+                name="address"
+                value={editedStaff.address}
+                onChange={(e) => {handleInputChange("address", e.target.value) }}
                 sx={textFieldStyle}
             />
             <CustomButton

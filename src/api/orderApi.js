@@ -1,10 +1,10 @@
 import axios from "axios";
-import { BASE_URL, LOCAL_URL, configHeader } from "./configApi";
+import { BASE_URL, configHeader } from "./configApi";
 
 class OrderApi{
     async getAllOrders({ token, clientId }){
         try{
-            const res = await axios.get(`${LOCAL_URL}/order`,{
+            const res = await axios.get(`${BASE_URL}/order`,{
                 headers: configHeader({ token, clientId }),
             });
             return res.data;
@@ -14,13 +14,14 @@ class OrderApi{
             return {
               error: true,
               response: error?.response,
+              data: []
             };
         }
     }
 
     async getAllPendingOrders({ token, clientId }){
         try{
-            const res = await axios.get(`${LOCAL_URL}/order/pending`,{
+            const res = await axios.get(`${BASE_URL}/order/pending`,{
                 headers: configHeader({ token, clientId }),
             });
             return res.data;
@@ -30,13 +31,14 @@ class OrderApi{
             return {
               error: true,
               response: error?.response,
+              data: []
             };
         }
     }
 
     async createOrder({ token, clientId }, listItems, timeReceive){
         try{
-            const res = await axios.post(`${LOCAL_URL}/order/new`,
+            const res = await axios.post(`${BASE_URL}/order/new`,
                 {
                     "listItems": listItems,
                     "timeReceive": timeReceive
@@ -58,7 +60,7 @@ class OrderApi{
 
     async confirmPayment({ token, clientId }, orderID){
         try{
-            const res = await axios.post(`${LOCAL_URL}/order/confirm-payment/${orderID}`,{
+            const res = await axios.post(`${BASE_URL}/order/confirm-payment/${orderID}`,{
                     headers: configHeader({ token, clientId }),
                 }
             );
@@ -75,7 +77,7 @@ class OrderApi{
 
     async getAllOrdersOfUser({ token, clientId }){
         try{
-            const res = await axios.get(`${LOCAL_URL}/order/${clientId}`, {
+            const res = await axios.get(`${BASE_URL}/order/${clientId}`, {
                     headers: configHeader({ token, clientId })
                 }
             );
@@ -86,13 +88,14 @@ class OrderApi{
             return {
               error: true,
               response: error?.response,
+              data: []
             };
         }
     }
 
     async getOrderDetail({ token, clientId }, orderID){
         try{
-            const res = await axios.get(`${LOCAL_URL}/order/details?${orderID}`, {
+            const res = await axios.get(`${BASE_URL}/order/details?${orderID}`, {
                     headers: configHeader({ token, clientId })
                 }
             );
@@ -103,13 +106,14 @@ class OrderApi{
             return {
               error: true,
               response: error?.response,
+              data: []
             };
         }
     }
 
     async deleteOrder({ token, clientId }, orderID){
         try{
-            const res = await axios.delete(`${LOCAL_URL}/order/${orderID}`, {
+            const res = await axios.delete(`${BASE_URL}/order/${orderID}`, {
                     headers: configHeader({ token, clientId })
                 }
             );
@@ -120,6 +124,7 @@ class OrderApi{
             return {
               error: true,
               response: error?.response,
+              data: []
             };
         }
     }
