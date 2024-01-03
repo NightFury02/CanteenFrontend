@@ -1,30 +1,37 @@
 import React from 'react';
 import Header from '../../../components/Header/Header';
 import OrderList from './OrderList';
+import CustomButton from '../../../components/CustomButton/CustomButton';
+import PopUp from '../../../components/Popup/Popup';
 import Searchbar from '../../../components/SearchBar/SearchBar';
+import orderApi from "../../../api/orderApi";
+import reportApi from '../../../api/reportApi';
 
-const StaffDashboard = () => {
+const token = localStorage.getItem("token");
+const clientId = localStorage.getItem("clientId");
+
+const AdminOrders = () => {
   const [rows, setRows] = React.useState([]);
   const [originalRows, setOriginalRows] = React.useState([]);
 
   const headCells = [
     {
-      id: 'id',
+      id: '_id',
       disablePadding: true,
       label: 'Mã đơn',
     },
     {
-      id: 'createDate',
+      id: 'time_receive',
       disablePadding: true,
       label: 'Thời gian nhận',
     },
     {
-      id: 'total',
+      id: 'order_total_price',
       disablePadding: true,
       label: 'Tổng tiền',
     },
     {
-      id: 'status',
+      id: 'order_status',
       disablePadding: true,
       label: 'Trạng thái',
     },
@@ -32,147 +39,12 @@ const StaffDashboard = () => {
 
   React.useEffect(() => {
     const fetchOrderList = async () => {
-        const url = `https://reqres.in/api/users`;
         try {
-          // const res = await axios.get(url);
-          // const data = res.data;
-          const data = [
-              {
-                  id: '1', 
-                  staffName: 'Phung Le Hoang Ngoc', 
-                  createDate: '2023-12-20', 
-                  total: 1500000, 
-                  data: [
-                      {
-                          id: '1223',
-                          name: 'Táo',
-                          image: 'https://waapple.org/wp-content/uploads/2021/06/Variety_Granny-Smith-transparent-658x677.png',
-                          price: 10000,
-                          quantity: 200,
-                          expirationDate: '2023-12-29'
-                      },
-                      {
-                          id: '1224',
-                          name: 'Coca',
-                          image: 'https://thegioidouong.net/wp-content/uploads/2021/06/coca-300ml-chai-nhua.jpg',
-                          price: 15000,
-                          quantity: 150,
-                          expirationDate: '2024-01-01'
-                      },
-                      {
-                          id: '1225',
-                          name: 'Oreo',
-                          image: 'https://cooponline.vn/wp-content/uploads/2020/04/banh-quy-socola-oreo-socola-119-6g-20220927.jpg',
-                          price: 15000,
-                          quantity: 150,
-                          expirationDate: '2024-01-01'
-                      }
-                  ]
-              },
-
-              {
-                  id: '2', 
-                  staffName: 'Phung Le Hoang Ngoc', 
-                  createDate: '2023-12-20', 
-                  total: 1500000, 
-                  data: [
-                      {
-                          id: '1223',
-                          name: 'Táo',
-                          image: 'https://waapple.org/wp-content/uploads/2021/06/Variety_Granny-Smith-transparent-658x677.png',
-                          price: 10000,
-                          quantity: 200,
-                          expirationDate: '2023-12-29'
-                      },
-                      {
-                          id: '1224',
-                          name: 'Coca',
-                          image: 'https://thegioidouong.net/wp-content/uploads/2021/06/coca-300ml-chai-nhua.jpg',
-                          price: 15000,
-                          quantity: 150,
-                          expirationDate: '2024-01-01'
-                      },
-                      {
-                          id: '1225',
-                          name: 'Oreo',
-                          image: 'https://cooponline.vn/wp-content/uploads/2020/04/banh-quy-socola-oreo-socola-119-6g-20220927.jpg',
-                          price: 15000,
-                          quantity: 150,
-                          expirationDate: '2024-01-01'
-                      }
-                  ]
-              },
-
-              {
-                  id: '3', 
-                  staffName: 'Phung Le Hoang Ngoc', 
-                  createDate: '2023-12-20', 
-                  total: 1500000, 
-                  data: [
-                      {
-                          id: '1223',
-                          name: 'Táo',
-                          image: 'https://waapple.org/wp-content/uploads/2021/06/Variety_Granny-Smith-transparent-658x677.png',
-                          price: 10000,
-                          quantity: 200,
-                          expirationDate: '2023-12-29'
-                      },
-                      {
-                          id: '1224',
-                          name: 'Coca',
-                          image: 'https://thegioidouong.net/wp-content/uploads/2021/06/coca-300ml-chai-nhua.jpg',
-                          price: 15000,
-                          quantity: 150,
-                          expirationDate: '2024-01-01'
-                      },
-                      {
-                          id: '1225',
-                          name: 'Oreo',
-                          image: 'https://cooponline.vn/wp-content/uploads/2020/04/banh-quy-socola-oreo-socola-119-6g-20220927.jpg',
-                          price: 15000,
-                          quantity: 150,
-                          expirationDate: '2024-01-01'
-                      }
-                  ]
-              },
-
-              {
-                  id: '4', 
-                  staffName: 'Phung Le Hoang Ngoc', 
-                  createDate: '2023-12-20', 
-                  total: 1500000, 
-                  data: [
-                      {
-                          id: '1223',
-                          name: 'Táo',
-                          image: 'https://waapple.org/wp-content/uploads/2021/06/Variety_Granny-Smith-transparent-658x677.png',
-                          price: 10000,
-                          quantity: 200,
-                          expirationDate: '2023-12-29'
-                      },
-                      {
-                          id: '1224',
-                          name: 'Coca',
-                          image: 'https://thegioidouong.net/wp-content/uploads/2021/06/coca-300ml-chai-nhua.jpg',
-                          price: 15000,
-                          quantity: 150,
-                          expirationDate: '2024-01-01'
-                      },
-                      {
-                          id: '1225',
-                          name: 'Oreo',
-                          image: 'https://cooponline.vn/wp-content/uploads/2020/04/banh-quy-socola-oreo-socola-119-6g-20220927.jpg',
-                          price: 15000,
-                          quantity: 150,
-                          expirationDate: '2024-01-01'
-                      }
-                  ]
-              }
-          ];
-          setRows(data);
-          setOriginalRows(data);
+          const res = await orderApi.getAllOrders({token, clientId});
+          setRows(res.data);
+          setOriginalRows(res.data);
         } catch (error) {
-          console.error('Error fetching expired products:', error);
+          console.error('Error fetching orders: ', error);
         }
     }
     fetchOrderList()
@@ -182,7 +54,7 @@ const StaffDashboard = () => {
     console.log(query);
     if (originalRows.length > 0) {
         if (query !== ""){
-            const searchResult = originalRows.filter((item) => item.id.toLowerCase().includes(query.toLowerCase()));
+            const searchResult = originalRows.filter((item) => item._id.toLowerCase().includes(query.toLowerCase()));
             setRows(searchResult);
         }
         else{
@@ -194,7 +66,7 @@ const StaffDashboard = () => {
   return (
   <>
     <div className='flex justify-between'>
-      <Header heading="Danh sách đơn hàng"></Header>
+      <Header heading="Quản lý đơn hàng"></Header>
       <div className='p-3'>
           <Searchbar
             handleSearch={handleSearchBar}  
@@ -210,5 +82,5 @@ const StaffDashboard = () => {
   );
 };
 
-export default StaffDashboard;
+export default AdminOrders;
 

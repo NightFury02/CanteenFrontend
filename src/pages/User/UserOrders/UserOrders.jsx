@@ -3,99 +3,81 @@ import Header from '../../../components/Header/Header';
 import OrderList from './OrderList';
 import CustomButton from '../../../components/CustomButton/CustomButton';
 import PopUp from '../../../components/Popup/Popup';
+import Searchbar from '../../../components/SearchBar/SearchBar';
+import orderApi from "../../../api/orderApi";
+
+const token = localStorage.getItem("token");
+const clientId = localStorage.getItem("clientId");
 
 const UserOrders = () => {
-  const [openMonthlyPopup, setOpenMonthlyPopup] = React.useState(false);
-  const [openDailyPopup, setOpenDailyPopup] = React.useState(false);
-  const handleMonthlyConfirm = () => {
-    console.log('create monthly report');
-    setOpenMonthlyPopup(false);
-  };
-  const handleDailyConfirm = () => {
-    console.log('create daily report');
-    setOpenDailyPopup(false);
-  };
+  const [rows, setRows] = React.useState([]);
+  const [originalRows, setOriginalRows] = React.useState([]);
+  
   const headCells = [
     {
-      id: 'id',
+      id: '_id',
       disablePadding: true,
-      label: 'Mã phiếu',
+      label: 'Mã đơn',
     },
     {
-      id: 'createDate',
+      id: 'time_receive',
       disablePadding: true,
       label: 'Thời gian nhận',
     },
     {
-      id: 'total',
+      id: 'order_total_price',
       disablePadding: true,
       label: 'Tổng tiền',
     },
     {
-      id: 'status',
+      id: 'order_status',
       disablePadding: true,
       label: 'Trạng thái',
     },
   ];
 
+  React.useEffect(() => {
+    const fetchOrderList = async () => {
+        try {
+          const res = await orderApi.getAllOrdersOfUser({token, clientId});
+          console.log(res);
+          setRows(res.data);
+          setOriginalRows(res.data);
+        } catch (error) {
+          console.error('Error fetching orders: ', error);
+        }
+    }
+    fetchOrderList()
+  }, []);
+
+  const handleSearchBar = async (query) => {
+    console.log(query);
+    if (originalRows.length > 0) {
+        if (query !== ""){
+            const searchResult = originalRows.filter((item) => item._id.toLowerCase().includes(query.toLowerCase()));
+            setRows(searchResult);
+        }
+        else{
+          setRows(originalRows);
+        }
+    }
+  };
+
   return (
   <>
-    <div>
+    <div className='flex justify-between'>
       <Header heading="Dashboard"></Header>
-    </div> 
-
-    <div className='ms-3'>
-      <OrderList headCells={headCells} title="Danh sách đơn"></OrderList>
+      <div className='p-3'>
+          <Searchbar
+            handleSearch={handleSearchBar}  
+            placeholder='Tìm kiếm đơn'
+          />
+      </div>
     </div>
 
-    <PopUp
-      title="Tạo báo cáo hàng ngày"
-      isOpen={openDailyPopup}
-      handleCloseBtnClick={() => {setOpenDailyPopup(false);}}
-    >
-      {
-        <div className='flex flex-col'>
-          <h2 className='text-white pb-5'>Xác nhận tạo báo cáo hàng ngày</h2>
-          <div className='flex justify-end gap-2'>
-            <CustomButton
-              title='Hủy'
-              variant='secondary'
-              onAction={()=>{setOpenDailyPopup(false);}}
-              className="py-1 px-8"
-            />
-            <CustomButton
-              title='Xác nhận'
-              onAction={handleDailyConfirm}
-              className="py-1 px-4"
-            />
-          </div>
-        </div>
-      }
-    </PopUp>
-    <PopUp
-      title="Tạo báo cáo hàng tháng"
-      isOpen={openMonthlyPopup}
-      handleCloseBtnClick={() => {setOpenMonthlyPopup(false);}}
-    >
-      {
-        <div className='flex flex-col'>
-          <h2 className='text-white pb-5'>Xác nhận tạo báo cáo hàng tháng</h2>
-          <div className='flex justify-end gap-2'>
-            <CustomButton
-              title='Hủy'
-              variant='secondary'
-              onAction={()=>{setOpenMonthlyPopup(false);}}
-              className="py-1 px-8"
-            />
-            <CustomButton
-              title='Xác nhận'
-              onAction={handleMonthlyConfirm}
-              className="py-1 px-4"
-            />
-          </div>
-        </div>
-      }
-    </PopUp>
+    <div className='ms-3'>
+      <OrderList headCells={headCells} title="Danh sách đơn" rows={rows}></OrderList>
+    </div>
   </>
   );
 };

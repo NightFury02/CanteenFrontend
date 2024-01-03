@@ -5,6 +5,10 @@ import PopUp from '../../../components/Popup/Popup';
 import StaffTable from './StaffTable/StaffTable';
 import AddStaffForm from './AddStaffForm/AddStaffForm';
 import Searchbar from '../../../components/SearchBar/SearchBar';
+import userApi from '../../../api/userApi';
+
+const token = localStorage.getItem("token");
+const clientId = localStorage.getItem("clientId");
 
 const AdminManagement = () => {
     const [openAddPopup, setOpenAddPopup] = React.useState(false);
@@ -52,8 +56,10 @@ const AdminManagement = () => {
         const fetchStaffs = async () => {
             const url = `https://reqres.in/api/users`;
             try {
-                // const res = await axios.get(url);
-                // const data = res.data;
+                const res = userApi.getStaffList({token, clientId});
+                console.log('Bearer ' + token);
+                console.log(clientId);
+                console.log(res);
                 const data = [
                     { id: '#041', name: 'Trần Đình Nhật', dob: '12/02/2003', phone: '19001000', address: 'TP.HCM', email: 'nhttrn84@gmail.com', password: '123456' },
                     { id: '#042', name: 'Phùng Lê Hoàng Ngọc', dob: '12/02/2003', phone: '19001001', address: 'TP.HCM', email: 'divineneos2016@gmail.com', password: '1234' }
