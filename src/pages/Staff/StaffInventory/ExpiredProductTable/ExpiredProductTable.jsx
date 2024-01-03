@@ -410,7 +410,7 @@ export default function ExpiredProductTable(props) {
                           sx={{color: 'text.white', paddingTop: '1rem', paddingBottom: '1rem'}}
                         >
                             {
-                              row.inventoryItem_exp
+                              new Date(row.inventoryItem_exp).toISOString().split('T')[0]
                             }
                         </TableCell>
 

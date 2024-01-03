@@ -38,17 +38,15 @@ const Container = ({ listMenuBasedOnUser, children }) => {
         {/* List menu features */}
         <ul className="flex flex-col gap-4">
           {listMenuBasedOnUser.map((item, index) => (
-            <>
-            <li key={index}>
-              <NavLink to={item.path}>
-                {
-                  <div className="p-4 hover:bg-[#EB966A]/30 rounded-lg">
-                    <item.icon className="fill-primary w-[20px] h-[20px]" />
-                  </div>
-                }
-              </NavLink>
-            </li>
-            </>
+              <li key={index}>
+                <NavLink to={item.path}>
+                  {
+                    <div className="p-4 hover:bg-[#EB966A]/30 rounded-lg">
+                      <item.icon className="fill-primary w-[20px] h-[20px]" />
+                    </div>
+                  }
+                </NavLink>
+              </li>
           ))}
         </ul>
 

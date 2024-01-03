@@ -43,7 +43,7 @@ const StaffInventory = () => {
       id: 'cost',
       numeric: true,
       disablePadding: true,
-      label: 'Gía nhập',
+      label: 'Giá nhập',
     },
     {
       id: 'inventoryItem_exp',
@@ -82,6 +82,37 @@ const StaffInventory = () => {
     }
 
     createGoodReceiveNote();
+  }
+
+  const handleCreateGDN = (list) => {
+    const createGoodDeliveryNote = async() => {
+      try {
+        const token = localStorage.getItem('token');
+        const clientId = localStorage.getItem('clientId');
+        const body = {
+          "userId": clientId,
+          "item_list": list
+        }
+        const res = await InventoryApi.createGoodDeliveryNote({token, clientId}, body);
+
+        //Update Inventory Table
+        const invenRes = await InventoryApi.getAllInventoryItems({token, clientId});
+        const data = invenRes.data;
+        setInventoryTableRows(data);
+        setInventoryTableOriginalRows(data);
+
+        //Update expired product table
+        // const invenRes = await InventoryApi.getAllInventoryItems({token, clientId});
+        // const data = invenRes.data;
+        setExpiredTableRows(data);
+        setExpiredTableOriginalRows(data);
+      } 
+      catch (error) {
+        //
+      }
+    }
+
+    createGoodDeliveryNote();
   }
 
   return (
@@ -146,6 +177,7 @@ const StaffInventory = () => {
       >
         <GDNForm 
           closePopUp={() => setExportPopUpOpen(false)}
+          onSubmit={handleCreateGDN}
         />
       </PopUp>
     </>
