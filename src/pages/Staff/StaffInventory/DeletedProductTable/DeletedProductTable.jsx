@@ -1,5 +1,5 @@
 import * as React from 'react';
-import axios from 'axios';
+import InventoryApi from "../../../../api/inventoryApi";
 import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';

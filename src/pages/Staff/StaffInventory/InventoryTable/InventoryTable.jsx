@@ -17,10 +17,8 @@ import Paper from '@mui/material/Paper';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
 import { visuallyHidden } from '@mui/utils';
 import PopUp from '../../../../components/Popup/Popup';
-import EditForm from '../EditForm/EditForm';
 import CustomButton from '../../../../components/CustomButton/CustomButton';
 import Searchbar from '../../../../components/SearchBar/SearchBar';
 
@@ -98,7 +96,7 @@ EnhancedTableHead.propTypes = {
 };
 
 function EnhancedTableToolbar(props) {
-  const { selected, handleDeleteIconClick, handleEditIconClick, title, handleSearchBar } = props;
+  const { selected, handleDeleteIconClick, title, handleSearchBar } = props;
 
   return (
     <Toolbar
@@ -141,11 +139,6 @@ function EnhancedTableToolbar(props) {
                   <DeleteIcon sx={{color: 'text.white', fontSize: 'fontSize.icon'}}/>
               </IconButton>
             </Tooltip>
-            <Tooltip title="Edit">
-              <IconButton onClick={handleEditIconClick}>
-                  <EditIcon sx={{color: 'text.white', fontSize: 'fontSize.icon'}}/>
-              </IconButton>
-            </Tooltip>
         </>
       )}
     </Toolbar>
@@ -155,23 +148,27 @@ function EnhancedTableToolbar(props) {
 EnhancedTableToolbar.propTypes = {
   selected: PropTypes.bool,
   handleDeleteIconClick: PropTypes.func.isRequired,
-  handleEditIconClick: PropTypes.func.isRequired,
   title: PropTypes.string
 };
 
 export default function InventoryTable(props) {
-    const {headCells, title} = props;
+    const {
+      headCells, 
+      title, 
+      inventoryTableRows,
+      setInventoryTableRows,
+      inventoryTableOriginalRows,
+      setInventoryTableOriginalRows,
+      setExpiredTableRows,
+      setExpiredTableOriginalRows
+    } = props;
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('id');
     const [selected, setSelected] = React.useState({});
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
-    const [rows, setRows] = React.useState([]);
-    const [originalRows, setOriginalRows] = React.useState([]);
 
-    //Handle edit pop up
-    const [openEditPopUp, setOpenEditPopUp] = React.useState(false)
-    //Handle delete pop uo
+    //Handle delete pop up
     const [openDeletePopUp, setOpenDeletePopUp] = React.useState(false)
 
     //Token and client id
@@ -183,8 +180,8 @@ export default function InventoryTable(props) {
           try {
               const res = await InventoryApi.getAllInventoryItems({token, clientId});
               const data = res.data;
-              setRows(data);
-              setOriginalRows(data);
+              setInventoryTableRows(data);
+              setInventoryTableOriginalRows(data);
           } catch (error) {
           console.error('Error fetching expired products:', error);
           }
@@ -193,16 +190,16 @@ export default function InventoryTable(props) {
     }, []);
 
     const handleSearchBar = async (query) => {
-        console.log(query);
-        if (originalRows.length > 0) {
-            if (query !== ""){
-                const searchResult = originalRows.filter((item) => item.item_name.toLowerCase().includes(query.toLowerCase()));
-                setRows(searchResult);
-            }
-            else{
-            setRows(originalRows);
-            }
+      console.log(query);
+      if (inventoryTableOriginalRows.length > 0) {
+        if (query !== ""){
+          const searchResult = inventoryTableOriginalRows.filter((item) => item.inventoryItem_name.toLowerCase().includes(query.toLowerCase()));
+          setInventoryTableRows(searchResult);
         }
+        else{
+          setInventoryTableRows(inventoryTableOriginalRows);
+        }
+      }
     };
 
     const handleRequestSort = (event, property) => {
@@ -231,32 +228,46 @@ export default function InventoryTable(props) {
       setPage(0);
     };
 
-    const handleOnDelete = async () => {
+    const handleOnDelete = () => {
         console.log(selected);
+        const deleteProducts = async () => {
+          try {
+            const body = {
+              "userId": clientId,
+              "item_list": [
+                {
+                  inventoryItem: selected._id
+                }
+              ]
+            }
+            const res = await InventoryApi.deleteInventoryItems({token, clientId}, body);
+            console.log(res);
+            const newData = await InventoryApi.getAllInventoryItems({token, clientId});
+
+            //Update inventory table
+            setInventoryTableRows(newData.data);
+            setInventoryTableOriginalRows(newData.data);
+
+            //Update expired table
+            setExpiredTableRows(newData.data);
+            setExpiredTableOriginalRows(newData.data);
+
+          } catch (error) {
+            console.error('Error fetching expired products:', error);
+          }
+        }
+        deleteProducts()
         setOpenDeletePopUp(false);
         setSelected({});
-    };
-
-    const handleEditPopUpSubmit = async(editedProduct) => {
-      setOpenEditPopUp(false);
-      //Post data
-      //console.log(editedProduct);
-
-      //Fetch data again => update rows
-      const res = await InventoryApi.getAllInventoryItems({token, clientId});
-      const data = res.data;
-      setRows(data);
-      setOriginalRows(data);
-      setSelected({})
     };
     
     const isSelected = (row) => selected === row;
 
     // Avoid a layout jump when reaching the last page with empty rows.
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - inventoryTableRows.length) : 0;
 
     //console.log(emptyRows);
-    const visibleRows = stableSort(rows, getComparator(order, orderBy)).slice(
+    const visibleRows = stableSort(inventoryTableRows, getComparator(order, orderBy)).slice(
       page * rowsPerPage,
       page * rowsPerPage + rowsPerPage,
     );
@@ -270,7 +281,6 @@ export default function InventoryTable(props) {
                 selected={Object.keys(selected).length === 0 ? false : true} 
                 handleDeleteIconClick={()=> {setOpenDeletePopUp(true)}} 
                 title={title}
-                handleEditIconClick={() => {setOpenEditPopUp(true)}}
                 handleSearchBar={handleSearchBar}
              />
             <TableContainer>
@@ -343,6 +353,17 @@ export default function InventoryTable(props) {
                           sx={{color: 'text.white', paddingTop: '1rem', paddingBottom: '1rem'}}
                         >
                             {
+                              row.cost
+                            }
+                        </TableCell>
+
+                        <TableCell
+                          id={labelId}
+                          scope="row"
+                          padding='none'
+                          sx={{color: 'text.white', paddingTop: '1rem', paddingBottom: '1rem'}}
+                        >
+                            {
                               row.inventoryItem_exp
                             }
                         </TableCell>
@@ -364,7 +385,7 @@ export default function InventoryTable(props) {
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={rows.length}
+                count={inventoryTableRows.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
@@ -372,18 +393,6 @@ export default function InventoryTable(props) {
                 sx={{bgcolor: 'background.secondary', color: 'text.white'}}
             />
         </Paper>
-
-        <PopUp
-          title="CẬP NHẬT"
-          isOpen={openEditPopUp}
-          handleCloseBtnClick={() => {setOpenEditPopUp(false); setSelected({})}}
-        >
-          {<EditForm
-            targetProduct={selected}
-            onSubmit={handleEditPopUpSubmit}
-            onClose={()=>{setOpenEditPopUp(false); setSelected({})}}
-          />}
-        </PopUp>
 
         <PopUp
           title="Xóa sản phẩm"
