@@ -5,39 +5,51 @@ import CustomButton from '../../../components/CustomButton/CustomButton';
 import PopUp from '../../../components/Popup/Popup';
 import Searchbar from '../../../components/SearchBar/SearchBar';
 import orderApi from "../../../api/orderApi";
+import reportApi from '../../../api/reportApi';
+
+const token = localStorage.getItem("token");
+const clientId = localStorage.getItem("clientId");
 
 const StaffDashboard = () => {
   const [openMonthlyPopup, setOpenMonthlyPopup] = React.useState(false);
   const [openDailyPopup, setOpenDailyPopup] = React.useState(false);
+  const [openInventoryPopup, setOpenInventoryPopup] = React.useState(false);
   const [rows, setRows] = React.useState([]);
   const [originalRows, setOriginalRows] = React.useState([]);
 
-  const handleMonthlyConfirm = () => {
-    console.log('create monthly report');
+  const handleMonthlyConfirm = async () => {
+    const createMonthlyIncomeReport = await reportApi.createMonthlyIncomeReport({token, clientId});
+    console.log(createMonthlyIncomeReport);
     setOpenMonthlyPopup(false);
   };
-  const handleDailyConfirm = () => {
-    console.log('create daily report');
+  const handleDailyConfirm = async () => {
+    const createDailyIncomeReport = await reportApi.createDailyIncomeReport({token, clientId});
+    console.log(createDailyIncomeReport);
     setOpenDailyPopup(false);
+  };
+  const handleInventoryConfirm = async () => {
+    const createDailyInventoryReport = await reportApi.createDailyInventoryReport({token, clientId});
+    console.log(createDailyInventoryReport);
+    setOpenInventoryPopup(false);
   };
   const headCells = [
     {
-      id: 'id',
+      id: '_id',
       disablePadding: true,
       label: 'Mã đơn',
     },
     {
-      id: 'createDate',
+      id: 'time_receive',
       disablePadding: true,
       label: 'Thời gian nhận',
     },
     {
-      id: 'total',
+      id: 'order_total_price',
       disablePadding: true,
       label: 'Tổng tiền',
     },
     {
-      id: 'status',
+      id: 'order_status',
       disablePadding: true,
       label: 'Trạng thái',
     },
@@ -45,171 +57,13 @@ const StaffDashboard = () => {
 
   React.useEffect(() => {
     const fetchOrderList = async () => {
-        const url = `https://reqres.in/api/users`;
         try {
-          const token = localStorage.getItem("token");
-          const clientId = localStorage.getItem("clientId");
+          const res = await orderApi.getAllOrders({token, clientId});
           
-          const orders = await orderApi.getAllOrders({token, clientId});
-          console.log(orders);
-
-          const listItems = [];
-          const timeReceive = "1:30AM";
-          //const newOrder = await orderApi.createOrder({token, clientId}, listItems, timeReceive);
-          //console.log(newOrder);
-
-          const orderID = '65944b7c134678d146e3e890';
-          //const deleteID = "659449f5134678d146e3e81c2";
-
-          const confirmPayment = await orderApi.confirmPayment({token, clientId}, orderID);
-          console.log(confirmPayment);
-
-          //const deleteOrder = await orderApi.deleteOrder({token, clientId}, deleteID);
-          //console.log(deleteOrder);
-
-          const orderDetail = await orderApi.getOrderDetail({token, clientId}, orderID);
-          console.log(orderDetail);
-
-          const getAllOrdersOfUser = await orderApi.getAllOrdersOfUser({token, clientId}, clientId);
-          console.log(getAllOrdersOfUser);
-
-          const data = [
-              {
-                  id: '1', 
-                  staffName: 'Phung Le Hoang Ngoc', 
-                  createDate: '2023-12-20', 
-                  total: 1500000, 
-                  data: [
-                      {
-                          id: '1223',
-                          name: 'Táo',
-                          image: 'https://waapple.org/wp-content/uploads/2021/06/Variety_Granny-Smith-transparent-658x677.png',
-                          price: 10000,
-                          quantity: 200,
-                          expirationDate: '2023-12-29'
-                      },
-                      {
-                          id: '1224',
-                          name: 'Coca',
-                          image: 'https://thegioidouong.net/wp-content/uploads/2021/06/coca-300ml-chai-nhua.jpg',
-                          price: 15000,
-                          quantity: 150,
-                          expirationDate: '2024-01-01'
-                      },
-                      {
-                          id: '1225',
-                          name: 'Oreo',
-                          image: 'https://cooponline.vn/wp-content/uploads/2020/04/banh-quy-socola-oreo-socola-119-6g-20220927.jpg',
-                          price: 15000,
-                          quantity: 150,
-                          expirationDate: '2024-01-01'
-                      }
-                  ]
-              },
-
-              {
-                  id: '2', 
-                  staffName: 'Phung Le Hoang Ngoc', 
-                  createDate: '2023-12-20', 
-                  total: 1500000, 
-                  data: [
-                      {
-                          id: '1223',
-                          name: 'Táo',
-                          image: 'https://waapple.org/wp-content/uploads/2021/06/Variety_Granny-Smith-transparent-658x677.png',
-                          price: 10000,
-                          quantity: 200,
-                          expirationDate: '2023-12-29'
-                      },
-                      {
-                          id: '1224',
-                          name: 'Coca',
-                          image: 'https://thegioidouong.net/wp-content/uploads/2021/06/coca-300ml-chai-nhua.jpg',
-                          price: 15000,
-                          quantity: 150,
-                          expirationDate: '2024-01-01'
-                      },
-                      {
-                          id: '1225',
-                          name: 'Oreo',
-                          image: 'https://cooponline.vn/wp-content/uploads/2020/04/banh-quy-socola-oreo-socola-119-6g-20220927.jpg',
-                          price: 15000,
-                          quantity: 150,
-                          expirationDate: '2024-01-01'
-                      }
-                  ]
-              },
-
-              {
-                  id: '3', 
-                  staffName: 'Phung Le Hoang Ngoc', 
-                  createDate: '2023-12-20', 
-                  total: 1500000, 
-                  data: [
-                      {
-                          id: '1223',
-                          name: 'Táo',
-                          image: 'https://waapple.org/wp-content/uploads/2021/06/Variety_Granny-Smith-transparent-658x677.png',
-                          price: 10000,
-                          quantity: 200,
-                          expirationDate: '2023-12-29'
-                      },
-                      {
-                          id: '1224',
-                          name: 'Coca',
-                          image: 'https://thegioidouong.net/wp-content/uploads/2021/06/coca-300ml-chai-nhua.jpg',
-                          price: 15000,
-                          quantity: 150,
-                          expirationDate: '2024-01-01'
-                      },
-                      {
-                          id: '1225',
-                          name: 'Oreo',
-                          image: 'https://cooponline.vn/wp-content/uploads/2020/04/banh-quy-socola-oreo-socola-119-6g-20220927.jpg',
-                          price: 15000,
-                          quantity: 150,
-                          expirationDate: '2024-01-01'
-                      }
-                  ]
-              },
-
-              {
-                  id: '4', 
-                  staffName: 'Phung Le Hoang Ngoc', 
-                  createDate: '2023-12-20', 
-                  total: 1500000, 
-                  data: [
-                      {
-                          id: '1223',
-                          name: 'Táo',
-                          image: 'https://waapple.org/wp-content/uploads/2021/06/Variety_Granny-Smith-transparent-658x677.png',
-                          price: 10000,
-                          quantity: 200,
-                          expirationDate: '2023-12-29'
-                      },
-                      {
-                          id: '1224',
-                          name: 'Coca',
-                          image: 'https://thegioidouong.net/wp-content/uploads/2021/06/coca-300ml-chai-nhua.jpg',
-                          price: 15000,
-                          quantity: 150,
-                          expirationDate: '2024-01-01'
-                      },
-                      {
-                          id: '1225',
-                          name: 'Oreo',
-                          image: 'https://cooponline.vn/wp-content/uploads/2020/04/banh-quy-socola-oreo-socola-119-6g-20220927.jpg',
-                          price: 15000,
-                          quantity: 150,
-                          expirationDate: '2024-01-01'
-                      }
-                  ]
-              }
-          ];
-          setRows(data);
-          setOriginalRows(data);
+          setRows(res.data);
+          setOriginalRows(res.data);
         } catch (error) {
-          console.error('Error fetching expired products:', error);
+          console.error('Error fetching orders: ', error);
         }
     }
     fetchOrderList()
@@ -219,7 +73,7 @@ const StaffDashboard = () => {
     console.log(query);
     if (originalRows.length > 0) {
         if (query !== ""){
-            const searchResult = originalRows.filter((item) => item.id.toLowerCase().includes(query.toLowerCase()));
+            const searchResult = originalRows.filter((item) => item._id.toLowerCase().includes(query.toLowerCase()));
             setRows(searchResult);
         }
         else{
@@ -240,24 +94,31 @@ const StaffDashboard = () => {
       </div>
     </div>
 
-    <div className='ms-3'>
-      <OrderList headCells={headCells} title="Danh sách đơn" rows={rows}></OrderList>
-    </div>
-
-    <div className='fixed flex right-4 gap-4'>
+    <div className='ms-3 mt-2 mb-2'>
       <CustomButton
         title="Tạo báo cáo hàng ngày"
         variant='primary'
         onAction={()=>{setOpenDailyPopup(true);}}
-        className="rounded-lg py-2 px-10"
+        className="rounded-lg py-2 px-10 mr-2"
       />
       <CustomButton
         title="Tạo báo cáo hàng tháng"
         variant='primary'
         onAction={()=>{setOpenMonthlyPopup(true);}}
+        className="rounded-lg py-2 px-10 mr-2"
+      />
+      <CustomButton
+        title="Tạo báo cáo kho"
+        variant='primary'
+        onAction={()=>{setOpenInventoryPopup(true);}}
         className="rounded-lg py-2 px-10"
       />
     </div>
+
+    <div className='ms-3'>
+      <OrderList headCells={headCells} title="Danh sách đơn" rows={rows}></OrderList>
+    </div>
+
     <PopUp
       title="Xác nhận tạo"
       isOpen={openDailyPopup}
@@ -300,6 +161,30 @@ const StaffDashboard = () => {
             <CustomButton
               title='Xác nhận'
               onAction={handleMonthlyConfirm}
+              className="py-1 px-4"
+            />
+          </div>
+        </div>
+      }
+    </PopUp>
+    <PopUp
+      title="Xác nhận tạo"
+      isOpen={openInventoryPopup}
+      handleCloseBtnClick={() => {setOpenInventoryPopup(false);}}
+    >
+      {
+        <div className='flex flex-col'>
+          <h2 className='text-white pb-5'>Xác nhận tạo báo cáo hàng tháng?</h2>
+          <div className='flex justify-between gap-2'>
+            <CustomButton
+              title='Hủy'
+              variant='secondary'
+              onAction={()=>{setOpenInventoryPopup(false);}}
+              className="py-1 px-8"
+            />
+            <CustomButton
+              title='Xác nhận'
+              onAction={handleInventoryConfirm}
               className="py-1 px-4"
             />
           </div>
