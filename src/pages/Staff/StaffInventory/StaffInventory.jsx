@@ -1,5 +1,6 @@
 import React from 'react';
 import InventoryApi from '../../../api/inventoryApi';
+import { useStaffInventoryContext } from '../../../context/Staff/StaffInventoryContext';
 import Header from "../../../components/Header/Header"
 import ExpiredProductTable from "./ExpiredProductTable/ExpiredProductTable";
 import InventoryTable from "./InventoryTable/InventoryTable";
@@ -9,13 +10,10 @@ import GRNForm from './GoodsReceivedNoteForm/GRNForm';
 import GDNForm from './GoodsDeliveryNoteForm/GDNForm';
 
 const StaffInventory = () => {
-  //Inventory table state
-  const [inventoryTableRows, setInventoryTableRows] = React.useState([]);
-  const [inventoryTableOriginalRows, setInventoryTableOriginalRows] = React.useState([]);
-
-  //Expired product table state
-  const [expiredTableRows, setExpiredTableRows] = React.useState([]);
-  const [expiredTableOriginalRows, setExpiredTableOriginalRows] = React.useState([]);
+  //Inventory context
+  const {
+    setInventoryTableRows, setInventoryTableOriginalRows, setExpiredTableRows, setExpiredTableOriginalRows 
+  } = useStaffInventoryContext();
 
   const [isImportPopUpOpen, setImportPopUpOpen] = React.useState(false);
   const [isExportPopUpOpen, setExportPopUpOpen] = React.useState(false);
@@ -43,7 +41,7 @@ const StaffInventory = () => {
       id: 'cost',
       numeric: true,
       disablePadding: true,
-      label: 'Gía nhập',
+      label: 'Giá nhập',
     },
     {
       id: 'inventoryItem_exp',
@@ -84,6 +82,36 @@ const StaffInventory = () => {
     createGoodReceiveNote();
   }
 
+  const handleCreateGDN = (list) => {
+    const createGoodDeliveryNote = async() => {
+      try {
+        const token = localStorage.getItem('token');
+        const clientId = localStorage.getItem('clientId');
+        const body = {
+          "userId": clientId,
+          "item_list": list
+        }
+        const res = await InventoryApi.createGoodDeliveryNote({token, clientId}, body);
+
+        //Update Inventory Table
+        const invenRes = await InventoryApi.getAllInventoryItems({token, clientId});
+        const data = invenRes.data;
+        setInventoryTableRows(data);
+        setInventoryTableOriginalRows(data);
+
+        //Update expired product table
+        // const invenRes = await InventoryApi.getAllInventoryItems({token, clientId});
+        // const data = invenRes.data;
+        setExpiredTableRows(data);
+        setExpiredTableOriginalRows(data);
+      } 
+      catch (error) {
+        //
+      }
+    }
+    createGoodDeliveryNote();
+  }
+
   return (
     <>
       <div>
@@ -106,12 +134,6 @@ const StaffInventory = () => {
         <InventoryTable 
           headCells={headCells} 
           title={'Kho'} 
-          inventoryTableRows={inventoryTableRows}
-          setInventoryTableRows={setInventoryTableRows} 
-          inventoryTableOriginalRows={inventoryTableOriginalRows}
-          setInventoryTableOriginalRows={setInventoryTableOriginalRows}
-          setExpiredTableRows={setExpiredTableRows} 
-          setExpiredTableOriginalRows={setExpiredTableOriginalRows}
         />
       </div>
 
@@ -119,12 +141,6 @@ const StaffInventory = () => {
         <ExpiredProductTable 
           headCells={headCells} 
           title={'Sản phẩm hết hạn'} 
-          setInventoryTableRows={setInventoryTableRows} 
-          setInventoryTableOriginalRows={setInventoryTableOriginalRows}
-          expiredTableRows={expiredTableRows}
-          setExpiredTableRows={setExpiredTableRows} 
-          expiredTableOriginalRows={expiredTableOriginalRows}
-          setExpiredTableOriginalRows={setExpiredTableOriginalRows}
         />
       </div>
 
@@ -146,6 +162,7 @@ const StaffInventory = () => {
       >
         <GDNForm 
           closePopUp={() => setExportPopUpOpen(false)}
+          onSubmit={handleCreateGDN}
         />
       </PopUp>
     </>

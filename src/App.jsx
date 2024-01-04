@@ -1,8 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import Layout from "./components/Layout/Layout";
 import { Form } from "./containers";
+import { StaffInventoryProvider } from "./context/Staff/StaffInventoryContext";
 import {
   UserHome,
   UserOrders,
@@ -22,7 +21,7 @@ import {
 
 function App() {
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
+    <StaffInventoryProvider>
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<Form type="login" />} />
@@ -46,7 +45,7 @@ function App() {
           <Route path="/admin/orders" element={<Layout> <AdminOrders /> </Layout>}/>
         </Routes>
       </BrowserRouter>
-    </LocalizationProvider>
+    </StaffInventoryProvider>
   );
 }
 

@@ -1,5 +1,6 @@
 import * as React from 'react';
 import InventoryApi from "../../../../api/inventoryApi";
+import { useStaffInventoryContext } from '../../../../context/Staff/StaffInventoryContext';
 import PropTypes from 'prop-types';
 import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -169,16 +170,19 @@ EnhancedTableToolbar.propTypes = {
 };
 
 export default function ExpiredProductTable(props) {
+    const {headCells, title} = props;
+
+    //Use context
     const {
-      headCells, 
-      title, 
-      setInventoryTableRows, 
-      setInventoryTableOriginalRows, 
       expiredTableRows,
-      setExpiredTableRows,
       expiredTableOriginalRows,
-      setExpiredTableOriginalRows
-    } = props;
+      setInventoryTableRows,
+      setInventoryTableOriginalRows, 
+      setExpiredTableRows, 
+      setExpiredTableOriginalRows 
+    } = useStaffInventoryContext();
+
+    //States
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('id');
     const [selected, setSelected] = React.useState([]);
@@ -410,7 +414,7 @@ export default function ExpiredProductTable(props) {
                           sx={{color: 'text.white', paddingTop: '1rem', paddingBottom: '1rem'}}
                         >
                             {
-                              row.inventoryItem_exp
+                              new Date(row.inventoryItem_exp).toISOString().split('T')[0]
                             }
                         </TableCell>
 

@@ -1,14 +1,20 @@
 import React from 'react';
+import InventoryApi from '../../../api/inventoryApi';
+import { useStaffInventoryContext } from '../../../context/Staff/StaffInventoryContext';
 import Header from "../../../components/Header/Header"
 import ExpiredProductTable from "./ExpiredProductTable/ExpiredProductTable";
 import InventoryTable from "./InventoryTable/InventoryTable";
-import DeletedProductTable from "./DeletedProductTable/DeletedProductTable";
 import CustomButton from '../../../components/CustomButton/CustomButton';
 import PopUp from '../../../components/Popup/Popup';
 import GRNForm from './GoodsReceivedNoteForm/GRNForm';
 import GDNForm from './GoodsDeliveryNoteForm/GDNForm';
 
 const AdminInventory = () => {
+  //Inventory context
+  const {
+    setInventoryTableRows, setInventoryTableOriginalRows, setExpiredTableRows, setExpiredTableOriginalRows 
+  } = useStaffInventoryContext();
+
   const [isImportPopUpOpen, setImportPopUpOpen] = React.useState(false);
   const [isExportPopUpOpen, setExportPopUpOpen] = React.useState(false);
  
@@ -20,30 +26,91 @@ const AdminInventory = () => {
       label: 'Mã sản phẩm',
     },
     {
-      id: 'item_image',
-      numeric: false,
-      disablePadding: true,
-      label: 'Ảnh',
-    },
-    {
-      id: 'item_name',
+      id: 'inventoryItem_name',
       numeric: false,
       disablePadding: true,
       label: 'Tên sản phẩm',
     },
     {
-      id: 'item_quantity',
+      id: 'inventoryItem_quantity',
       numeric: true,
       disablePadding: true,
       label: 'Số lượng',
     },
     {
-      id: 'item_expirationDate',
+      id: 'cost',
+      numeric: true,
+      disablePadding: true,
+      label: 'Giá nhập',
+    },
+    {
+      id: 'inventoryItem_exp',
       numeric: false,
       disablePadding: true,
       label: 'Hạn sử dụng',
     },
   ];
+
+  const handleCreateGRN = (list) => {
+    const createGoodReceiveNote = async() => {
+      try {
+        const token = localStorage.getItem('token');
+        const clientId = localStorage.getItem('clientId');
+        const body = {
+          "userId": clientId,
+          "item_list": list
+        }
+        const res = await InventoryApi.createGoodReceiveNote({token, clientId}, body);
+
+        //Update Inventory Table
+        const invenRes = await InventoryApi.getAllInventoryItems({token, clientId});
+        const data = invenRes.data;
+        setInventoryTableRows(data);
+        setInventoryTableOriginalRows(data);
+
+        //Update expired product table
+        // const invenRes = await InventoryApi.getAllInventoryItems({token, clientId});
+        // const data = invenRes.data;
+        setExpiredTableRows(data);
+        setExpiredTableOriginalRows(data);
+      } 
+      catch (error) {
+        //
+      }
+    }
+
+    createGoodReceiveNote();
+  }
+
+  const handleCreateGDN = (list) => {
+    const createGoodDeliveryNote = async() => {
+      try {
+        const token = localStorage.getItem('token');
+        const clientId = localStorage.getItem('clientId');
+        const body = {
+          "userId": clientId,
+          "item_list": list
+        }
+        const res = await InventoryApi.createGoodDeliveryNote({token, clientId}, body);
+
+        //Update Inventory Table
+        const invenRes = await InventoryApi.getAllInventoryItems({token, clientId});
+        const data = invenRes.data;
+        setInventoryTableRows(data);
+        setInventoryTableOriginalRows(data);
+
+        //Update expired product table
+        // const invenRes = await InventoryApi.getAllInventoryItems({token, clientId});
+        // const data = invenRes.data;
+        setExpiredTableRows(data);
+        setExpiredTableOriginalRows(data);
+      } 
+      catch (error) {
+        //
+      }
+    }
+    createGoodDeliveryNote();
+  }
 
   return (
     <>
@@ -64,11 +131,17 @@ const AdminInventory = () => {
       </div>
       
       <div className="mt-5 p-2">
-        <InventoryTable headCells={headCells} title={'Kho'}/>
+        <InventoryTable 
+          headCells={headCells} 
+          title={'Kho'} 
+        />
       </div>
 
       <div className="mt-5 p-2">
-        <ExpiredProductTable headCells={headCells} title={'Sản phẩm hết hạn'}/>
+        <ExpiredProductTable 
+          headCells={headCells} 
+          title={'Sản phẩm hết hạn'} 
+        />
       </div>
 
       <PopUp
@@ -78,6 +151,7 @@ const AdminInventory = () => {
       >
         <GRNForm 
           closePopUp={() => setImportPopUpOpen(false)}
+          onSubmit={handleCreateGRN}
         />
       </PopUp>
 
@@ -88,6 +162,7 @@ const AdminInventory = () => {
       >
         <GDNForm 
           closePopUp={() => setExportPopUpOpen(false)}
+          onSubmit={handleCreateGDN}
         />
       </PopUp>
     </>

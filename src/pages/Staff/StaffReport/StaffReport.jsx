@@ -8,40 +8,35 @@ import ExportReportsTable from './ExportReports/ExportReportsTable';
 const StaffReport = () => {
   const importHeadCells = [
     {
-      id: 'id',
+      id: '_id',
       disablePadding: true,
       label: 'Mã phiếu',
     },
     {
-      id: 'staffName',
+      id: 'user_id',
       disablePadding: true,
       label: 'Tên nhân viên',
     },
     {
-      id: 'createDate',
+      id: 'createdAt',
       disablePadding: true,
       label: 'Ngày lập phiếu',
-    },
-    {
-      id: 'total',
-      disablePadding: true,
-      label: 'Tổng giá trị nhập',
     },
   ];
 
   const exportHeadCells = [
     {
-      id: 'id',
+      id: '_id',
       disablePadding: true,
       label: 'Mã phiếu',
     },
     {
-      id: 'staffName',
+      id: 'user_id',
       disablePadding: true,
       label: 'Tên nhân viên',
     },
     {
-      id: 'createDate',
+      id: 'createdAt',
       disablePadding: true,
       label: 'Ngày lập phiếu',
     },
