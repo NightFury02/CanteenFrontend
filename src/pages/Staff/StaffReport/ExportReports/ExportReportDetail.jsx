@@ -1,23 +1,27 @@
 import React from 'react'
+import UserApi from '../../../../api/userApi';
+
 const ExportReportDetail = ({target}) => {
     const list = target.leave_list;
-    //console.log(list)
+    
     return (
         <div className='bg-dark-bg-2'>
-            <div>Mã phiếu: <span className='text-white'>{target._id}</span> </div>
-            <div>Nhân viên lập phiếu: <span className='text-white'>{target.user_id}</span> </div>
-            <div>Ngày lập phiếu: <span className='text-white'>{target.createdAt}</span></div>
-
+            <div className='flex flex-col gap-2'>
+                <div>Mã phiếu: <span className='text-white'>{target._id}</span> </div>
+                <div>Nhân viên lập phiếu: <span className='text-white'>{target.user_id}</span> </div>
+                <div>Ngày lập phiếu: <span className='text-white'>{target.createdAt}</span></div>
+            </div>
+            
             <div className="mt-3 row-container max-h-[500px] overflow-y-auto border rounded-md"> 
                 <table className="table-auto w-full">
                 <thead className='bg-form sticky top-0 z-0'>
                     <tr>
-                        <th className='px-4 py-1 text-left'>Mã sản phẩm</th>
+                        <th className='px-4 py-3 text-left'>Mã sản phẩm</th>
                         {/* <th className='px-4 py-1 text-left'>Hình ảnh</th> */}
-                        <th className='px-4 py-1 text-left'>Tên sản phẩm</th>
-                        <th className='px-4 py-1 text-left'>Giá nhập</th>
-                        <th className='px-4 py-1 text-left'>Giá bán</th>
-                        <th className='px-4 py-1 text-left'>Số lượng</th>
+                        <th className='px-4 py-3 text-left'>Tên sản phẩm</th>
+                        <th className='px-4 py-3 text-left'>Giá nhập</th>
+                        <th className='px-4 py-3 text-left'>Giá bán</th>
+                        <th className='px-4 py-3 text-left'>Số lượng</th>
                     </tr>
                 </thead>
                 <tbody>

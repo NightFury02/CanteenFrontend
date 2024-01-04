@@ -28,6 +28,10 @@ const CreateDailyMenu = ({onCreateMenu, closePopUp}) => {
             if (value.trim() === ''){
                 errorList[index]['item_name'] = 'Không được để trống';
             }
+            else
+            {
+                errorList[index]['item_name'] = '';
+            }
             setErrors(errorList);
         }
         if (name === 'item_quantity'){
@@ -39,6 +43,10 @@ const CreateDailyMenu = ({onCreateMenu, closePopUp}) => {
             }
             else if (Number(value) < 0){
                 errorList[index]['item_quantity'] = 'Số lượng không được âm';
+            }
+            else
+            {
+                errorList[index]['item_quantity'] = '';
             }
             setErrors(errorList);
         }
@@ -52,6 +60,10 @@ const CreateDailyMenu = ({onCreateMenu, closePopUp}) => {
             else if (Number(value) < 0){
                 errorList[index]['item_price'] = 'Giá bán không được âm';
             }
+            else
+            {
+                errorList[index]['item_price'] = '';
+            }
             setErrors(errorList);
         }
         if (name === 'item_cost'){
@@ -63,6 +75,9 @@ const CreateDailyMenu = ({onCreateMenu, closePopUp}) => {
             }
             else if (Number(value) < 0){
                 errorList[index]['item_cost'] = 'Giá nhập không được âm';
+            }
+            else {
+                errorList[index]['item_cost'] = '';
             }
             setErrors(errorList);
         }

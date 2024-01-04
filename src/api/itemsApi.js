@@ -58,6 +58,20 @@ class ItemApi{
             };
         }
     }
+
+    async deleteAllMainItem({token, clientId}){
+        try {
+            const res = await axios.delete(`${BASE_URL}/items/main/delete`, {headers: configHeader({token, clientId})})
+            return res.data;
+        } 
+        catch (error) {
+            console.log(error);
+            return {
+                error: true,
+                response: error?.response,
+            };
+        }
+    }
 }
 
 export default new ItemApi();

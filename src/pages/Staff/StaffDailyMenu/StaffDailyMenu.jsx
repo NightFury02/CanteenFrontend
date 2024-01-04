@@ -54,10 +54,12 @@ const StaffDailyMenu = () => {
     }
 
     const handleOnDeleteMenu = async () => {
-        //Call api to delete menu
-        //Refetch menu
         const token = localStorage.getItem('token');
         const clientId = localStorage.getItem('clientId');
+        //Call api to delete menu
+        await ItemApi.deleteAllMainItem({token, clientId});
+
+        //Refetch menu
         const res = await ItemApi.getItemsByType({token, clientId}, 'main');
         setOriginalMenu(res.data);
         setMenu(res.data);
