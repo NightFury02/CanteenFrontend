@@ -59,7 +59,23 @@ const StaffDashboard = () => {
     const fetchOrderList = async () => {
         try {
           const res = await orderApi.getAllOrders({token, clientId});
-          
+          const listItems = [
+            {
+                item_name: "cơm chiên trứng",
+                item_id: "659448612bf2b2ccde40c6b2",
+                item_quantity: 1,
+                item_note: "Nhiều tỏi"
+            },
+            {
+                item_name: "beefstack2",
+                item_id: "657d768648a0c356cab63ff6",
+                item_quantity: 1,
+                item_note: "Thêm nước mắm"
+            }
+          ];
+          const timeReceive = "11:30AM";
+          const newOrder = await orderApi.createOrder({token, clientId}, listItems, timeReceive);
+          console.log(newOrder);
           setRows(res.data);
           setOriginalRows(res.data);
         } catch (error) {
