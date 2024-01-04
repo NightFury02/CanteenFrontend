@@ -13,6 +13,14 @@ export const StaffInventoryProvider = ({ children }) => {
     const [expiredTableRows, setExpiredTableRows] = useState([]);
     const [expiredTableOriginalRows, setExpiredTableOriginalRows] = useState([]);
   
+    //Staff table state
+    const [staffTableRows, setStaffTableRows] = useState([]);
+    const [staffTableOriginalRows, setStaffTableOriginalRows] = useState([]);
+
+    //Order list
+    const [orderListRows, setOrderListRows] = useState([]);
+    const [orderListOriginalRows, setOrderListOriginalRows] = useState([]);
+
     return (
       <StaffInventoryContext.Provider
         value={{
@@ -23,7 +31,15 @@ export const StaffInventoryProvider = ({ children }) => {
           expiredTableRows,
           setExpiredTableRows,
           expiredTableOriginalRows,
-          setExpiredTableOriginalRows
+          setExpiredTableOriginalRows,
+          staffTableRows,
+          setStaffTableRows,
+          staffTableOriginalRows,
+          setStaffTableOriginalRows,
+          orderListRows, 
+          setOrderListRows,
+          orderListOriginalRows, 
+          setOrderListOriginalRows
         }}
       >
         {children}

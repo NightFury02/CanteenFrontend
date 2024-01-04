@@ -6,7 +6,10 @@ import { Table, TableBody, TableCell, TableContainer, TableRow, TableHead, Table
 import { Card, CardMedia, CardContent, CardHeader, CardActions } from '@mui/material';
 import {Input, Toolbar, Typography, Box, Paper, Button, Grid, Pagination, Stack } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
+import CustomButton from '../../../components/CustomButton/CustomButton';
+import PopUp from '../../../components/Popup/Popup';
 import orderApi from "../../../api/orderApi";
+import { useStaffInventoryContext } from '../../../context/Staff/StaffInventoryContext';
 
 const token = localStorage.getItem("token");
 const clientId = localStorage.getItem("clientId");
@@ -129,7 +132,12 @@ EnhancedTableToolbar.propTypes = {
 };
 
 const OrderList = (props) => {
-    const {headCells, title, rows} = props;
+    const {headCells, title} = props;
+
+    const {
+      orderListRows, setOrderListRows, orderListOriginalRows, setOrderListOriginalRows
+    } = useStaffInventoryContext();
+
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('id');
     const [selected, setSelected] = React.useState({});
@@ -140,6 +148,23 @@ const OrderList = (props) => {
     const [received, setReceived] = React.useState(0);
     const [total, setTotal] = React.useState(0);
     const [change, setChange] = React.useState(0);
+    const [isProcessing, setProcessing] = React.useState(false);
+    const [isPending, setPending] = React.useState(false);
+    const [openConfirmCancel, setOpenConfirmCancel] = React.useState(false);
+
+    React.useEffect(() =>{
+      const fetchOrders = async () => {
+          try {
+              const res = await orderApi.getAllOrders({token, clientId});
+
+              setOrderListRows(res.data);
+              setOrderListOriginalRows(res.data);
+          } catch (error) {
+          console.error('Error fetching staffs:', error);
+          }
+      }
+      fetchOrders();
+    }, []);
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -150,10 +175,24 @@ const OrderList = (props) => {
     //Handle on row click
     const handleClick = async (event, row) => {
         setSelected(row);
-        setOpenCard(true);
         const res = await orderApi.getOrderDetail({token, clientId}, row._id);
+        console.log(res);
+        if (row.order_status == "processing"){
+          setProcessing(true);
+        }
+        else if (row.order_status == "pending"){
+          setPending(true);
+        }
+
+        if (res.data != null){
+          setSelectedRowData(res.data.list_items);
+        }
+        else{
+          setSelectedRowData([]);
+        }
+
         setTotal(row.order_total_price);
-        setSelectedRowData(res.data.list_items);
+        setOpenCard(true);
     };
 
     const handleReceivedChange = (value) => {
@@ -161,17 +200,31 @@ const OrderList = (props) => {
         setChange(value - total);
     }
 
-    const handleConfirm = () => {
-        console.log("confirm");
+    const handleConfirm = async () => {
+        const res = await orderApi.completeOrder({token, clientId}, selected._id);
+        console.log(res);
+        setProcessing(false);
+        setPending(false);
         setOpenCard(false);
     };
     
     const handleCancel = () => {
-        setOpenCard(false);
+        setOpenConfirmCancel(true);
     };
+
+    const confirmCancel = async () => {
+        const res = await orderApi.deleteOrder({token, clientId}, selected._id);
+        console.log(res);
+        setOpenConfirmCancel(false);
+        setProcessing(false);
+        setPending(false);
+        setOpenCard(false);
+    }
 
     const handleCloseCard = () => {
         setOpenCard(false);
+        setProcessing(false);
+        setPending(false);
     }
 
     const handleChangePage = (event, newPage) => {
@@ -186,10 +239,10 @@ const OrderList = (props) => {
     const isSelected = (row) => selected === row;
 
     // Avoid a layout jump when reaching the last page with empty rows.
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - orderListRows.length) : 0;
 
     //console.log(emptyRows);
-    const visibleRows = stableSort(rows, getComparator(order, orderBy)).slice(
+    const visibleRows = stableSort(orderListRows, getComparator(order, orderBy)).slice(
       page * rowsPerPage,
       page * rowsPerPage + rowsPerPage,
     );
@@ -260,7 +313,7 @@ const OrderList = (props) => {
             </TableContainer>
             <TablePagination
                 component="div"
-                count={rows.length}
+                count={orderListRows.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
@@ -298,7 +351,6 @@ const OrderList = (props) => {
                                 />
                                 <CardContent sx={{ textAlign: 'center', fontSize: 10 }}>
                                 <Typography>{selectedCard.item_name}</Typography>
-                                <Typography>{selectedCard.item_price}đ</Typography>
                                 </CardContent>
                             </Card>
                             <Typography
@@ -310,11 +362,12 @@ const OrderList = (props) => {
                                     color: 'white',
                                     display: 'inline-block',
                                     padding: '6px',
+                                    marginLeft: '6px',
                                 }}
                                 >
-                                {selectedCard.item_quantity || 1}
+                                {selectedCard.quantity || 1}
                             </Typography>
-                            <Typography>{parseInt(selectedCard.item_quantity) * parseInt(selectedCard.item_price)}đ</Typography>
+                            <Typography>{parseInt(selectedCard.quantity) * parseInt(selectedCard.item_price)}đ</Typography>
                         </div>
                         {/* Second Row */}
                         <div style={{ display: 'grid', gridTemplateColumns: '70% 20%', gridColumnGap: '16px',  marginBottom: '4px', alignItems: 'center' }}>
@@ -346,19 +399,47 @@ const OrderList = (props) => {
                     </TableBody>
                     </Table>
                 </TableContainer>
-                {/*<CustomButton
-                    title={'Xác nhận thanh toán'}
+                {isProcessing && (
+                  <CustomButton
+                    title={'Xác nhận hoàn tất'}
                     className="p-2 mt-2 w-full"
                     onAction={handleConfirm}
-                />
-                <CustomButton
-                    title={'Hủy'}
+                  />
+                )}
+                {isPending && (
+                  <CustomButton
+                    title={'Hủy đơn hàng'}
                     className='p-2 mt-2 w-full'
                     onAction={handleCancel}
-                />*/}
+                  />
+                )}
                 </div>
             </Card>
         </Dialog>
+        <PopUp
+          title="Xác nhận hủy"
+          isOpen={openConfirmCancel}
+          handleCloseBtnClick={() => {setOpenConfirmCancel(false);}}
+        >
+          {
+            <div className='flex flex-col'>
+              <h2 className='text-white pb-5'>Xác nhận hủy đơn hàng?</h2>
+              <div className='flex justify-between gap-2'>
+                <CustomButton
+                  title='Hủy'
+                  variant='secondary'
+                  onAction={()=>{setOpenConfirmCancel(false);}}
+                  className="py-1 px-8"
+                />
+                <CustomButton
+                  title='Xác nhận'
+                  onAction={confirmCancel}
+                  className="py-1 px-4"
+                />
+              </div>
+            </div>
+          }
+        </PopUp>
     </Box>
     );
 }

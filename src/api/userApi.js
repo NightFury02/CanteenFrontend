@@ -94,8 +94,31 @@ class UserApi {
 
   async updateInfo({ token, clientId }, attributes, password) {
     try {
-      const res = await axios.post(
+      const res = await axios.patch(
         `${BASE_URL}/user`,
+        {
+          "attributes": attributes,
+          "password": password
+        },
+        {
+          headers: configHeader({ token, clientId }),
+        }
+      );
+
+      return res.data;
+    } catch (error) {
+      console.log(error);
+      return {
+        error: true,
+        response: error?.response,
+      };
+    }
+  }
+
+  async updateStaffInfo({ token, clientId }, staffId, attributes, password) {
+    try {
+      const res = await axios.patch(
+        `${BASE_URL}/user/${staffId}`,
         {
           "attributes": attributes,
           "password": password
