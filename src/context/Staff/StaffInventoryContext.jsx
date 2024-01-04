@@ -21,25 +21,31 @@ export const StaffInventoryProvider = ({ children }) => {
     const [orderListRows, setOrderListRows] = useState([]);
     const [orderListOriginalRows, setOrderListOriginalRows] = useState([]);
 
+    //Preorder list
+    const [preorderListRows, setPreorderListRows] = useState([]);
+    const [preorderListOriginalRows, setPreorderListOriginalRows] = useState([]);
+
+    //reports
+    const [dailyInventoryReports, setDailyInventoryReports] = useState([]);
+    const [dailyIncomeReports, setDailyIncomeReports] = useState([]);
+    const [monthlyIncomeReports, setMonthlyIncomeReports] = useState([]);
+
     return (
       <StaffInventoryContext.Provider
         value={{
-          inventoryTableRows,
-          setInventoryTableRows,
-          inventoryTableOriginalRows,
-          setInventoryTableOriginalRows,
-          expiredTableRows,
-          setExpiredTableRows,
-          expiredTableOriginalRows,
-          setExpiredTableOriginalRows,
-          staffTableRows,
-          setStaffTableRows,
-          staffTableOriginalRows,
-          setStaffTableOriginalRows,
-          orderListRows, 
-          setOrderListRows,
-          orderListOriginalRows, 
-          setOrderListOriginalRows
+          inventoryTableRows, setInventoryTableRows,
+          inventoryTableOriginalRows, setInventoryTableOriginalRows,
+          expiredTableRows, setExpiredTableRows,
+          expiredTableOriginalRows, setExpiredTableOriginalRows,
+          staffTableRows, setStaffTableRows,
+          staffTableOriginalRows, setStaffTableOriginalRows,
+          orderListRows, setOrderListRows,
+          orderListOriginalRows, setOrderListOriginalRows,
+          preorderListRows, setPreorderListRows,
+          preorderListOriginalRows, setPreorderListOriginalRows,
+          dailyInventoryReports, setDailyInventoryReports,
+          dailyIncomeReports, setDailyIncomeReports,
+          monthlyIncomeReports, setMonthlyIncomeReports,
         }}
       >
         {children}

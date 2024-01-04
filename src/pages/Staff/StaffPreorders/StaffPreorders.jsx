@@ -2,61 +2,48 @@ import React from "react";
 import Header from "../../../components/Header/Header";
 import PreorderList from "./PreorderList";
 import Searchbar from '../../../components/SearchBar/SearchBar';
-import orderApi from "../../../api/orderApi";
+import { useStaffInventoryContext } from '../../../context/Staff/StaffInventoryContext';
 
 const token = localStorage.getItem("token");
 const clientId = localStorage.getItem("clientId");
 
 const StaffPreorders = () => {
-    const [rows, setRows] = React.useState([]);
-    const [originalRows, setOriginalRows] = React.useState([]);
-
+    const {
+      setPreorderListRows, preorderListOriginalRows
+    } = useStaffInventoryContext();
+  
     const headCells = [
-        {
-          id: 'id',
-          disablePadding: true,
-          label: 'Mã đơn',
-        },
-        {
-          id: 'createDate',
-          disablePadding: true,
-          label: 'Thời gian nhận',
-        },
-        {
-          id: 'total',
-          disablePadding: true,
-          label: 'Tổng tiền',
-        },
-        {
-          id: 'status',
-          disablePadding: true,
-          label: 'Trạng thái',
-        },
+      {
+        id: '_id',
+        disablePadding: true,
+        label: 'Mã đơn',
+      },
+      {
+        id: 'time_receive',
+        disablePadding: true,
+        label: 'Thời gian nhận',
+      },
+      {
+        id: 'order_total_price',
+        disablePadding: true,
+        label: 'Tổng tiền',
+      },
+      {
+        id: 'order_status',
+        disablePadding: true,
+        label: 'Trạng thái',
+      },
     ];
-
-    React.useEffect(() => {
-      const fetchOrderList = async () => {
-          try {
-            const res = await orderApi.getAllPendingOrders({token, clientId});
-            
-            setRows(res.data);
-            setOriginalRows(res.data);
-          } catch (error) {
-            console.error('Error fetching expired products:', error);
-          }
-      }
-      fetchOrderList()
-    }, []);
 
     const handleSearchBar = async (query) => {
       console.log(query);
-      if (originalRows.length > 0) {
+      if (preorderListOriginalRows.length > 0) {
           if (query !== ""){
-              const searchResult = originalRows.filter((item) => item.id.toLowerCase().includes(query.toLowerCase()));
-              setRows(searchResult);
+              const searchResult = preorderListOriginalRows.filter((item) => item.id.toLowerCase().includes(query.toLowerCase()));
+              setPreorderListRows(searchResult);
           }
           else{
-            setRows(originalRows);
+            setPreorderListRows(preorderListOriginalRows);
           }
       }
     };
@@ -75,7 +62,7 @@ const StaffPreorders = () => {
     
         <div className="gap-x-16">
             <div className='ms-3 col-span-2'>
-                <PreorderList headCells={headCells} title="Đơn đặt trước" rows={rows}></PreorderList>
+                <PreorderList headCells={headCells} title="Đơn đặt trước"></PreorderList>
             </div>
         </div>
       </>

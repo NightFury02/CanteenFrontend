@@ -1,17 +1,14 @@
 import React from 'react';
 import Header from '../../../components/Header/Header';
 import OrderList from './OrderList';
-import CustomButton from '../../../components/CustomButton/CustomButton';
-import PopUp from '../../../components/Popup/Popup';
 import Searchbar from '../../../components/SearchBar/SearchBar';
 import orderApi from "../../../api/orderApi";
-
-const token = localStorage.getItem("token");
-const clientId = localStorage.getItem("clientId");
+import { useStaffInventoryContext } from '../../../context/Staff/StaffInventoryContext';
 
 const UserOrders = () => {
-  const [rows, setRows] = React.useState([]);
-  const [originalRows, setOriginalRows] = React.useState([]);
+  const {
+    setOrderListRows, orderListOriginalRows
+  } = useStaffInventoryContext();
   
   const headCells = [
     {
@@ -36,29 +33,15 @@ const UserOrders = () => {
     },
   ];
 
-  React.useEffect(() => {
-    const fetchOrderList = async () => {
-        try {
-          const res = await orderApi.getAllOrdersOfUser({token, clientId});
-          console.log(res);
-          setRows(res.data);
-          setOriginalRows(res.data);
-        } catch (error) {
-          console.error('Error fetching orders: ', error);
-        }
-    }
-    fetchOrderList()
-  }, []);
-
   const handleSearchBar = async (query) => {
     console.log(query);
-    if (originalRows.length > 0) {
+    if (orderListOriginalRows.length > 0) {
         if (query !== ""){
-            const searchResult = originalRows.filter((item) => item._id.toLowerCase().includes(query.toLowerCase()));
-            setRows(searchResult);
+            const searchResult = orderListOriginalRows.filter((item) => item._id.toLowerCase().includes(query.toLowerCase()));
+            setOrderListRows(searchResult);
         }
         else{
-          setRows(originalRows);
+          setRows(orderListOriginalRows);
         }
     }
   };
@@ -76,7 +59,7 @@ const UserOrders = () => {
     </div>
 
     <div className='ms-3'>
-      <OrderList headCells={headCells} title="Danh sách đơn" rows={rows}></OrderList>
+      <OrderList headCells={headCells} title="Danh sách đơn"></OrderList>
     </div>
   </>
   );

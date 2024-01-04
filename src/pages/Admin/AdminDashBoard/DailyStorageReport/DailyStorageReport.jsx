@@ -1,8 +1,8 @@
 import * as React from 'react';
-import axios from 'axios';
 import PropTypes from 'prop-types';
 import {Input, Box, Paper, Table, TableBody, TableCell, TableHead, TableContainer, TablePagination, TableSortLabel, TableRow, Toolbar, Typography } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
+import { useStaffInventoryContext } from '../../../../context/Staff/StaffInventoryContext';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -119,18 +119,17 @@ export default function DailyStorageReport(props) {
     const year = getCurrentDate.getFullYear();
     const month = (getCurrentDate.getMonth() + 1).toString().padStart(2, '0');
     const day = getCurrentDate.getDate().toString().padStart(2, '0');
+    const {dailyInventoryReports} = useStaffInventoryContext();
 
     const currentDate = `${year}-${month}-${day}`;
 
     const [selectedDate, setSelectedDate] = React.useState(currentDate);
-
     React.useEffect(() => {
       const fetchReports = async () => {
-          const url = `https://reqres.in/api/users`;
           try {
-            const res = await axios.get(url);
-            const data = res.data;
-            setRows(data.data);
+            const foundReport = dailyInventoryReports.find(item => item.createdAt.startsWith(selectedDate));
+            console.log(foundReport)
+            //setRows(foundReport);
           } catch (error) {
             console.error('Error fetching Reports:', error);
           }

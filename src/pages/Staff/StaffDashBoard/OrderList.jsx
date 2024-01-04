@@ -11,9 +11,6 @@ import PopUp from '../../../components/Popup/Popup';
 import orderApi from "../../../api/orderApi";
 import { useStaffInventoryContext } from '../../../context/Staff/StaffInventoryContext';
 
-const token = localStorage.getItem("token");
-const clientId = localStorage.getItem("clientId");
-
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -152,6 +149,9 @@ const OrderList = (props) => {
     const [isPending, setPending] = React.useState(false);
     const [openConfirmCancel, setOpenConfirmCancel] = React.useState(false);
 
+    const token = localStorage.getItem("token");
+    const clientId = localStorage.getItem("clientId");
+    
     React.useEffect(() =>{
       const fetchOrders = async () => {
           try {
@@ -160,7 +160,7 @@ const OrderList = (props) => {
               setOrderListRows(res.data);
               setOrderListOriginalRows(res.data);
           } catch (error) {
-          console.error('Error fetching staffs:', error);
+          console.error('Error fetching orders:', error);
           }
       }
       fetchOrders();
@@ -176,7 +176,7 @@ const OrderList = (props) => {
     const handleClick = async (event, row) => {
         setSelected(row);
         const res = await orderApi.getOrderDetail({token, clientId}, row._id);
-        console.log(res);
+
         if (row.order_status == "processing"){
           setProcessing(true);
         }
@@ -203,6 +203,10 @@ const OrderList = (props) => {
     const handleConfirm = async () => {
         const res = await orderApi.completeOrder({token, clientId}, selected._id);
         console.log(res);
+        const newData = await orderApi.getAllOrders({token, clientId});
+        setOrderListRows(newData.data);
+        setOrderListOriginalRows(newData.data);
+
         setProcessing(false);
         setPending(false);
         setOpenCard(false);
@@ -215,6 +219,10 @@ const OrderList = (props) => {
     const confirmCancel = async () => {
         const res = await orderApi.deleteOrder({token, clientId}, selected._id);
         console.log(res);
+        const newData = await orderApi.getAllOrders({token, clientId});
+        setOrderListRows(newData.data);
+        setOrderListOriginalRows(newData.data);
+        
         setOpenConfirmCancel(false);
         setProcessing(false);
         setPending(false);

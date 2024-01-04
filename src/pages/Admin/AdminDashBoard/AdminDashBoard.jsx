@@ -5,8 +5,13 @@ import { MoneyIcon, IncreaseIcon, DecreaseIcon, Management, OrderIcon, FilterIco
 import DailyStorageReport from './DailyStorageReport/DailyStorageReport';
 import DailyRevenueReport from './DailyRevenueReport/DailyRevenueReport';
 import MonthlyRevenueReport from './MonthlyRevenueReport/MonthlyRevenueReport';
+import { useStaffInventoryContext } from '../../../context/Staff/StaffInventoryContext';
+import reportApi from '../../../api/reportApi';
 
 const AdminDashBoard = () => {
+  const {
+    setDailyInventoryReports, setDailyIncomeReports, setMonthlyIncomeReports,
+  } = useStaffInventoryContext();
   const headCells = [
     {
         id: 'id',
@@ -45,6 +50,25 @@ const AdminDashBoard = () => {
         label: 'Hạn sử dụng',
     },
   ];
+
+  const token = localStorage.getItem("token");
+  const clientId = localStorage.getItem("clientId");
+  
+  React.useEffect(() => {
+    const fetchReports = async () => {
+        try {
+          const inventoryReports = await reportApi.getAllDailyInventoryReport({token, clientId});
+          const dailyIncomeReports = await reportApi.getAllDailyIncomeReport({token, clientId});
+          const monthlyIncomeReports = await reportApi.getAllMonthlyIncomeReport({token, clientId});
+          setDailyInventoryReports(inventoryReports.data);
+          setDailyIncomeReports(dailyIncomeReports.data);
+          setMonthlyIncomeReports(monthlyIncomeReports.data);
+        } catch (error) {
+          console.error('Error fetching Reports:', error);
+        }
+    }
+    fetchReports()
+  }, []);
 
   const getReport = () =>{
     console.log('popup');

@@ -66,7 +66,9 @@ class OrderApi{
 
     async confirmPayment({ token, clientId }, orderID){
         try{
-            const res = await axios.post(`${BASE_URL}/order/confirm-payment/${orderID}`,{
+            const res = await axios.post(`${BASE_URL}/order/confirm-payment/${orderID}`,
+                {},
+                {
                     headers: configHeader({ token, clientId }),
                 }
             );
@@ -83,7 +85,10 @@ class OrderApi{
 
     async completeOrder({ token, clientId }, orderID){
         try{
-            const res = await axios.post(`${BASE_URL}/order/completeOrder/${orderID}`,{
+            console.log(`${BASE_URL}/order/completeOrder/${orderID}`)
+            const res = await axios.post(`${BASE_URL}/order/completeOrder/${orderID}`,
+                {},
+                {
                     headers: configHeader({ token, clientId }),
                 }
             );

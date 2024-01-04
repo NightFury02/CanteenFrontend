@@ -4,22 +4,21 @@ import OrderList from './OrderList';
 import CustomButton from '../../../components/CustomButton/CustomButton';
 import PopUp from '../../../components/Popup/Popup';
 import Searchbar from '../../../components/SearchBar/SearchBar';
-import orderApi from "../../../api/orderApi";
 import reportApi from '../../../api/reportApi';
 import { useStaffInventoryContext } from '../../../context/Staff/StaffInventoryContext';
 
-const token = localStorage.getItem("token");
-const clientId = localStorage.getItem("clientId");
-
 const StaffDashboard = () => {
   const {
-    orderListRows, setOrderListRows, orderListOriginalRows, setOrderListOriginalRows
+    setOrderListRows, orderListOriginalRows
   } = useStaffInventoryContext();
 
   const [openMonthlyPopup, setOpenMonthlyPopup] = React.useState(false);
   const [openDailyPopup, setOpenDailyPopup] = React.useState(false);
   const [openInventoryPopup, setOpenInventoryPopup] = React.useState(false);
 
+  const token = localStorage.getItem("token");
+  const clientId = localStorage.getItem("clientId");
+  
   const handleMonthlyConfirm = async () => {
     const createMonthlyIncomeReport = await reportApi.createMonthlyIncomeReport({token, clientId});
     console.log(createMonthlyIncomeReport);

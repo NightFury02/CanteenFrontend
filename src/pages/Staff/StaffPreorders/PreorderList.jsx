@@ -10,9 +10,7 @@ import { visuallyHidden } from '@mui/utils';
 import CustomButton from '../../../components/CustomButton/CustomButton';
 import PopUp from '../../../components/Popup/Popup';
 import orderApi from "../../../api/orderApi";
-
-const token = localStorage.getItem("token");
-const clientId = localStorage.getItem("clientId");
+import { useStaffInventoryContext } from '../../../context/Staff/StaffInventoryContext';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -122,7 +120,11 @@ EnhancedTableToolbar.propTypes = {
 };
 
 const PreorderList = (props) => {
-    const {headCells, title, rows} = props;
+    const {headCells, title} = props;
+    const {
+      preorderListRows, setPreorderListRows, setPreorderListOriginalRows,
+    } = useStaffInventoryContext();
+
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('id');
     const [selected, setSelected] = React.useState({});
@@ -136,6 +138,23 @@ const PreorderList = (props) => {
     const [openPopupCancel, setOpenPopupCancel] = React.useState(false);
     const [confirmPopup, setConfirmPopup] = React.useState(false);
 
+    const token = localStorage.getItem("token");
+    const clientId = localStorage.getItem("clientId");
+    
+    React.useEffect(() =>{
+      const fetchOrders = async () => {
+          try {
+              const res = await orderApi.getAllPendingOrders({token, clientId});
+
+              setPreorderListRows(res.data);
+              setPreorderListOriginalRows(res.data);
+          } catch (error) {
+          console.error('Error fetching orders:', error);
+          }
+      }
+      fetchOrders();
+    }, []);
+
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
@@ -145,10 +164,17 @@ const PreorderList = (props) => {
     //Handle on row click
     const handleClick = async (event, row) => {
         setSelected(row);
-        setOpenCard(true);
         const res = await orderApi.getOrderDetail({token, clientId}, row._id);
+        
+        if (res.data != null){
+          setSelectedRowData(res.data.list_items);
+        }
+        else{
+          setSelectedRowData([]);
+        }
+
         setTotal(row.order_total_price);
-        setSelectedRowData(res.data);
+        setOpenCard(true);
     };
 
     const handleReceivedChange = (value) => {
@@ -161,8 +187,13 @@ const PreorderList = (props) => {
     };
 
     const handleConfirmPopup = async () => {
-        const confirmPayment = await orderApi.confirmPayment({token, clientId}, orderID);
-        //console.log(confirmPayment);
+        const confirmPayment = await orderApi.confirmPayment({token, clientId}, selected._id);
+        console.log(confirmPayment);
+
+        const res = await orderApi.getAllPendingOrders({token, clientId});
+        setPreorderListRows(res.data);
+        setPreorderListOriginalRows(res.data);
+
         setConfirmPopup(false);
         setOpenCard(false);
     }
@@ -173,7 +204,12 @@ const PreorderList = (props) => {
 
     const handleConfirmDelete = async () => {
         const deleteOrder = await orderApi.deleteOrder({token, clientId}, selected._id);
-        //console.log(deleteOrder);
+        console.log(deleteOrder);
+
+        const res = await orderApi.getAllPendingOrders({token, clientId});
+        setPreorderListRows(res.data);
+        setPreorderListOriginalRows(res.data);
+
         setOpenPopupCancel(false);
         setOpenCard(false);
     };
@@ -194,10 +230,10 @@ const PreorderList = (props) => {
     const isSelected = (row) => selected === row;
 
     // Avoid a layout jump when reaching the last page with empty rows.
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - preorderListRows.length) : 0;
 
     //console.log(emptyRows);
-    const visibleRows = stableSort(rows, getComparator(order, orderBy)).slice(
+    const visibleRows = stableSort(preorderListRows, getComparator(order, orderBy)).slice(
       page * rowsPerPage,
       page * rowsPerPage + rowsPerPage,
     );
@@ -268,7 +304,7 @@ const PreorderList = (props) => {
             </TableContainer>
             <TablePagination
                 component="div"
-                count={rows.length}
+                count={preorderListRows.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}

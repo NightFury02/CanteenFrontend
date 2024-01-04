@@ -1,6 +1,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import {Box, Paper, Table, TableBody, TableCell, TableContainer, TableRow, Toolbar, Typography, Input } from '@mui/material';
+import { useStaffInventoryContext } from '../../../../context/Staff/StaffInventoryContext';
 
 function EnhancedTableToolbar(props) {
     const { title, date } = props;
@@ -41,13 +42,44 @@ export default function DailyRevenueReport(props) {
     const day = getCurrentDate.getDate().toString().padStart(2, '0');
     const currentDate = `${year}-${month}-${day}`;
     const [selectedDate, setSelectedDate] = React.useState(currentDate);
+    const {dailyIncomeReports} = useStaffInventoryContext();
 
     const [revenue, setRevenue] = React.useState([
-        { label: 'Doanh thu', value: '1000000đ' },
-        { label: 'Lợi nhuận', value: '100000đ' },
-        { label: 'Tổng số món', value: '10000' },
-        { label: 'Tổng số lượt đặt', value: '1000' },
+      { label: 'Doanh thu', value: 'N/A' },
+      { label: 'Lợi nhuận', value: 'N/A' },
+      { label: 'Tổng số lượt đặt', value: 'N/A' },
+      { label: 'Tổng số tiền lãng phí', value: 'N/A' },
+      { label: 'Tổng số món lãng phí', value: 'N/A' },
     ]);
+    
+    React.useEffect(() => {
+      const fetchReports = async () => {
+          try {
+            const foundReport = dailyIncomeReports.find(item => item.createdAt.startsWith(selectedDate));
+            if (foundReport) {
+              setRevenue([
+                  { label: 'Doanh thu', value: foundReport.income + 'đ' },
+                  { label: 'Lợi nhuận', value: foundReport.profit + 'đ' },
+                  { label: 'Tổng số lượt đặt', value: foundReport.sale_quantity },
+                  { label: 'Tổng số tiền lãng phí', value: foundReport.loss_money + 'đ' },
+                  { label: 'Tổng số món lãng phí', value: foundReport.loss_quantity },
+              ]);
+            } else {
+              // Set default values if foundReport is not available
+              setRevenue([
+                  { label: 'Doanh thu', value: 'N/A' },
+                  { label: 'Lợi nhuận', value: 'N/A' },
+                  { label: 'Tổng số lượt đặt', value: 'N/A' },
+                  { label: 'Tổng số tiền lãng phí', value: 'N/A' },
+                  { label: 'Tổng số món lãng phí', value: 'N/A' },
+              ]);
+          }
+          } catch (error) {
+            console.error('Error fetching Reports:', error);
+          }
+      }
+      fetchReports()
+    }, [selectedDate]);
 
     const handleDateChange = (event) => {
         const newDate = event.target.value;

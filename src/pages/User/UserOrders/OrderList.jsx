@@ -1,5 +1,4 @@
 import * as React from 'react';
-import axios from 'axios';
 import PropTypes from 'prop-types';
 import { alpha } from '@mui/material/styles';
 import { Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
@@ -8,10 +7,9 @@ import { Card, CardMedia, CardContent, CardHeader, CardActions } from '@mui/mate
 import {Input, Toolbar, Typography, Box, Paper, Button, Grid, Pagination, Stack } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 import CustomButton from '../../../components/CustomButton/CustomButton';
+import PopUp from '../../../components/Popup/Popup';
 import orderApi from "../../../api/orderApi";
-
-const token = localStorage.getItem("token");
-const clientId = localStorage.getItem("clientId");
+import { useStaffInventoryContext } from '../../../context/Staff/StaffInventoryContext';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -131,7 +129,11 @@ EnhancedTableToolbar.propTypes = {
 };
 
 const OrderList = (props) => {
-    const {headCells, title, rows} = props;
+    const {headCells, title} = props;
+    const {
+      orderListRows, setOrderListRows, orderListOriginalRows, setOrderListOriginalRows
+    } = useStaffInventoryContext();
+
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('id');
     const [selected, setSelected] = React.useState({});
@@ -142,7 +144,25 @@ const OrderList = (props) => {
     const [received, setReceived] = React.useState(0);
     const [total, setTotal] = React.useState(0);
     const [change, setChange] = React.useState(0);
+    const [isPending, setPending] = React.useState(false);
+    const [openConfirmCancel, setOpenConfirmCancel] = React.useState(false);
 
+    const token = localStorage.getItem("token");
+    const clientId = localStorage.getItem("clientId");
+    
+    React.useEffect(() =>{
+      const fetchOrders = async () => {
+          try {
+              const res = await orderApi.getAllOrdersOfUser({token, clientId});
+
+              setOrderListRows(res.data);
+              setOrderListOriginalRows(res.data);
+          } catch (error) {
+          console.error('Error fetching orders:', error);
+          }
+      }
+      fetchOrders();
+    }, []);
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -153,10 +173,21 @@ const OrderList = (props) => {
     //Handle on row click
     const handleClick = async (event, row) => {
         setSelected(row);
-        setOpenCard(true);
         const res = await orderApi.getOrderDetail({token, clientId}, row._id);
+        
+        if (row.order_status == "pending"){
+          setPending(true);
+        }
+
+        if (res.data != null){
+          setSelectedRowData(res.data.list_items);
+        }
+        else{
+          setSelectedRowData([]);
+        }
+
         setTotal(row.order_total_price);
-        setSelectedRowData(res.data);
+        setOpenCard(true);
     };
 
     const handleReceivedChange = (value) => {
@@ -169,14 +200,25 @@ const OrderList = (props) => {
         setOpenCard(false);
     };
     
-    const handleCancel = async () => {
-        const deleteOrder = await orderApi.deleteOrder({token, clientId}, selected._id);
-        console.log(deleteOrder);
-        setOpenCard(false);
+    const handleCancel = () => {
+      setOpenConfirmCancel(true);
     };
+
+    const confirmCancel = async () => {
+        const res = await orderApi.deleteOrder({token, clientId}, selected._id);
+        console.log(res);
+        const newData = await orderApi.getAllOrdersOfUser({token, clientId});
+        setOrderListRows(newData.data);
+        setOrderListOriginalRows(newData.data);
+        
+        setOpenConfirmCancel(false);
+        setPending(false);
+        setOpenCard(false);
+    }
 
     const handleCloseCard = () => {
         setOpenCard(false);
+        setPending(false);
     }
 
     const handleChangePage = (event, newPage) => {
@@ -191,10 +233,10 @@ const OrderList = (props) => {
     const isSelected = (row) => selected === row;
 
     // Avoid a layout jump when reaching the last page with empty rows.
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - orderListRows.length) : 0;
 
     //console.log(emptyRows);
-    const visibleRows = stableSort(rows, getComparator(order, orderBy)).slice(
+    const visibleRows = stableSort(orderListRows, getComparator(order, orderBy)).slice(
       page * rowsPerPage,
       page * rowsPerPage + rowsPerPage,
     );
@@ -265,7 +307,7 @@ const OrderList = (props) => {
             </TableContainer>
             <TablePagination
                 component="div"
-                count={rows.length}
+                count={orderListRows.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
@@ -351,14 +393,40 @@ const OrderList = (props) => {
                     </TableBody>
                     </Table>
                 </TableContainer>
-                <CustomButton
-                    title={'Hủy đơn'}
+                {isPending && (
+                  <CustomButton
+                    title={'Hủy đơn hàng'}
                     className='p-2 mt-2 w-full'
                     onAction={handleCancel}
-                />
+                  />
+                )}
                 </div>
             </Card>
         </Dialog>
+        <PopUp
+          title="Xác nhận hủy"
+          isOpen={openConfirmCancel}
+          handleCloseBtnClick={() => {setOpenConfirmCancel(false);}}
+        >
+          {
+            <div className='flex flex-col'>
+              <h2 className='text-white pb-5'>Xác nhận hủy đơn hàng?</h2>
+              <div className='flex justify-between gap-2'>
+                <CustomButton
+                  title='Hủy'
+                  variant='secondary'
+                  onAction={()=>{setOpenConfirmCancel(false);}}
+                  className="py-1 px-8"
+                />
+                <CustomButton
+                  title='Xác nhận'
+                  onAction={confirmCancel}
+                  className="py-1 px-4"
+                />
+              </div>
+            </div>
+          }
+        </PopUp>
     </Box>
     );
 }
