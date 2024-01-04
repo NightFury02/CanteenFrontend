@@ -13,7 +13,7 @@ const StaffReport = () => {
       label: 'Mã phiếu',
     },
     {
-      id: 'user_id',
+      id: 'creator',
       disablePadding: true,
       label: 'Tên nhân viên',
     },
@@ -31,7 +31,7 @@ const StaffReport = () => {
       label: 'Mã phiếu',
     },
     {
-      id: 'user_id',
+      id: 'creator',
       disablePadding: true,
       label: 'Tên nhân viên',
     },

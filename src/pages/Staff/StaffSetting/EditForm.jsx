@@ -28,7 +28,7 @@ const EditForm = (props) => {
         } 
         //console.log(dataToSend);
         onSubmit(dataToSend);
-        onClose;
+        onClose();
     }
 
     const handleInputChange = (name, value) => {

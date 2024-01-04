@@ -18,6 +18,7 @@ import { visuallyHidden } from '@mui/utils';
 import PopUp from '../../../../components/Popup/Popup';
 import ImportReportDetail from './ImportReportDetail';
 import DateRangePicker from '../../../../components/DateRangePicker/DateRangePicker';
+import { Loading } from '../../../../components';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -139,6 +140,7 @@ const ImportReportsTable = (props) => {
       start: "",
       end: "",
     });
+    const [isLoading, setLoading] = React.useState(false);
 
     //Handle edit pop up
     const [openEditPopUp, setOpenEditPopUp] = React.useState(false)
@@ -146,6 +148,7 @@ const ImportReportsTable = (props) => {
     React.useEffect(() => {
       const fetchGRNList = async () => {
           try {
+            setLoading(true);
             const token = localStorage.getItem('token');
             const clientId = localStorage.getItem('clientId');
             const res = await InventoryApi.getAllGoodReceiveNotes({token, clientId});
@@ -156,6 +159,7 @@ const ImportReportsTable = (props) => {
               }
             })
             setRows(refinedData);
+            setLoading(false);
           } catch (error) {
             console.error('Error fetching expired products:', error);
           }
@@ -305,6 +309,10 @@ const ImportReportsTable = (props) => {
             />
           }
         </PopUp>
+
+        {
+          isLoading && <Loading/>
+        }
       </Box>
     );
 }

@@ -6,7 +6,7 @@ const ImportReportDetail = ({target}) => {
         <div className='bg-dark-bg-2'>
             <div className='flex flex-col gap-2'>
                 <div>Mã phiếu: <span className='text-white'>{target._id}</span> </div>
-                <div>Nhân viên lập phiếu: <span className='text-white'>{target.user_id}</span> </div>
+                <div>Nhân viên lập phiếu: <span className='text-white'>{target.creator}</span> </div>
                 <div>Ngày lập phiếu: <span className='text-white'>{target.createdAt}</span></div>
             </div>
 

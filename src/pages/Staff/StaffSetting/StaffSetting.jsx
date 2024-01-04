@@ -3,11 +3,19 @@ import UserApi from "../../../api/userApi";
 import Header from "../../../components/Header/Header";
 import Popup from "../../../components/Popup/Popup";
 import EditForm from "./EditForm";
+import ResetPasswordForm from "./ResetPasswordForm";
 import CustomButton from "../../../components/CustomButton/CustomButton";
 import { toDatePickerFormat } from "../../../utils/util";
+import { Loading } from "../../../components";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const StaffSetting = () => {
+  const token = localStorage.getItem('token');
+  const clientId = localStorage.getItem('clientId');
   const [isUpdatePopUpOpen, setUpdatePopUpOpen] = React.useState(false); 
+  const [isPasswortPopUpOpen, setPasswortPopUpOpen] = React.useState(false);
+  const [isLoading, setLoading] = React.useState(false);
   const [staff, setStaff] = React.useState({
     _id: '',
     name: '',
@@ -21,6 +29,7 @@ const StaffSetting = () => {
   React.useEffect(() => {
     const fetchStaff = async () => {
       try {
+        setLoading(true);
         const token = localStorage.getItem('token');
         const clientId = localStorage.getItem('clientId');
         const res = await UserApi.getUserInfo({ token, clientId }, clientId);
@@ -35,6 +44,7 @@ const StaffSetting = () => {
   
         //console.log(newData);
         setStaff(newData);
+        setLoading(false);
       } catch (error) {
         // Handle errors
       }
@@ -47,21 +57,32 @@ const StaffSetting = () => {
   const handleUpdateInfo = (updatedData) => {
     const updateStaff = async () => {
       try {
-        setUpdatePopUpOpen(false);
-        const token = localStorage.getItem('token');
-        const clientId = localStorage.getItem('clientId');
-        console.log(updatedData);
-        await UserApi.updateUserInfo({token, clientId}, updatedData);
-
-        //Update UI
-        const res = await UserApi.getUserInfo({ token, clientId }, clientId);
-        const {
-          attributes: { address, birthday, phone },
-          ...rest
-        } = res.data;
-        const formattedBirthday = toDatePickerFormat(birthday);
-        const newData = { ...rest, address, birthday: formattedBirthday, phone };
-        setStaff(newData);
+        //console.log(updatedData);
+        const response = await UserApi.updateStaffInfo({token, clientId}, updatedData);
+        if (response.error){
+          toast.error('Lỗi cập nhật thông tin', {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
+        }
+        else
+        {
+          //Update UI
+          const res = await UserApi.getUserInfo({ token, clientId }, clientId);
+          const {
+            attributes: { address, birthday, phone },
+            ...rest
+          } = res.data;
+          const formattedBirthday = toDatePickerFormat(birthday);
+          const newData = { ...rest, address, birthday: formattedBirthday, phone };
+          setStaff(newData);
+        }
       } 
       catch (error) {
         //
@@ -70,21 +91,61 @@ const StaffSetting = () => {
     updateStaff();
   }
 
+  const handleUpdatePassword = async(newPassword) =>{
+    try {
+      const token = localStorage.getItem('token');
+      const clientId = localStorage.getItem('clientId');
+      //console.log(updatedData);
+      const res = await UserApi.updateUserInfo({token, clientId}, newPassword);
+      if (res.error){
+        toast.error('Lỗi cập nhật mật khẩu', {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      }
+      else
+      {
+        setLoading(true);
+        UserApi.logout({token, clientId}).then(() => {
+          localStorage.removeItem('token');
+          localStorage.removeItem('clientId');
+          setLoading(false);
+          navigate("/login");
+        });
+      }
+      
+    } 
+    catch (error) {
+      
+    }
+  }
+
   return (
     <div>
       {staff && (
         <div className="flex flex-col">
           <div className='flex justify-between'>
               <Header heading="Thông tin cá nhân"></Header>
-              <div className='p-3'>
+              <div className='p-3 flex max-h-[70px] self-center'>
                 <CustomButton 
                   title={'Cập nhật thông tin'}
-                  className="p-2 me-5"
+                  className="p-3 me-5"
                   onAction={() => {setUpdatePopUpOpen(true)}}
+                />
+                <CustomButton 
+                  title={'Đổi mật khẩu'}
+                  className="p-3 me-5"
+                  onAction={() => {setPasswortPopUpOpen(true)}}
                 />
               </div>
           </div> 
-          <div className="flex flex-col gap-5 bg-slate-600 min-w-[800px] p-4 border-0 rounded-md self-center">
+          <div className="flex flex-col gap-5 bg-slate-600 min-w-[800px] p-4 border-0 rounded-md self-center mt-7">
           <div className='input flex flex-col'>
                 <label
                     className='block text-white text-sm font-barlow font-medium leading-6'
@@ -138,24 +199,6 @@ const StaffSetting = () => {
                     readOnly={true}
                 />
             </div>
-
-            {/* <div className='input flex flex-col'>
-                <label
-                    className='block text-white text-sm font-barlow font-medium leading-6'
-                    htmlFor='password'
-                >
-                    Mật khẩu
-                </label>
-                <input 
-                    className='block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm placeholder:text-gray-400 ring-0 sm:text-sm sm:leading-6'
-                    name='password'
-                    id='password'
-                    value={staff.password}
-                    readOnly={true}
-                    autoComplete='off'
-                    type='password'
-                />
-            </div> */}
 
             <div className='input flex flex-col'>
                 <label
@@ -220,8 +263,32 @@ const StaffSetting = () => {
           >
               <EditForm target={staff} onClose={()=>{setUpdatePopUpOpen(false)}} onSubmit={handleUpdateInfo}></EditForm>
           </Popup>
-        </div>
+
+          <Popup
+            title="Đổi mật khẩu"
+            isOpen={isPasswortPopUpOpen}
+            handleCloseBtnClick={() => {setPasswortPopUpOpen(false)}}
+          >
+              <ResetPasswordForm onClose={()=>{setPasswortPopUpOpen(false)}} onSubmit={handleUpdatePassword}></ResetPasswordForm>
+          </Popup>
+
+          <div>
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover={false}
+                theme="colored"
+                />
+          </div>
+        </div> 
       )}
+      {isLoading && <Loading/>}
     </div>
   );
 };
