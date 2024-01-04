@@ -4,7 +4,7 @@ import { BASE_URL, LOCAL_URL, configHeader } from "./configApi";
 class ItemApi{
     async createMainDish({token, clientId}, data){
         try {
-            const res = await axios.post(`${LOCAL_URL}/items/new`, data, {headers: configHeader({token, clientId})})
+            const res = await axios.post(`${BASE_URL}/items/new`, data, {headers: configHeader({token, clientId})})
             return res.data;
         } 
         catch (error) {
@@ -18,7 +18,7 @@ class ItemApi{
 
     async updateItem({token, clientId}, data){
         try {
-            const res = await axios.patch(`${LOCAL_URL}/items/${data.itemId}`, data.item_quantity, 
+            const res = await axios.patch(`${BASE_URL}/items/${data.itemId}`, data.item_quantity, 
             {headers: configHeader({token, clientId})})
             return res.data;
         } 
@@ -33,7 +33,7 @@ class ItemApi{
 
     async deleteItem({token, clientId}, itemId){
         try {
-            const res = await axios.delete(`${LOCAL_URL}/items/${itemId}`, {headers: configHeader({token, clientId})})
+            const res = await axios.delete(`${BASE_URL}/items/${itemId}`, {headers: configHeader({token, clientId})})
             return res.data;
         } 
         catch (error) {
@@ -47,7 +47,7 @@ class ItemApi{
 
     async getItemsByType({token, clientId}, type){
         try {
-            const res = await axios.get(`${LOCAL_URL}/items/${type}`, {headers: configHeader({token, clientId})})
+            const res = await axios.get(`${BASE_URL}/items/${type}`, {headers: configHeader({token, clientId})})
             return res.data;
         } 
         catch (error) {
@@ -59,3 +59,5 @@ class ItemApi{
         }
     }
 }
+
+export default new ItemApi();

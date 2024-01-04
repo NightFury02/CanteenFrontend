@@ -1,5 +1,5 @@
 import React from 'react';
-import axios from 'axios'
+import ItemApi from '../../../api/itemsApi';
 import Header from '../../../components/Header/Header'
 import CustomButton from '../../../components/CustomButton/CustomButton';
 import Popup from '../../../components/Popup/Popup';
@@ -15,9 +15,16 @@ const StaffDailyMenu = () => {
 
     React.useEffect(()=>{
         const fetchMenuData = async () => {
-            const data = await axios.get(`https://reqres.in/api/users?per_page=12`);
-            setOriginalMenu(data.data.data);
-            setMenu(data.data.data);
+            try {
+                const token = localStorage.getItem('token');
+                const clientId = localStorage.getItem('clientId');
+                const res = await ItemApi.getItemsByType({token, clientId}, 'main');
+                setOriginalMenu(res.data);
+                setMenu(res.data);
+            } 
+            catch (error) {
+                //
+            }
         };
         fetchMenuData();
     }, [])
@@ -25,25 +32,45 @@ const StaffDailyMenu = () => {
     const handleCreateMenu = async (inputList) => {
         console.log(inputList);
         //use post method here to create new menu
-
-        //Get new menu
-        const data = await axios.get(`https://reqres.in/api/users?per_page=12`);
-        setOriginalMenu(data.data.data);
-        setMenu(data.data.data);
+        const createMenu = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                const clientId = localStorage.getItem('clientId');
+                const body = {
+                    "listItems": inputList
+                }
+                await ItemApi.createMainDish({token, clientId}, body);
+                
+                //Refetch menu
+                const res = await ItemApi.getItemsByType({token, clientId}, 'main');
+                setOriginalMenu(res.data);
+                setMenu(res.data);
+            } 
+            catch (error) {
+                //
+            }
+        }
+        createMenu();
     }
 
     const handleOnDeleteMenu = async () => {
         //Call api to delete menu
+        //Refetch menu
+        const token = localStorage.getItem('token');
+        const clientId = localStorage.getItem('clientId');
+        const res = await ItemApi.getItemsByType({token, clientId}, 'main');
+        setOriginalMenu(res.data);
+        setMenu(res.data);
+        
+        //Close pop up
         setDeletePopUpOpen(false);
-        setOriginalMenu([]);
-        setMenu([]);
     }
 
     const handleSearchBar = async (query) => {
         console.log(query);
         if (originalMenu.length > 0) {
             if (query !== ""){
-                const searchResult = originalMenu.filter((item) => item.last_name.toLowerCase().includes(query.toLowerCase()));
+                const searchResult = originalMenu.filter((item) => item.item_name.toLowerCase().includes(query.toLowerCase()));
                 setMenu(searchResult);
             }
             else{
@@ -52,96 +79,12 @@ const StaffDailyMenu = () => {
         }
     };
 
-    //Temp data for menu:
-    const tempMenu = [
-        {
-            id: '1223',
-            name: 'Táo',
-            image: 'https://waapple.org/wp-content/uploads/2021/06/Variety_Granny-Smith-transparent-658x677.png',
-            cost: 8000,
-            price: 10000,
-            quantity: 200,
-            expirationDate: '2023-12-29'
-        },
-        {
-            id: '1224',
-            name: 'Coca',
-            image: 'https://thegioidouong.net/wp-content/uploads/2021/06/coca-300ml-chai-nhua.jpg',
-            cost: 10000,
-            price: 15000,
-            quantity: 150,
-            expirationDate: '2024-01-01'
-        },
-        {
-            id: '1225',
-            name: 'Oreo',
-            image: 'https://cooponline.vn/wp-content/uploads/2020/04/banh-quy-socola-oreo-socola-119-6g-20220927.jpg',
-            cost: 10000,
-            price: 15000,
-            quantity: 150,
-            expirationDate: '2024-01-01'
-        },
-        {
-            id: '1226',
-            name: 'Táo',
-            image: 'https://waapple.org/wp-content/uploads/2021/06/Variety_Granny-Smith-transparent-658x677.png',
-            cost: 8000,
-            price: 10000,
-            quantity: 200,
-            expirationDate: '2023-12-29'
-        },
-        {
-            id: '1227',
-            name: 'Coca',
-            image: 'https://thegioidouong.net/wp-content/uploads/2021/06/coca-300ml-chai-nhua.jpg',
-            cost: 10000,
-            price: 15000,
-            quantity: 150,
-            expirationDate: '2024-01-01'
-        },
-        {
-            id: '1228',
-            name: 'Oreo',
-            image: 'https://cooponline.vn/wp-content/uploads/2020/04/banh-quy-socola-oreo-socola-119-6g-20220927.jpg',
-            cost: 10000,
-            price: 15000,
-            quantity: 150,
-            expirationDate: '2024-01-01'
-        },
-        {
-            id: '1229',
-            name: 'Táo',
-            image: 'https://waapple.org/wp-content/uploads/2021/06/Variety_Granny-Smith-transparent-658x677.png',
-            cost: 8000,
-            price: 10000,
-            quantity: 200,
-            expirationDate: '2023-12-29'
-        },
-        {
-            id: '1230',
-            name: 'Coca',
-            image: 'https://thegioidouong.net/wp-content/uploads/2021/06/coca-300ml-chai-nhua.jpg',
-            cost: 10000,
-            price: 15000,
-            quantity: 150,
-            expirationDate: '2024-01-01'
-        },
-        {
-            id: '1231',
-            name: 'Oreo',
-            image: 'https://cooponline.vn/wp-content/uploads/2020/04/banh-quy-socola-oreo-socola-119-6g-20220927.jpg',
-            cost: 10000,
-            price: 15000,
-            quantity: 150,
-            expirationDate: '2024-01-01'
-        }
-    ];
     //console.log(menu)
 
     return (
     <>
         <div className='flex justify-between'>
-            <Header heading="Menu hàng ngày"></Header>
+            <Header heading="Món ăn chính hàng ngày"></Header>
             <div className='p-3'>
                 <Searchbar
                   handleSearch={handleSearchBar}  
