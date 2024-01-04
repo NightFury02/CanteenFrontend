@@ -157,7 +157,7 @@ class UserApi {
   async createStaff({ token, clientId }, password, email, name, attributes) {
     try {
       const res = await axios.post(
-        `${BASE_URL}/staff/new`,
+        `${BASE_URL}/auth/signup/employee`,
         {
           "password": password,
           "email": email,

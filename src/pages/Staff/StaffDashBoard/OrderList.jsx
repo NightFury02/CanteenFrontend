@@ -153,7 +153,7 @@ const OrderList = (props) => {
         setOpenCard(true);
         const res = await orderApi.getOrderDetail({token, clientId}, row._id);
         setTotal(row.order_total_price);
-        setSelectedRowData(res.data);
+        setSelectedRowData(res.data.list_items);
     };
 
     const handleReceivedChange = (value) => {
