@@ -22,6 +22,7 @@ import { visuallyHidden } from '@mui/utils';
 import PopUp from '../../../../components/Popup/Popup';
 import CustomButton from '../../../../components/CustomButton/CustomButton';
 import Searchbar from '../../../../components/SearchBar/SearchBar';
+import { Loading } from '../../../../components';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -171,6 +172,7 @@ export default function InventoryTable(props) {
     const [selected, setSelected] = React.useState({});
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    const [isLoading, setLoading] = React.useState(false);
 
     //Handle delete pop up
     const [openDeletePopUp, setOpenDeletePopUp] = React.useState(false)
@@ -182,10 +184,12 @@ export default function InventoryTable(props) {
     React.useEffect(() =>{
       const fetchProducts = async () => {
           try {
+              setLoading(true);
               const res = await InventoryApi.getAllInventoryItems({token, clientId});
               const data = res.data;
               setInventoryTableRows(data);
               setInventoryTableOriginalRows(data);
+              setLoading(false);
           } catch (error) {
           console.error('Error fetching expired products:', error);
           }
@@ -236,6 +240,7 @@ export default function InventoryTable(props) {
         console.log(selected);
         const deleteProducts = async () => {
           try {
+            setLoading(true);
             const body = {
               "userId": clientId,
               "item_list": [
@@ -251,10 +256,12 @@ export default function InventoryTable(props) {
             //Update inventory table
             setInventoryTableRows(newData.data);
             setInventoryTableOriginalRows(newData.data);
-
+            
             //Update expired table
-            setExpiredTableRows(newData.data);
-            setExpiredTableOriginalRows(newData.data);
+            const expiredProduct = await InventoryApi.getAllExpiredProduct({token, clientId});
+            setExpiredTableRows(expiredProduct.data);
+            setExpiredTableOriginalRows(expiredProduct.data);
+            setLoading(false);
 
           } catch (error) {
             console.error('Error fetching expired products:', error);
@@ -325,6 +332,17 @@ export default function InventoryTable(props) {
                         >
                             {
                               row._id
+                            }
+                        </TableCell>
+
+                        <TableCell
+                          id={labelId}
+                          scope="row"
+                          padding='none'
+                          sx={{color: 'text.white', paddingTop: '1rem', paddingBottom: '1rem'}}
+                        >
+                            {
+                              <img src={row.inventoryItem_img} className='h-[60px] w-[60px] flex-none bg-gray-50'></img>
                             }
                         </TableCell>
 
@@ -422,6 +440,10 @@ export default function InventoryTable(props) {
             </div>
           }
         </PopUp>
+        
+      {
+        isLoading && <Loading/>
+      }
       </Box>
     );
 }

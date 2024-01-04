@@ -26,6 +26,12 @@ const AdminInventory = () => {
       label: 'Mã sản phẩm',
     },
     {
+      id: 'inventoryItem_img',
+      numeric: false,
+      disablePadding: true,
+      label: 'Ảnh',
+    },
+    {
       id: 'inventoryItem_name',
       numeric: false,
       disablePadding: true,
@@ -69,10 +75,9 @@ const AdminInventory = () => {
         setInventoryTableOriginalRows(data);
 
         //Update expired product table
-        // const invenRes = await InventoryApi.getAllInventoryItems({token, clientId});
-        // const data = invenRes.data;
-        setExpiredTableRows(data);
-        setExpiredTableOriginalRows(data);
+        const expiredRes = await InventoryApi.getAllInventoryItems({token, clientId});
+        setExpiredTableRows(expiredRes.data);
+        setExpiredTableOriginalRows(expiredRes.data);
       } 
       catch (error) {
         //
@@ -100,10 +105,9 @@ const AdminInventory = () => {
         setInventoryTableOriginalRows(data);
 
         //Update expired product table
-        // const invenRes = await InventoryApi.getAllInventoryItems({token, clientId});
-        // const data = invenRes.data;
-        setExpiredTableRows(data);
-        setExpiredTableOriginalRows(data);
+        const expiredRes = await InventoryApi.getAllExpiredProduct({token, clientId});
+        setExpiredTableRows(expiredRes.data);
+        setExpiredTableOriginalRows(expiredRes.data);
       } 
       catch (error) {
         //
