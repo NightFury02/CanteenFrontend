@@ -251,7 +251,7 @@ const ImportReportsTable = (props) => {
                         role="checkbox"
                         aria-checked={isItemSelected}
                         tabIndex={-1}
-                        key={row.id}
+                        key={row._id}
                         selected={isItemSelected}
                         sx={{ cursor: 'pointer' }}
                     >

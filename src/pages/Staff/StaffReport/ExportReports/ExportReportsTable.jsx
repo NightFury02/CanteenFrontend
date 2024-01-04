@@ -211,7 +211,7 @@ const ExportReportsTable = (props) => {
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
     //console.log(emptyRows);
-    const visibleRows = stableSort(rows, getComparator(order, orderBy)).slice(
+    const visibleRows = stableSort(filteredData, getComparator(order, orderBy)).slice(
       page * rowsPerPage,
       page * rowsPerPage + rowsPerPage,
     );
@@ -250,7 +250,7 @@ const ExportReportsTable = (props) => {
                         role="checkbox"
                         aria-checked={isItemSelected}
                         tabIndex={-1}
-                        key={row.id}
+                        key={row._id}
                         selected={isItemSelected}
                         sx={{ cursor: 'pointer' }}
                     >
@@ -284,7 +284,7 @@ const ExportReportsTable = (props) => {
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={rows.length}
+                count={filteredData.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}

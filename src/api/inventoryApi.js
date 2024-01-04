@@ -4,7 +4,7 @@ import { BASE_URL, LOCAL_URL, configHeader } from "./configApi";
 class InventoryApi{
     async createInventoryItem({token, clientId}, data){
         try {
-            const res = await axios.post(`${BASE_URL}/inventoryItems/new/`, data, {headers: configHeader({ token, clientId })})
+            const res = await axios.post(`${LOCAL_URL}/inventoryItems/new/`, data, {headers: configHeader({ token, clientId })})
             return res.data;
         } 
         catch (error) {
@@ -18,7 +18,7 @@ class InventoryApi{
 
     async getAllInventoryItems({token, clientId}){
         try {
-            const res = await axios.get(`${BASE_URL}/inventoryItems/all`, {headers: configHeader({ token, clientId })});
+            const res = await axios.get(`${LOCAL_URL}/inventoryItems/all`, {headers: configHeader({ token, clientId })});
             return res.data;
         } 
         catch (error) {
@@ -32,7 +32,7 @@ class InventoryApi{
 
     async createGoodReceiveNote({token, clientId}, data){
         try {
-            const res = await axios.post(`${BASE_URL}/inventoryAct/come`, data, {headers: configHeader({ token, clientId })})
+            const res = await axios.post(`${LOCAL_URL}/inventoryAct/come`, data, {headers: configHeader({ token, clientId })})
             return res.data;
         } 
         catch (error) {
@@ -46,7 +46,7 @@ class InventoryApi{
 
     async getAllGoodReceiveNotes({token, clientId}){
         try {
-            const res = await axios.get(`${BASE_URL}/inventoryAct/allcomevoucher`, {headers: configHeader({ token, clientId })})
+            const res = await axios.get(`${LOCAL_URL}/inventoryAct/allcomevoucher`, {headers: configHeader({ token, clientId })})
             return res.data;
         } 
         catch (error) {
@@ -60,7 +60,7 @@ class InventoryApi{
 
     async deleteInventoryItems({token, clientId}, data){
         try {
-            const res = await axios.post(`${BASE_URL}/inventoryAct/delete`, data, {headers: configHeader({ token, clientId })})
+            const res = await axios.post(`${LOCAL_URL}/inventoryAct/delete`, data, {headers: configHeader({ token, clientId })})
             return res.data;
         } 
         catch (error) {
@@ -74,7 +74,7 @@ class InventoryApi{
 
     async getAllDeletedInventoryItems({token, clientId}){
         try {
-            const res = await axios.get(`${BASE_URL}/inventoryAct/alldeletevoucher`, {headers: configHeader({ token, clientId })})
+            const res = await axios.get(`${LOCAL_URL}/inventoryAct/alldeletevoucher`, {headers: configHeader({ token, clientId })})
             return res.data;
         } 
         catch (error) {
@@ -88,7 +88,7 @@ class InventoryApi{
 
     async createGoodDeliveryNote({token, clientId}, data){
         try {
-            const res = await axios.post(`${BASE_URL}/inventoryAct/leave`, data, {headers: configHeader({ token, clientId })})
+            const res = await axios.post(`${LOCAL_URL}/inventoryAct/leave`, data, {headers: configHeader({ token, clientId })})
             return res.data;
         } 
         catch (error) {
@@ -102,7 +102,7 @@ class InventoryApi{
 
     async getAllGoodDeliveryNotes({token, clientId}){
         try {
-            const res = await axios.get(`${BASE_URL}/inventoryAct/allleavevoucher`, {headers: configHeader({ token, clientId })})
+            const res = await axios.get(`${LOCAL_URL}/inventoryAct/allleavevoucher`, {headers: configHeader({ token, clientId })})
             return res.data;
         } 
         catch (error) {

@@ -1,5 +1,6 @@
 import * as React from 'react';
-import axios from 'axios';
+import InventoryApi from "../../../../api/inventoryApi";
+import { useStaffInventoryContext } from '../../../../context/Staff/StaffInventoryContext';
 import PropTypes from 'prop-types';
 import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -170,79 +171,58 @@ EnhancedTableToolbar.propTypes = {
 
 export default function ExpiredProductTable(props) {
     const {headCells, title} = props;
+
+    //Use context
+    const {
+      expiredTableRows,
+      expiredTableOriginalRows,
+      setInventoryTableRows,
+      setInventoryTableOriginalRows, 
+      setExpiredTableRows, 
+      setExpiredTableOriginalRows 
+    } = useStaffInventoryContext();
+
+    //States
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('id');
     const [selected, setSelected] = React.useState([]);
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
-    const [rows, setRows] = React.useState([]);
-    const [originalRows, setOriginalRows] = React.useState([]);
 
     //Handle pop up
     const [openDeletePopUp, setOpenDeletePopUp] = React.useState(false);
-    
+
+    //Token and client id
+    const token = localStorage.getItem('token');
+    const clientId = localStorage.getItem('clientId');
+
     //Fetch data
     React.useEffect(() =>{
       const fetchProducts = async () => {
-          const url = `https://reqres.in/api/users`;
-          try {
-              // const res = await axios.get(url);
-              // const data = res.data;
-              const newData = [
-                {
-                    _id: '657d768648a0c356cab63ff6',
-                    item_name: 'Táo',
-                    item_type: 'inventory',
-                    item_price: 10000,
-                    item_quantity: 200,
-                    item_image: 'https://waapple.org/wp-content/uploads/2021/06/Variety_Granny-Smith-transparent-658x677.png',
-                    item_cost: 8000,
-                    item_expirationDate: '2023-12-29'
-                },
-                {
-                    _id: '657d768648a0c356cab63ff7',
-                    item_name: 'Coca',
-                    item_type: 'inventory',
-                    item_price: 10000,
-                    item_quantity: 150,
-                    item_image: 'https://thegioidouong.net/wp-content/uploads/2021/06/coca-300ml-chai-nhua.jpg',
-                    item_cost: 8000,
-                    item_expirationDate: '2024-01-01'
-                },
-                {
-                    _id: '657d768648a0c356cab63ff8',
-                    item_name: 'Oreo',
-                    item_type: 'inventory',
-                    item_price: 15000,
-                    item_quantity: 150,
-                    item_image: 'https://cooponline.vn/wp-content/uploads/2020/04/banh-quy-socola-oreo-socola-119-6g-20220927.jpg',
-                    item_cost: 8000,
-                    item_expirationDate: '2024-01-01'
-                },
-              ]
-              setRows(newData);
-              setOriginalRows(newData);
-          } catch (error) {
+        try {
+            const res = await InventoryApi.getAllInventoryItems({token, clientId});
+            const data = res.data;
+            setExpiredTableRows(data);
+            setExpiredTableOriginalRows(data);
+        } catch (error) {
           console.error('Error fetching expired products:', error);
-          }
+        }
       }
       fetchProducts()
     }, []);
 
     const handleSearchBar = async (query) => {
         console.log(query);
-        if (originalRows.length > 0) {
+        if (expiredTableOriginalRows.length > 0) {
             if (query !== ""){
-                const searchResult = originalRows.filter((item) => item.name.toLowerCase().includes(query.toLowerCase()));
-                setRows(searchResult);
+              const searchResult = expiredTableOriginalRows.filter((item) => item.inventoryItem_name.toLowerCase().includes(query.toLowerCase()));
+              setExpiredTableRows(searchResult);
             }
             else{
-            setRows(originalRows);
+              setExpiredTableRows(expiredTableOriginalRows);
             }
         }
     };
-
-    //console.log(rows);
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -252,7 +232,7 @@ export default function ExpiredProductTable(props) {
 
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
-            const newSelected = rows.map((n) => n.id);
+            const newSelected = expiredTableRows.map((n) => n._id);
             setSelected(newSelected);
             return;
         }
@@ -290,8 +270,35 @@ export default function ExpiredProductTable(props) {
       setOpenDeletePopUp(true);
     }
     
-    const handleOnDelete = async () => {
-      console.log(selected);
+    const handleOnDelete = () => {
+      console.log(selected); //Ex: ["3890945sfrf", "39eu289fjfd", "sfuisfw9333"]
+      
+      //Delete expired items from inventory
+      const deleteProducts = async () => {
+        try {
+          const body = {
+            "userId": clientId,
+            "item_list": selected.map((id) => {
+              return {
+                inventoryItem: id
+              }
+            })
+          }
+          const res = await InventoryApi.deleteInventoryItems({token, clientId}, body);
+          const newData = await InventoryApi.getAllInventoryItems({token, clientId});
+
+          //Update ExpiredProductTable
+          setExpiredTableRows(newData.data);
+          setExpiredTableOriginalRows(newData.data);
+
+          //Update InventoryTable
+          setInventoryTableRows(newData.data);
+          setInventoryTableOriginalRows(newData.data);
+        } catch (error) {
+          console.error('Error fetching expired products:', error);
+        }
+      }
+      deleteProducts()
       setOpenDeletePopUp(false);
       setSelected([]);
     }
@@ -299,16 +306,12 @@ export default function ExpiredProductTable(props) {
     const isSelected = (id) => selected.indexOf(id) !== -1;
 
     // Avoid a layout jump when reaching the last page with empty rows.
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - expiredTableRows.length) : 0;
 
-    //console.log(emptyRows);
-
-    const visibleRows = stableSort(rows, getComparator(order, orderBy)).slice(
+    const visibleRows = stableSort(expiredTableRows, getComparator(order, orderBy)).slice(
       page * rowsPerPage,
       page * rowsPerPage + rowsPerPage,
     );
-
-    //console.log(visibleRows);
 
     return (
         <Box sx={{ width: '100%' }}>
@@ -330,7 +333,7 @@ export default function ExpiredProductTable(props) {
                     orderBy={orderBy}
                     onSelectAllClick={handleSelectAllClick}
                     onRequestSort={handleRequestSort}
-                    rowCount={rows.length}
+                    rowCount={expiredTableRows.length}
                     headCells={headCells}
                 />
                 <TableBody>
@@ -378,7 +381,7 @@ export default function ExpiredProductTable(props) {
                           sx={{color: 'text.white', paddingTop: '1rem', paddingBottom: '1rem'}}
                         >
                             {
-                              <img src={row.item_image} className='h-[60px] w-[60px] flex-none bg-gray-50'></img>
+                              row.inventoryItem_name
                             }
                         </TableCell>
 
@@ -389,7 +392,7 @@ export default function ExpiredProductTable(props) {
                           sx={{color: 'text.white', paddingTop: '1rem', paddingBottom: '1rem'}}
                         >
                             {
-                              row.item_name
+                              row.inventoryItem_quantity
                             }
                         </TableCell>
 
@@ -400,7 +403,7 @@ export default function ExpiredProductTable(props) {
                           sx={{color: 'text.white', paddingTop: '1rem', paddingBottom: '1rem'}}
                         >
                             {
-                              row.item_quantity
+                              row.cost
                             }
                         </TableCell>
 
@@ -411,7 +414,7 @@ export default function ExpiredProductTable(props) {
                           sx={{color: 'text.white', paddingTop: '1rem', paddingBottom: '1rem'}}
                         >
                             {
-                              row.item_expirationDate
+                              new Date(row.inventoryItem_exp).toISOString().split('T')[0]
                             }
                         </TableCell>
 
@@ -433,7 +436,7 @@ export default function ExpiredProductTable(props) {
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={rows.length}
+                count={expiredTableRows.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
