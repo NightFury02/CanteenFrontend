@@ -55,52 +55,46 @@ const UserSetting = () => {
     <div>
       {user && (
         <div className="flex flex-col min-w-[700px]">
-          <TextField
+            <input
                 variant='outlined'
                 label="Họ và tên"
                 name="name"
                 value={user.name}
                 onChange={(e) => {handleInputChange("name", e.target.value) }}
-                sx={textFieldStyle}
             />
-            <TextField
+            <input
                 variant='outlined'
                 label="Email"
                 name="email"
                 value={user.email}
                 onChange={(e) => {handleInputChange("email", e.target.value) }}
-                sx={textFieldStyle}
             />
-            <TextField
+            <input
                 variant='outlined'
                 label="Mật khẩu"
                 name="password"
                 type="password"
                 value={user.password}
                 onChange={(e) => {handleInputChange("password", e.target.value) }}
-                sx={textFieldStyle}
             />
-            <DatePicker
+            <input
                 label="Ngày sinh"
                 value={user.dob}
                 onChange={(e) => {handleInputChange("dob", e.target.value) }}
-                sx={textFieldStyle}
             />
-            <TextField
+            <input
                 variant='outlined'
                 label="Số điện thoại"
                 name="phone"
                 value={user.phone}
                 onChange={(e) => {handleInputChange("phone", e.target.value) }}
-                sx={textFieldStyle}
             />
-            <TextField
+            <input
                 variant='outlined'
                 label="Địa chỉ"
                 name="address"
                 value={user.address}
                 onChange={(e) => {handleInputChange("address", e.target.value) }}
-                sx={textFieldStyle}
             />
             <CustomButton
                 title='Lưu'

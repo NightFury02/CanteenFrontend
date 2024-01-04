@@ -94,7 +94,7 @@ class UserApi {
 
   async updateInfo({ token, clientId }, attributes, password) {
     try {
-      const res = await axios.post(
+      const res = await axios.patch(
         `${BASE_URL}/user`,
         {
           "attributes": attributes,
@@ -175,6 +175,26 @@ class UserApi {
       return {
         error: true,
         response: error?.response,
+      };
+    }
+  }
+
+  async getUserInfo({token, clientId}, id){
+    try {
+      const res = await axios.get(
+        `${BASE_URL}/user/${id}`,
+        {
+          headers: configHeader({ token, clientId }),
+        }
+      );
+
+      return res.data;
+    } catch (error) {
+      console.log(error);
+      return {
+        error: true,
+        response: error?.response,
+        data: []
       };
     }
   }
