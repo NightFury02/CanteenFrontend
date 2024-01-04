@@ -3,12 +3,15 @@ import {FormControl, FormLabel, TextField} from '@mui/material'
 import CustomButton from '../../../../components/CustomButton/CustomButton'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import userApi from '../../../../api/userApi';
-
-const token = localStorage.getItem("token");
-const clientId = localStorage.getItem("clientId");
+import { useStaffInventoryContext } from '../../../../context/Staff/StaffInventoryContext';
 
 const AddStaffForm = (props) => {
     const {setOpen} = props;
+
+    const {
+        setStaffTableRows, setStaffTableOriginalRows
+    } = useStaffInventoryContext();
+
     const [staff, setStaff] = useState({
         _id: '', 
         name: '',
@@ -23,14 +26,29 @@ const AddStaffForm = (props) => {
         setOpen(false);
     };
 
-    const handleSubmit = async () => {
-        const attributes = {
-            birthday: staff.birthday,
-            phone: staff.phone,
-            address: staff.address
-        };
-        const addStaff = await userApi.createStaff({token, clientId}, staff.password, staff.email, staff.name, attributes);
-        console.log(addStaff);
+    const token = localStorage.getItem("token");
+    const clientId = localStorage.getItem("clientId");
+
+    const handleSubmit = () => {
+        const addStaff = async () => {
+            const attributes = {
+                birthday: staff.birthday,
+                phone: staff.phone,
+                address: staff.address
+            };
+            const res = await userApi.createStaff({token, clientId}, staff.password, staff.email, staff.name, attributes);
+            console.log(res);
+            const newData = await userApi.getStaffList({token, clientId});
+
+            const transformedData = newData.data.map(item => ({
+              ...item,
+              ...item.attributes // Spread attributes directly
+            }));
+      
+            setStaffTableRows(transformedData);
+            setStaffTableOriginalRows(transformedData);
+        }
+        addStaff();
         setOpen(false);
     };
 

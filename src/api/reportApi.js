@@ -1,5 +1,5 @@
 import axios from "axios";
-import { BASE_URL, configHeader} from "./configApi";
+import { BASE_URL, LOCAL_URL, configHeader} from "./configApi";
 
 class ReportApi{
     async createDailyInventoryReport({ token, clientId }){

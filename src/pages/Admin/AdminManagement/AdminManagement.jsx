@@ -5,15 +5,14 @@ import PopUp from '../../../components/Popup/Popup';
 import StaffTable from './StaffTable/StaffTable';
 import AddStaffForm from './AddStaffForm/AddStaffForm';
 import Searchbar from '../../../components/SearchBar/SearchBar';
-import userApi from '../../../api/userApi';
-
-const token = localStorage.getItem("token");
-const clientId = localStorage.getItem("clientId");
+import { useStaffInventoryContext } from '../../../context/Staff/StaffInventoryContext';
 
 const AdminManagement = () => {
+    const {
+        setStaffTableRows, staffTableOriginalRows
+    } = useStaffInventoryContext();
+    
     const [openAddPopup, setOpenAddPopup] = React.useState(false);
-    const [rows, setRows] = React.useState([]);
-    const [originalRows, setOriginalRows] = React.useState([]);
 
     const handleAddOpenChange = (isOpen) => {
         setOpenAddPopup(isOpen);
@@ -52,33 +51,15 @@ const AdminManagement = () => {
         },
     ];
 
-    React.useEffect(() =>{
-        const fetchStaffs = async () => {
-            try {
-                const res = await userApi.getStaffList({token, clientId});
-                const transformedData = res.data.map(item => ({
-                    ...item,
-                    ...item.attributes // Spread attributes directly
-                }));
-          
-                setRows(transformedData);
-                setOriginalRows(transformedData);
-            } catch (error) {
-            console.error('Error fetching staffs:', error);
-            }
-        }
-        fetchStaffs()
-    }, []);
-
     const handleSearchBar = async (query) => {
         console.log(query);
-        if (originalRows.length > 0) {
+        if (staffTableOriginalRows.length > 0) {
             if (query !== ""){
-                const searchResult = originalRows.filter((item) => item.name.toLowerCase().includes(query.toLowerCase()));
-                setRows(searchResult);
+                const searchResult = staffTableOriginalRows.filter((item) => item.name.toLowerCase().includes(query.toLowerCase()));
+                setStaffTableRows(searchResult);
             }
             else{
-            setRows(originalRows);
+                setStaffTableRows(staffTableOriginalRows);
             }
         }
     };
@@ -113,7 +94,7 @@ const AdminManagement = () => {
                 />}
             </PopUp>
             <div className="mt-2 p-2">
-            <StaffTable headCells={headCells} title={''} rows={rows}/>
+            <StaffTable headCells={headCells} title={''}/>
             </div>
         </div>
     );

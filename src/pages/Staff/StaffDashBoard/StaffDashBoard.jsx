@@ -6,16 +6,19 @@ import PopUp from '../../../components/Popup/Popup';
 import Searchbar from '../../../components/SearchBar/SearchBar';
 import orderApi from "../../../api/orderApi";
 import reportApi from '../../../api/reportApi';
+import { useStaffInventoryContext } from '../../../context/Staff/StaffInventoryContext';
 
 const token = localStorage.getItem("token");
 const clientId = localStorage.getItem("clientId");
 
 const StaffDashboard = () => {
+  const {
+    orderListRows, setOrderListRows, orderListOriginalRows, setOrderListOriginalRows
+  } = useStaffInventoryContext();
+
   const [openMonthlyPopup, setOpenMonthlyPopup] = React.useState(false);
   const [openDailyPopup, setOpenDailyPopup] = React.useState(false);
   const [openInventoryPopup, setOpenInventoryPopup] = React.useState(false);
-  const [rows, setRows] = React.useState([]);
-  const [originalRows, setOriginalRows] = React.useState([]);
 
   const handleMonthlyConfirm = async () => {
     const createMonthlyIncomeReport = await reportApi.createMonthlyIncomeReport({token, clientId});
@@ -55,45 +58,15 @@ const StaffDashboard = () => {
     },
   ];
 
-  React.useEffect(() => {
-    const fetchOrderList = async () => {
-        try {
-          const res = await orderApi.getAllOrders({token, clientId});
-          const listItems = [
-            {
-                item_name: "cơm chiên trứng",
-                item_id: "659448612bf2b2ccde40c6b2",
-                item_quantity: 1,
-                item_note: "Nhiều tỏi"
-            },
-            {
-                item_name: "beefstack2",
-                item_id: "657d768648a0c356cab63ff6",
-                item_quantity: 1,
-                item_note: "Thêm nước mắm"
-            }
-          ];
-          const timeReceive = "11:30AM";
-          const newOrder = await orderApi.createOrder({token, clientId}, listItems, timeReceive);
-          console.log(newOrder);
-          setRows(res.data);
-          setOriginalRows(res.data);
-        } catch (error) {
-          console.error('Error fetching orders: ', error);
-        }
-    }
-    fetchOrderList()
-  }, []);
-
   const handleSearchBar = async (query) => {
     console.log(query);
-    if (originalRows.length > 0) {
+    if (orderListOriginalRows.length > 0) {
         if (query !== ""){
-            const searchResult = originalRows.filter((item) => item._id.toLowerCase().includes(query.toLowerCase()));
-            setRows(searchResult);
+            const searchResult = orderListOriginalRows.filter((item) => item._id.toLowerCase().includes(query.toLowerCase()));
+            setOrderListRows(searchResult);
         }
         else{
-          setRows(originalRows);
+          setOrderListRows(originalRows);
         }
     }
   };
@@ -132,7 +105,7 @@ const StaffDashboard = () => {
     </div>
 
     <div className='ms-3'>
-      <OrderList headCells={headCells} title="Danh sách đơn" rows={rows}></OrderList>
+      <OrderList headCells={headCells} title="Danh sách đơn"></OrderList>
     </div>
 
     <PopUp

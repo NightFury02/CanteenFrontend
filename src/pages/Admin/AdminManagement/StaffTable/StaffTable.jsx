@@ -22,6 +22,8 @@ import { visuallyHidden } from '@mui/utils';
 import PopUp from '../../../../components/Popup/Popup';
 import CustomButton from '../../../../components/CustomButton/CustomButton';
 import EditStaffForm from '../EditStaffForm/EditStaffForm';
+import userApi from '../../../../api/userApi';
+import { useStaffInventoryContext } from '../../../../context/Staff/StaffInventoryContext';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -148,7 +150,12 @@ EnhancedTableToolbar.propTypes = {
 };
 
 export default function StaffTable(props) {
-    const {headCells, rows} = props;
+    const {headCells} = props;
+    
+    const {
+      staffTableRows, setStaffTableRows, setStaffTableOriginalRows
+    } = useStaffInventoryContext();
+
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('id');
     const [selected, setSelected] = React.useState({});
@@ -156,6 +163,27 @@ export default function StaffTable(props) {
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const [openEditPopUp, setOpenEditPopUp] = React.useState(false);
     const [openDeletePopUp, setOpenDeletePopUp] = React.useState(false);
+
+    const token = localStorage.getItem("token");
+    const clientId = localStorage.getItem("clientId");
+
+    React.useEffect(() =>{
+      const fetchStaffs = async () => {
+          try {
+              const res = await userApi.getStaffList({token, clientId});
+              const transformedData = res.data.map(item => ({
+                  ...item,
+                  ...item.attributes // Spread attributes directly
+              }));
+        
+              setStaffTableRows(transformedData);
+              setStaffTableOriginalRows(transformedData);
+          } catch (error) {
+          console.error('Error fetching staffs:', error);
+          }
+      }
+      fetchStaffs()
+    }, []);
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -183,14 +211,27 @@ export default function StaffTable(props) {
       setPage(0);
     };
 
-    const handleOnDelete = async () => {
-        console.log(selected);
+    const handleOnDelete = () => {
+        const deleteStaff = async () => {
+          try {
+            const res = await userApi.deleteStaff({token, clientId}, selected._id);
+            console.log(res);
+            const newData = await userApi.getStaffList({token, clientId});
+
+            const transformedData = newData.data.map(item => ({
+              ...item,
+              ...item.attributes // Spread attributes directly
+            }));
+
+            setStaffTableRows(transformedData);
+            setStaffTableOriginalRows(transformedData);
+          } catch (error) {
+            console.error('Error fetching expired Staff:', error);
+          }
+        }
+        deleteStaff()
         setOpenDeletePopUp(false);
         setSelected({});
-      //   await axios.delete('http://localhost:8080/v1/api/', {
-      //   data: { ids: selected },
-      // });
-      
     }
 
     const handleOpenEditChange = (isOpen) => {
@@ -201,10 +242,10 @@ export default function StaffTable(props) {
     const isSelected = (row) => selected === row;
 
     // Avoid a layout jump when reaching the last page with empty rows.
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - staffTableRows.length) : 0;
 
     //console.log(emptyRows);
-    const visibleRows = stableSort(rows, getComparator(order, orderBy)).slice(
+    const visibleRows = stableSort(staffTableRows, getComparator(order, orderBy)).slice(
       page * rowsPerPage,
       page * rowsPerPage + rowsPerPage,
     );
@@ -278,7 +319,7 @@ export default function StaffTable(props) {
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={rows.length}
+                count={staffTableRows.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
