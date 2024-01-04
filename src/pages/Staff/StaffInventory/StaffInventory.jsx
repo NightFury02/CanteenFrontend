@@ -75,10 +75,9 @@ const StaffInventory = () => {
         setInventoryTableOriginalRows(data);
 
         //Update expired product table
-        // const invenRes = await InventoryApi.getAllInventoryItems({token, clientId});
-        // const data = invenRes.data;
-        setExpiredTableRows(data);
-        setExpiredTableOriginalRows(data);
+        const expiredRes = await InventoryApi.getAllInventoryItems({token, clientId});
+        setExpiredTableRows(expiredRes.data);
+        setExpiredTableOriginalRows(expiredRes.data);
       } 
       catch (error) {
         //
@@ -106,10 +105,9 @@ const StaffInventory = () => {
         setInventoryTableOriginalRows(data);
 
         //Update expired product table
-        // const invenRes = await InventoryApi.getAllInventoryItems({token, clientId});
-        // const data = invenRes.data;
-        setExpiredTableRows(data);
-        setExpiredTableOriginalRows(data);
+        const expiredRes = await InventoryApi.getAllExpiredProduct({token, clientId});
+        setExpiredTableRows(expiredRes.data);
+        setExpiredTableOriginalRows(expiredRes.data);
       } 
       catch (error) {
         //

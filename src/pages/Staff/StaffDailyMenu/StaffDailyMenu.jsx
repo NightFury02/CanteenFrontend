@@ -6,21 +6,24 @@ import Popup from '../../../components/Popup/Popup';
 import CreateDailyMenu from './CreateDailyMenu';
 import DailyMenu from './DailyMenu';
 import Searchbar from '../../../components/SearchBar/SearchBar';
-
+import { Loading } from '../../../components';
 const StaffDailyMenu = () => {
     const [isMenuPopUpOpen, setMenuPopUpOpen] = React.useState(false);
     const [isDeletePopUpOpen, setDeletePopUpOpen] = React.useState(false);
     const [menu, setMenu] = React.useState([]);
     const [originalMenu, setOriginalMenu] = React.useState([]);
+    const [isLoading, setLoading] = React.useState(false);
 
     React.useEffect(()=>{
         const fetchMenuData = async () => {
             try {
+                setLoading(true);
                 const token = localStorage.getItem('token');
                 const clientId = localStorage.getItem('clientId');
                 const res = await ItemApi.getItemsByType({token, clientId}, 'main');
                 setOriginalMenu(res.data);
                 setMenu(res.data);
+                setLoading(false);
             } 
             catch (error) {
                 //
@@ -54,10 +57,12 @@ const StaffDailyMenu = () => {
     }
 
     const handleOnDeleteMenu = async () => {
-        //Call api to delete menu
-        //Refetch menu
         const token = localStorage.getItem('token');
         const clientId = localStorage.getItem('clientId');
+        //Call api to delete menu
+        await ItemApi.deleteAllMainItem({token, clientId});
+
+        //Refetch menu
         const res = await ItemApi.getItemsByType({token, clientId}, 'main');
         setOriginalMenu(res.data);
         setMenu(res.data);
@@ -148,7 +153,7 @@ const StaffDailyMenu = () => {
                 </div>
             }
         </Popup>
-
+        {isLoading && <Loading />}
     </>
     )
 }

@@ -113,6 +113,21 @@ class InventoryApi{
             };
         }
     }
+
+    async getAllExpiredProduct({token, clientId}){
+        try {
+            const res = await axios.get(`${BASE_URL}/inventoryItems/expired`, {headers: configHeader({ token, clientId })})
+            return res.data;
+        } 
+        catch (error) {
+            console.log(error);
+            return {
+                error: true,
+                response: error?.response,
+            };
+        }
+    }
+
 }
 
 export default new InventoryApi()

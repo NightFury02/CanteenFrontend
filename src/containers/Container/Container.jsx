@@ -16,6 +16,8 @@ const Container = ({ listMenuBasedOnUser, children }) => {
       const token = localStorage.getItem('token');
       const clientId = localStorage.getItem('clientId');
       UserApi.logout({token, clientId}).then(() => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('clientId');
         navigate("/login");
       });
     }
