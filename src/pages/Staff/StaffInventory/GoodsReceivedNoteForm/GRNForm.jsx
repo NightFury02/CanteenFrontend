@@ -3,11 +3,11 @@ import CustomButton from '../../../../components/CustomButton/CustomButton'
 
 const GRNForm = ({closePopUp, onSubmit}) => {
     const [inputList, setInputList] = React.useState([
-        { inventoryItem_name: '', cost: '', inventoryItem_quantity: '', inventoryItem_exp: '' }
+        { inventoryItem_name: '', inventoryItem_img: '', cost: '', inventoryItem_quantity: '', inventoryItem_exp: '' }
     ]);
 
     const [errors, setErrors] = React.useState([
-        { inventoryItem_name: 'Không được bỏ trống', cost: 'Không được bỏ trống', inventoryItem_quantity: 'Không được bỏ trống', inventoryItem_exp: 'Không được bỏ trống' }
+        { inventoryItem_name: 'Không được bỏ trống', inventoryItem_img: '', cost: 'Không được bỏ trống', inventoryItem_quantity: 'Không được bỏ trống', inventoryItem_exp: 'Không được bỏ trống' }
     ]);
 
     const handleInputChange = (e, index) => {
@@ -73,8 +73,8 @@ const GRNForm = ({closePopUp, onSubmit}) => {
     }
 
     const handleAddRow = () => {
-        setInputList([...inputList, {inventoryItem_name: '', cost: '', inventoryItem_quantity: '', inventoryItem_exp: ''}]);
-        setErrors([...errors, {inventoryItem_name: 'Không được bỏ trống', cost: 'Không được bỏ trống', inventoryItem_quantity: 'Không được bỏ trống', inventoryItem_exp: 'Không được bỏ trống'}]);
+        setInputList([...inputList, {inventoryItem_name: '', inventoryItem_img: '', cost: '', inventoryItem_quantity: '', inventoryItem_exp: ''}]);
+        setErrors([...errors, {inventoryItem_name: 'Không được bỏ trống', inventoryItem_img: '', cost: 'Không được bỏ trống', inventoryItem_quantity: 'Không được bỏ trống', inventoryItem_exp: 'Không được bỏ trống'}]);
     }
 
     const handleRemoveRow = (index) => {
@@ -118,6 +118,7 @@ const GRNForm = ({closePopUp, onSubmit}) => {
         {
             inputList.map((row, index) => (
                 <div key={index} className='row flex gap-5 my-2'>
+                    
                     <div className='input flex flex-col'>
                         <label
                             className='block text-white text-sm font-barlow font-medium leading-6'
@@ -145,9 +146,33 @@ const GRNForm = ({closePopUp, onSubmit}) => {
                     <div className='input flex flex-col'>
                         <label
                             className='block text-white text-sm font-barlow font-medium leading-6'
+                            htmlFor='inventoryItem_img'
+                        >
+                            Link ảnh sản phẩm
+                        </label>
+                        <input 
+                            className='block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6'
+                            name='inventoryItem_img'
+                            id='inventoryItem_img'
+                            value={row.inventoryItem_img}
+                            onChange={e => handleInputChange(e, index)}
+                            autoComplete='off'
+                            type='text'
+                        />
+                        <div style={{ minHeight: '1.5rem' }}>
+                            {
+                                errors[index].inventoryItem_img &&
+                                <span className="text-red-500 text-sm">{errors[index].inventoryItem_img}</span>
+                            }
+                        </div>
+                    </div>
+
+                    <div className='input flex flex-col'>
+                        <label
+                            className='block text-white text-sm font-barlow font-medium leading-6'
                             htmlFor='cost'
                         >
-                            Đơn giá
+                            Giá nhập
                         </label>
                         <input 
                             className='block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6'

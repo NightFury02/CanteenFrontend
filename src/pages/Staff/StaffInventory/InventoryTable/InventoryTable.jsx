@@ -251,10 +251,11 @@ export default function InventoryTable(props) {
             //Update inventory table
             setInventoryTableRows(newData.data);
             setInventoryTableOriginalRows(newData.data);
-
+            
             //Update expired table
-            setExpiredTableRows(newData.data);
-            setExpiredTableOriginalRows(newData.data);
+            const expiredProduct = await InventoryApi.getAllExpiredProduct({token, clientId});
+            setExpiredTableRows(expiredProduct.data);
+            setExpiredTableOriginalRows(expiredProduct.data);
 
           } catch (error) {
             console.error('Error fetching expired products:', error);

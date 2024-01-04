@@ -200,7 +200,7 @@ export default function ExpiredProductTable(props) {
     React.useEffect(() =>{
       const fetchProducts = async () => {
         try {
-            const res = await InventoryApi.getAllInventoryItems({token, clientId});
+            const res = await InventoryApi.getAllExpiredProduct({token, clientId});
             const data = res.data;
             setExpiredTableRows(data);
             setExpiredTableOriginalRows(data);
@@ -288,8 +288,9 @@ export default function ExpiredProductTable(props) {
           const newData = await InventoryApi.getAllInventoryItems({token, clientId});
 
           //Update ExpiredProductTable
-          setExpiredTableRows(newData.data);
-          setExpiredTableOriginalRows(newData.data);
+          const expiredProduct = await InventoryApi.getAllExpiredProduct({token, clientId});
+          setExpiredTableRows(expiredProduct.data);
+          setExpiredTableOriginalRows(expiredProduct.data);
 
           //Update InventoryTable
           setInventoryTableRows(newData.data);
@@ -384,7 +385,7 @@ export default function ExpiredProductTable(props) {
                               <img src={row.inventoryItem_img} className='h-[60px] w-[60px] flex-none bg-gray-50'></img>
                             }
                         </TableCell>
-                        
+
                         <TableCell
                           id={labelId}
                           scope="row"
