@@ -381,6 +381,17 @@ export default function ExpiredProductTable(props) {
                           sx={{color: 'text.white', paddingTop: '1rem', paddingBottom: '1rem'}}
                         >
                             {
+                              <img src={row.inventoryItem_img} className='h-[60px] w-[60px] flex-none bg-gray-50'></img>
+                            }
+                        </TableCell>
+                        
+                        <TableCell
+                          id={labelId}
+                          scope="row"
+                          padding='none'
+                          sx={{color: 'text.white', paddingTop: '1rem', paddingBottom: '1rem'}}
+                        >
+                            {
                               row.inventoryItem_name
                             }
                         </TableCell>

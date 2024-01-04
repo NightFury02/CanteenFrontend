@@ -92,14 +92,10 @@ class UserApi {
     }
   }
 
-  async updateInfo({ token, clientId }, attributes, password) {
+  async updateUserInfo({ token, clientId }, data) {
     try {
       const res = await axios.patch(
-        `${BASE_URL}/user`,
-        {
-          "attributes": attributes,
-          "password": password
-        },
+        `${BASE_URL}/user`, data,
         {
           headers: configHeader({ token, clientId }),
         }

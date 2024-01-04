@@ -1,33 +1,34 @@
 import {useState} from 'react'
-import CustomButton from '../../../../components/CustomButton/CustomButton'
+import CustomButton from '../../../components/CustomButton/CustomButton'
 
 const EditForm = (props) => {
     const {target, onSubmit, onClose} = props
     const [editedTarget, setEditedTarget] = useState({
         _id: target._id || '', 
-        password: target.password || '',
         name: target.name || '',
         address: target.address || '',
         birthday: target.birthday || '',
         phone: target.phone || ''
     });
     const [errors, setErrors] = useState({
-        _id: target._id || '', 
-        password: target.password || '',
-        name: target.name || '',
-        address: target.address || '',
-        birthday: target.birthday || '',
-        phone: target.phone || ''
+        _id: '', 
+        name: '',
+        address: '',
+        birthday: '',
+        phone: ''
     });
 
     const handleSubmit = () => {
-        // const dataToSend = {
-        //     ...editedProduct,
-        //     item_price: parseFloat(editedProduct.item_price),
-        //     item_cost: parseFloat(editedProduct.item_cost),
-        //     item_quantity: parseInt(editedProduct.item_quantity),
-        // } 
-        // onSubmit(dataToSend);
+        const dataToSend = {
+            "attributes": {
+                "address": editedTarget.address,
+                "birthday": editedTarget.birthday,
+                "phone": editedTarget.phone
+            }
+        } 
+        //console.log(dataToSend);
+        onSubmit(dataToSend);
+        onClose;
     }
 
     const handleInputChange = (name, value) => {
@@ -181,7 +182,7 @@ const EditForm = (props) => {
                 />
             </div>
 
-            <div className='input flex flex-col'>
+            {/* <div className='input flex flex-col'>
                 <label
                     className='block text-white text-sm font-barlow font-medium leading-6'
                     htmlFor='password'
@@ -197,7 +198,7 @@ const EditForm = (props) => {
                     autoComplete='off'
                     type='password'
                 />
-            </div>
+            </div> */}
 
             <div className='input flex flex-col'>
                 <label

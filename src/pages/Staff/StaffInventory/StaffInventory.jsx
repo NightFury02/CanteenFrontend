@@ -26,6 +26,12 @@ const StaffInventory = () => {
       label: 'Mã sản phẩm',
     },
     {
+      id: 'inventoryItem_img',
+      numeric: false,
+      disablePadding: true,
+      label: 'Ảnh',
+    },
+    {
       id: 'inventoryItem_name',
       numeric: false,
       disablePadding: true,
