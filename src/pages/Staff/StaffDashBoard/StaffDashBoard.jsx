@@ -3,7 +3,7 @@ import Header from '../../../components/Header/Header';
 import OrderList from './OrderList';
 import CustomButton from '../../../components/CustomButton/CustomButton';
 import PopUp from '../../../components/Popup/Popup';
-import Searchbar from '../../../components/SearchBar/SearchBar';
+import Searchbar from '../../../components/Searchbar/Searchbar';
 import reportApi from '../../../api/reportApi';
 import { useStaffInventoryContext } from '../../../context/Staff/StaffInventoryContext';
 
@@ -57,7 +57,7 @@ const StaffDashboard = () => {
     },
   ];
 
-  const handleSearchBar = async (query) => {
+  const handleSearchbar = async (query) => {
     console.log(query);
     if (orderListOriginalRows.length > 0) {
         if (query !== ""){
@@ -76,7 +76,7 @@ const StaffDashboard = () => {
       <Header heading="Dashboard"></Header>
       <div className='p-3'>
           <Searchbar
-            handleSearch={handleSearchBar}  
+            handleSearch={handleSearchbar}  
             placeholder='Tìm kiếm đơn'
           />
       </div>

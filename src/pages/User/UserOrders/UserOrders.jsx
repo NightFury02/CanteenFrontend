@@ -1,7 +1,7 @@
 import React from 'react';
 import Header from '../../../components/Header/Header';
 import OrderList from './OrderList';
-import Searchbar from '../../../components/SearchBar/SearchBar';
+import Searchbar from '../../../components/Searchbar/Searchbar';
 import orderApi from "../../../api/orderApi";
 import { useStaffInventoryContext } from '../../../context/Staff/StaffInventoryContext';
 
@@ -33,7 +33,7 @@ const UserOrders = () => {
     },
   ];
 
-  const handleSearchBar = async (query) => {
+  const handleSearchbar = async (query) => {
     console.log(query);
     if (orderListOriginalRows.length > 0) {
         if (query !== ""){
@@ -41,7 +41,7 @@ const UserOrders = () => {
             setOrderListRows(searchResult);
         }
         else{
-          setRows(orderListOriginalRows);
+          setOrderListRows(orderListOriginalRows);
         }
     }
   };
@@ -52,7 +52,7 @@ const UserOrders = () => {
       <Header heading="Dashboard"></Header>
       <div className='p-3'>
           <Searchbar
-            handleSearch={handleSearchBar}  
+            handleSearch={handleSearchbar}  
             placeholder='Tìm kiếm đơn'
           />
       </div>

@@ -21,7 +21,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { visuallyHidden } from '@mui/utils';
 import PopUp from '../../../../components/Popup/Popup';
 import CustomButton from '../../../../components/CustomButton/CustomButton';
-import Searchbar from '../../../../components/SearchBar/SearchBar';
+import Searchbar from '../../../../components/Searchbar/Searchbar';
 import { Loading } from '../../../../components';
 
 function descendingComparator(a, b, orderBy) {
@@ -98,7 +98,7 @@ EnhancedTableHead.propTypes = {
 };
 
 function EnhancedTableToolbar(props) {
-  const { selected, handleDeleteIconClick, title, handleSearchBar } = props;
+  const { selected, handleDeleteIconClick, title, handleSearchbar } = props;
 
   return (
     <Toolbar
@@ -126,7 +126,7 @@ function EnhancedTableToolbar(props) {
           !selected && 
           <div className='p-3'>
             <Searchbar
-              handleSearch={handleSearchBar}  
+              handleSearch={handleSearchbar}  
               placeholder='Tìm kiếm sản phẩm...'
             />
           </div>
@@ -197,7 +197,7 @@ export default function InventoryTable(props) {
       fetchProducts()
     }, []);
 
-    const handleSearchBar = async (query) => {
+    const handleSearchbar = async (query) => {
       console.log(query);
       if (inventoryTableOriginalRows.length > 0) {
         if (query !== ""){
@@ -292,7 +292,7 @@ export default function InventoryTable(props) {
                 selected={Object.keys(selected).length === 0 ? false : true} 
                 handleDeleteIconClick={()=> {setOpenDeletePopUp(true)}} 
                 title={title}
-                handleSearchBar={handleSearchBar}
+                handleSearchbar={handleSearchbar}
              />
             <TableContainer>
               <Table

@@ -22,7 +22,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { visuallyHidden } from '@mui/utils';
 import CustomButton from '../../../../components/CustomButton/CustomButton';
 import PopUp from '../../../../components/Popup/Popup';
-import Searchbar from '../../../../components/SearchBar/SearchBar';
+import Searchbar from '../../../../components/Searchbar/Searchbar';
 import { Loading } from '../../../../components';
 
 function descendingComparator(a, b, orderBy) {
@@ -111,7 +111,7 @@ EnhancedTableHead.propTypes = {
 };
 
 function EnhancedTableToolbar(props) {
-  const { numSelected, handleDelete, title, handleSearchBar } = props;
+  const { numSelected, handleDelete, title, handleSearchbar } = props;
 
   return (
     <Toolbar
@@ -146,7 +146,7 @@ function EnhancedTableToolbar(props) {
           </Typography>
           <div className='p-3'>
             <Searchbar
-              handleSearch={handleSearchBar}  
+              handleSearch={handleSearchbar}  
               placeholder='Tìm kiếm sản phẩm...'
             />
           </div>
@@ -214,7 +214,7 @@ export default function ExpiredProductTable(props) {
       fetchProducts()
     }, []);
 
-    const handleSearchBar = async (query) => {
+    const handleSearchbar = async (query) => {
         console.log(query);
         if (expiredTableOriginalRows.length > 0) {
             if (query !== ""){
@@ -326,7 +326,7 @@ export default function ExpiredProductTable(props) {
               numSelected={selected.length} 
               handleDelete={handleOnDeleteIconClick} 
               title={title}
-              handleSearchBar={handleSearchBar} />
+              handleSearchbar={handleSearchbar} />
             <TableContainer>
             <Table
                 sx={{ minWidth: 750, bgcolor: 'background.secondary' }}

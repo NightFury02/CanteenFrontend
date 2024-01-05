@@ -1,7 +1,7 @@
 import React from 'react';
 import Header from '../../../components/Header/Header';
 import OrderList from './OrderList';
-import Searchbar from '../../../components/SearchBar/SearchBar';
+import Searchbar from '../../../components/Searchbar/Searchbar';
 import { useStaffInventoryContext } from '../../../context/Staff/StaffInventoryContext';
 
 const AdminOrders = () => {
@@ -32,7 +32,7 @@ const AdminOrders = () => {
     },
   ];
 
-  const handleSearchBar = async (query) => {
+  const handleSearchbar = async (query) => {
     console.log(query);
     if (orderListOriginalRows.length > 0) {
         if (query !== ""){
@@ -51,7 +51,7 @@ const AdminOrders = () => {
       <Header heading="Danh sách đơn hàng"></Header>
       <div className='p-3'>
           <Searchbar
-            handleSearch={handleSearchBar}  
+            handleSearch={handleSearchbar}  
             placeholder='Tìm kiếm đơn'
           />
       </div>
