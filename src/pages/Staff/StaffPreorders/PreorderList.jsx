@@ -198,15 +198,10 @@ const PreorderList = (props) => {
     };
 
     const handleConfirm = () => {
-      if (change){
-        if (change >= 0) {
-          setConfirmPopup(true);
-        }
-        else{
-          setMessage('Số tiền nhận vào không hợp lệ');
-          setError(true);
-        }
-      } else{
+      if (change >= 0) {
+        setConfirmPopup(true);
+      }
+      else{
         setMessage('Số tiền nhận vào không hợp lệ');
         setError(true);
       }
