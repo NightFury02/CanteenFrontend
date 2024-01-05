@@ -302,7 +302,7 @@ const StaffHome = () => {
     <div className="relative grid grid-cols-[1fr_1fr_400px]">
       <Header className="col-span-1" heading={user.name}></Header>
       <div className="col-span-1 p-3">
-        <Searchbar handleSearch={handleSearchBar} placeholder="Tìm tên..." />
+        <Searchbar handleSearch={handleSearchbar} placeholder="Tìm tên..." />
       </div>
       <div></div>
       <div className="col-span-2">
