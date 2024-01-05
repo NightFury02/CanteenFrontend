@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import UserApi from "../../../api/userApi";
 import Header from "../../../components/Header/Header";
 import Popup from "../../../components/Popup/Popup";
@@ -12,9 +13,10 @@ import 'react-toastify/dist/ReactToastify.css';
 const UserSetting = () => {
   const token = localStorage.getItem('token');
   const clientId = localStorage.getItem('clientId');
-  const [isPasswortPopUpOpen, setPasswortPopUpOpen] = React.useState(false);
+  const navigate = useNavigate();
+  const [isPasswordPopUpOpen, setPasswordPopUpOpen] = React.useState(false);
   const [isLoading, setLoading] = React.useState(false);
-  const [staff, setStaff] = React.useState({
+  const [user, setUser] = React.useState({
     _id: '',
     name: '',
     email: '',
@@ -22,29 +24,28 @@ const UserSetting = () => {
   });
 
   React.useEffect(() => {
-    const fetchStaff = async () => {
+    const fetchUser = async () => {
       try {
         setLoading(true);
         const token = localStorage.getItem('token');
         const clientId = localStorage.getItem('clientId');
         const res = await UserApi.getUserInfo({ token, clientId }, clientId);
-        setStaff(res.data);
+        setUser(res.data);
         setLoading(false);
       } catch (error) {
         // Handle errors
       }
     };
   
-    fetchStaff();
+    fetchUser();
   }, []);
   
   const handleUpdatePassword = async(newPassword) =>{
     try {
-      const token = localStorage.getItem('token');
-      const clientId = localStorage.getItem('clientId');
-      //console.log(updatedData);
-      const res = await UserApi.updateUserInfo({token, clientId}, newPassword);
+      setLoading(true);
+      const res = await UserApi.updateInfo({token, clientId}, newPassword);
       if (res.error){
+        setLoading(false);
         toast.error('Lỗi cập nhật mật khẩu', {
           position: "top-right",
           autoClose: 5000,
@@ -58,15 +59,11 @@ const UserSetting = () => {
       }
       else
       {
-        setLoading(true);
-        UserApi.logout({token, clientId}).then(() => {
-          localStorage.removeItem('token');
-          localStorage.removeItem('clientId');
-          setLoading(false);
-          navigate("/login");
-        });
+        localStorage.removeItem('token');
+        localStorage.removeItem('clientId');
+        setLoading(false);
+        navigate("/login");
       }
-      
     } 
     catch (error) {
       
@@ -75,7 +72,7 @@ const UserSetting = () => {
 
   return (
     <div>
-      {staff && (
+      {user && (
         <div className="flex flex-col">
           <div className='flex justify-between'>
               <Header heading="Thông tin cá nhân"></Header>
@@ -83,7 +80,7 @@ const UserSetting = () => {
                 <CustomButton 
                   title={'Đổi mật khẩu'}
                   className="p-3 me-5"
-                  onAction={() => {setPasswortPopUpOpen(true)}}
+                  onAction={() => {setPasswordPopUpOpen(true)}}
                 />
               </div>
           </div> 
@@ -99,7 +96,7 @@ const UserSetting = () => {
                     className='block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm placeholder:text-gray-400 sm:text-sm sm:leading-6 ring-0'
                     name='_id'
                     id='_id'
-                    value={staff._id}
+                    value={user._id}
                     autoComplete='off'
                     type='text'
                     readOnly={true}
@@ -117,7 +114,7 @@ const UserSetting = () => {
                     className='block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm placeholder:text-gray-400 ring-0 sm:text-sm sm:leading-6'
                     name='name'
                     id='name'
-                    value={staff.name}
+                    value={user.name}
                     autoComplete='off'
                     type='text'
                     readOnly={true}
@@ -135,7 +132,7 @@ const UserSetting = () => {
                     className='block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm placeholder:text-gray-400 ring-0 sm:text-sm sm:leading-6'
                     name='email'
                     id='email'
-                    value={staff.email}
+                    value={user.email}
                     autoComplete='off'
                     type='text'
                     readOnly={true}
@@ -145,10 +142,10 @@ const UserSetting = () => {
 
           <Popup
             title="Đổi mật khẩu"
-            isOpen={isPasswortPopUpOpen}
-            handleCloseBtnClick={() => {setPasswortPopUpOpen(false)}}
+            isOpen={isPasswordPopUpOpen}
+            handleCloseBtnClick={() => {setPasswordPopUpOpen(false)}}
           >
-              <ResetPasswordForm onClose={()=>{setPasswortPopUpOpen(false)}} onSubmit={handleUpdatePassword}></ResetPasswordForm>
+              <ResetPasswordForm onClose={()=>{setPasswordPopUpOpen(false)}} onSubmit={handleUpdatePassword}></ResetPasswordForm>
           </Popup>
 
           <div>

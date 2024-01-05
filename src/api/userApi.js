@@ -70,7 +70,7 @@ class UserApi {
     }
   }
 
-  async updateStaffInfo({ token, clientId }, data) {
+  async updateInfo({ token, clientId }, data) {
     try {
       const res = await axios.patch(
         `${BASE_URL}/user`, data,

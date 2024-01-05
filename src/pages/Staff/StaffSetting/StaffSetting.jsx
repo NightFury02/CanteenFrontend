@@ -16,7 +16,7 @@ const StaffSetting = () => {
   const token = localStorage.getItem('token');
   const clientId = localStorage.getItem('clientId');
   const [isUpdatePopUpOpen, setUpdatePopUpOpen] = React.useState(false); 
-  const [isPasswortPopUpOpen, setPasswortPopUpOpen] = React.useState(false);
+  const [isPasswordPopUpOpen, setPasswordPopUpOpen] = React.useState(false);
   const [isLoading, setLoading] = React.useState(false);
   const [staff, setStaff] = React.useState({
     _id: '',
@@ -60,7 +60,7 @@ const StaffSetting = () => {
     const updateStaff = async () => {
       try {
         //console.log(updatedData);
-        const response = await UserApi.updateStaffInfo({token, clientId}, updatedData);
+        const response = await UserApi.updateInfo({token, clientId}, updatedData);
         if (response.error){
           toast.error('Lỗi cập nhật thông tin', {
             position: "top-right",
@@ -109,7 +109,7 @@ const StaffSetting = () => {
       const token = localStorage.getItem('token');
       const clientId = localStorage.getItem('clientId');
       //console.log(updatedData);
-      const res = await UserApi.updateStaffInfo({token, clientId}, newPassword);
+      const res = await UserApi.updateInfo({token, clientId}, newPassword);
       if (res.error){
         setLoading(false);
         toast.error('Lỗi cập nhật mật khẩu', {
@@ -151,7 +151,7 @@ const StaffSetting = () => {
                 <CustomButton 
                   title={'Đổi mật khẩu'}
                   className="p-3 me-5"
-                  onAction={() => {setPasswortPopUpOpen(true)}}
+                  onAction={() => {setPasswordPopUpOpen(true)}}
                 />
               </div>
           </div> 
@@ -276,10 +276,10 @@ const StaffSetting = () => {
 
           <Popup
             title="Đổi mật khẩu"
-            isOpen={isPasswortPopUpOpen}
-            handleCloseBtnClick={() => {setPasswortPopUpOpen(false)}}
+            isOpen={isPasswordPopUpOpen}
+            handleCloseBtnClick={() => {setPasswordPopUpOpen(false)}}
           >
-              <ResetPasswordForm onClose={()=>{setPasswortPopUpOpen(false)}} onSubmit={handleUpdatePassword}></ResetPasswordForm>
+              <ResetPasswordForm onClose={()=>{setPasswordPopUpOpen(false)}} onSubmit={handleUpdatePassword}></ResetPasswordForm>
           </Popup>
 
           <div>

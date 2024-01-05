@@ -84,7 +84,7 @@ const ResetPasswordForm = (props) => {
     return (
     <div className="flex flex-col">
         <form 
-            className="flex flex-col min-w-[500px]"
+            className="flex flex-col min-w-[500px] gap-y-7"
             autoComplete='off'
         >
             <div className='input flex flex-col'>
@@ -103,11 +103,12 @@ const ResetPasswordForm = (props) => {
                     autoComplete='off'
                     type='text'
                 />
+                {
+                    errors.password && 
+                    <span className="text-red-500 text-sm mt-1">{errors.password}</span>
+                }
             </div>
-            {
-                errors.password && 
-                <span className="text-red-500 text-sm mt-1">{errors.password}</span>
-            }
+            
             
             <div className='input flex flex-col'>
                 <label
