@@ -50,8 +50,6 @@ class OrderApi{
                     headers: configHeader({ token, clientId })
                 }
             );
-            console.log('Bearer ' + token);
-            console.log(clientId);
 
             return res.data;
         }

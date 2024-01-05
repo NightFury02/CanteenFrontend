@@ -1,6 +1,5 @@
 import React from 'react';
-import axios from 'axios';
-import PropTypes from 'prop-types';
+import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
 import { Input, Typography, Breadcrumbs, Link, Table, TableBody, TableCell, TableContainer, TableRow, Card, CardMedia, CardContent, CardHeader, CardActions, Button, Grid, Pagination, Stack } from '@mui/material';
 import CustomButton from "../../../components/CustomButton/CustomButton";
 import Header from "../../../components/Header/Header";
@@ -8,6 +7,9 @@ import { DeleteIcon } from '../../../assets/svgs/index';
 import Searchbar from '../../../components/SearchBar/SearchBar';
 import PopUp from '../../../components/Popup/Popup';
 import itemsApi from '../../../api/itemsApi';
+import orderApi from '../../../api/orderApi';
+import userApi from '../../../api/userApi';
+import { Loading } from "../../../components";
 
 const itemsPerPage = 6;
 
@@ -30,6 +32,14 @@ const StaffHome = () => {
   const [total, setTotal] = React.useState(0);
   const [change, setChange] = React.useState(0);
   const [confirmPopup, setConfirmPopup] = React.useState(false);
+  const [error, setError] = React.useState(false); 
+  const [success, setSuccess] = React.useState(false); 
+  const [message, setMessage] = React.useState('');
+  const [isLoading, setLoading] = React.useState(false);
+  const [user, setUser] = React.useState({
+    _id: '',
+    name: ''
+  });
 
   const token = localStorage.getItem("token");
   const clientId = localStorage.getItem("clientId");
@@ -52,7 +62,10 @@ const StaffHome = () => {
 
   const handleQuantityChange = (cardId, quantity) => {
     const updatedSelectedCards = selectedCards.map((card) => {
-      if (card._id === cardId) {
+      if (card._id === cardId) { 
+        if (quantity > card.item_quantity){
+          quantity = card.item_quantity;
+        }
         const total = parseInt(card.item_price) * parseInt(quantity);
         return { ...card, quantity, total };
       }
@@ -75,8 +88,42 @@ const StaffHome = () => {
     setPage(1);
   };
 
+  const handleClose = () => {
+    setError(false);
+  }
+
+  const handleSuccess = () => {
+    setSuccess(false);
+    setSelectedCards([]);
+  }
+
   const handleConfirm = () => {
-    setConfirmPopup(true);
+    const createNewOrder = async () => {
+      const currentTime = new Date().toLocaleTimeString('en-US', { hour12: false });
+      console.log(currentTime)
+      const res = await orderApi.createOrder({token, clientId}, selectedCards, currentTime);
+      console.log(res);
+    };
+
+    if (change){
+      if (change >= 0) {
+        if (selectedCards.length != 0){
+          createNewOrder();
+          setSuccess(true);
+        }
+        else {
+          setMessage('Đơn hàng không được bỏ trống');
+          setError(true);
+        }
+      }
+      else{
+        setMessage('Số tiền nhận vào không hợp lệ');
+        setError(true);
+      }
+    } else{
+      setMessage('Số tiền nhận vào không hợp lệ');
+      setError(true);
+    }
   };
 
   const handleConfirmPopup = () => {
@@ -89,16 +136,34 @@ const StaffHome = () => {
   };
 
   React.useEffect(() => {
-    const fetchMenuData = async () => {
-      const inven = await itemsApi.getItemsByType({token, clientId}, 'inven');
-      setInvenMenu(inven.data);
-      const main = await itemsApi.getItemsByType({token, clientId}, 'main');
-      setMainMenu(main.data);
-      setMenu(main.data);
-      setOriginalMenu(main.data);
+    const fetchUser = async () => {
+      try {
+        setLoading(true);
+        const res = await userApi.getUserInfo({ token, clientId }, clientId);
+        setUser(res.data);
+        setLoading(false);
+      } catch (error) {
+        // Handle errors
+      }
     };
+  
+    const fetchMenuData = async () => {
+      try {
+        setLoading(true);
+        const inven = await itemsApi.getItemsByType({token, clientId}, 'inven');
+        setInvenMenu(inven.data);
+        const main = await itemsApi.getItemsByType({token, clientId}, 'main');
+        setMainMenu(main.data);
+        setMenu(main.data);
+        setOriginalMenu(main.data);
+        setLoading(false);
+      } catch (error) {
+      }
+    };
+
+    fetchUser();
     fetchMenuData();
-  }, [])
+  }, []);
 
   const handleSearchBar = async (query) => {
     console.log(query);
@@ -149,7 +214,7 @@ const StaffHome = () => {
 
   return (
     <div className="relative grid grid-cols-3 gap-x-16">
-      <Header className='col-span-1' heading="Tên nhân viên"></Header>
+      <Header className='col-span-1' heading={user.name}></Header>
       <div className='col-span-1 p-3'>
             <Searchbar
               handleSearch={handleSearchBar}  
@@ -365,6 +430,34 @@ const StaffHome = () => {
           </div>
         }
       </PopUp>
+      <Dialog open={error} onClose={handleClose}>
+        <DialogTitle sx={{ backgroundColor: 'background.tertiary' }}>Lỗi</DialogTitle>
+        <DialogContent sx={{ backgroundColor: 'background.tertiary' }}>
+          <DialogContentText sx={{color: 'white'}}>
+            {message}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{ backgroundColor: 'background.tertiary' }}>
+          <Button onClick={handleClose} color="primary" autoFocus>
+            OK
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={success} onClose={handleSuccess}>
+        <DialogTitle sx={{ backgroundColor: 'background.tertiary' }}>Thành công</DialogTitle>
+        <DialogContent sx={{ backgroundColor: 'background.tertiary' }}>
+          <DialogContentText sx={{color: 'white'}}>
+            Đặt đơn hàng thành công
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{ backgroundColor: 'background.tertiary' }}>
+          <Button onClick={handleSuccess} color="primary" autoFocus>
+            OK
+          </Button>
+        </DialogActions>
+      </Dialog>
+      {isLoading && <Loading/>}
     </div>
   );
 };

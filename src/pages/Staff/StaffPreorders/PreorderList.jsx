@@ -1,11 +1,10 @@
 import * as React from 'react';
-import axios from 'axios';
 import PropTypes from 'prop-types';
 import { alpha } from '@mui/material/styles';
-import { Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
 import { Table, TableBody, TableCell, TableContainer, TableRow, TableHead, TableSortLabel, TablePagination } from '@mui/material';
 import { Card, CardMedia, CardContent } from '@mui/material';
-import {Input, Toolbar, Typography, Box, Paper } from '@mui/material';
+import {Input, Toolbar, Typography, Box, Paper, Button } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 import CustomButton from '../../../components/CustomButton/CustomButton';
 import PopUp from '../../../components/Popup/Popup';
@@ -137,7 +136,10 @@ const PreorderList = (props) => {
     const [change, setChange] = React.useState(0);
     const [openPopupCancel, setOpenPopupCancel] = React.useState(false);
     const [confirmPopup, setConfirmPopup] = React.useState(false);
-
+    const [error, setError] = React.useState(false); 
+    const [success, setSuccess] = React.useState(false); 
+    const [message, setMessage] = React.useState('');
+  
     const token = localStorage.getItem("token");
     const clientId = localStorage.getItem("clientId");
     
@@ -180,10 +182,29 @@ const PreorderList = (props) => {
     const handleReceivedChange = (value) => {
         setReceived(value);
         setChange(value - total);
-    }
+    };
+    
+    const handleClose = () => {
+      setError(false);
+    };
+  
+    const handleSuccess = () => {
+      setSuccess(false);
+    };
 
     const handleConfirm = () => {
-        setConfirmPopup(true);
+      if (change){
+        if (change >= 0) {
+          setConfirmPopup(true);
+        }
+        else{
+          setMessage('Số tiền nhận vào không hợp lệ');
+          setError(true);
+        }
+      } else{
+        setMessage('Số tiền nhận vào không hợp lệ');
+        setError(true);
+      }
     };
 
     const handleConfirmPopup = async () => {
@@ -194,6 +215,7 @@ const PreorderList = (props) => {
         setPreorderListRows(res.data);
         setPreorderListOriginalRows(res.data);
 
+        setSuccess(true);
         setConfirmPopup(false);
         setOpenCard(false);
     }
@@ -466,6 +488,33 @@ const PreorderList = (props) => {
             </div>
           }
         </PopUp>
+        <Dialog open={error} onClose={handleClose}>
+        <DialogTitle sx={{ backgroundColor: 'background.tertiary' }}>Lỗi</DialogTitle>
+        <DialogContent sx={{ backgroundColor: 'background.tertiary' }}>
+          <DialogContentText sx={{color: 'white'}}>
+            {message}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{ backgroundColor: 'background.tertiary' }}>
+          <Button onClick={handleClose} color="primary" autoFocus>
+            OK
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={success} onClose={handleSuccess}>
+        <DialogTitle sx={{ backgroundColor: 'background.tertiary' }}>Thành công</DialogTitle>
+        <DialogContent sx={{ backgroundColor: 'background.tertiary' }}>
+          <DialogContentText sx={{color: 'white'}}>
+            Thanh toán đơn hàng thành công
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{ backgroundColor: 'background.tertiary' }}>
+          <Button onClick={handleSuccess} color="primary" autoFocus>
+            OK
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
     );
 }
