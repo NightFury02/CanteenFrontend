@@ -343,11 +343,11 @@ const PreorderList = (props) => {
         </Paper>
         <Dialog open={openCard} onClose={handleCloseCard} maxWidth="md" fullWidth>
             <Card className="col-span-1 fixed right-6 top-2 h-screen w-1/4 p-4 rounded-lg" sx={{ color: 'white', minWidth: '400', backgroundColor: 'background.secondary' }}>
-                <Typography variant="h5">Mã đơn {selected._id}</Typography>
+                
                 <div style={{ display: 'grid', gridTemplateColumns: '45% 30% 20%', gridColumnGap: '10px', gridRowGap: '8px', marginBottom: '16px', fontWeight: 'bold' }}>
                     <Typography>Sản phẩm</Typography>
                     <Typography>Số lượng</Typography>
-                    <Typography>Giá</Typography>
+                    <Typography>Tổng</Typography>
                 </div>
                 <div style={{ maxHeight: 'calc(100vh - 320px)', overflowY: 'auto' }}>
                     {selectedRowData && selectedRowData.map((selectedCard) => (
@@ -401,7 +401,7 @@ const PreorderList = (props) => {
                                 padding: '6px',
                             }}
                             >
-                            {selectedCard.note || 'Ghi chú...'}
+                            {selectedCard.item_note || 'Ghi chú...'}
                         </Typography>
                         </div>
                     </div>
@@ -412,7 +412,7 @@ const PreorderList = (props) => {
                     <Table sx={{ minWidth: 300, bgcolor: 'background.secondary' }} size="small">
                     <TableBody>
                         <TableRow>
-                        <TableCell sx={{color: 'white', minWidth: 150}}>Tổng</TableCell>
+                        <TableCell sx={{color: 'white', minWidth: 150}}>Thành tiền</TableCell>
                         <TableCell sx={{color: 'white'}}>{total}đ</TableCell>
                         </TableRow>
                         <TableRow>

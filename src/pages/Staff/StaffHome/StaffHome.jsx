@@ -407,7 +407,7 @@ const StaffHome = () => {
         >
           <Typography>Sản phẩm</Typography>
           <Typography>Số lượng</Typography>
-          <Typography>Giá</Typography>
+          <Typography>Tổng</Typography>
         </div>
         <div style={{ maxHeight: "calc(100vh - 300px)", overflowY: "auto" }}>
           {selectedCards.map((selectedCard) => (
@@ -516,7 +516,7 @@ const StaffHome = () => {
               <TableBody>
                 <TableRow>
                   <TableCell sx={{ color: "white", minWidth: 150 }}>
-                    Tổng
+                    Thành tiền
                   </TableCell>
                   <TableCell sx={{ color: "white" }}>{total}đ</TableCell>
                 </TableRow>
