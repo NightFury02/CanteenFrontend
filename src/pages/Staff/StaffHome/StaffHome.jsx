@@ -7,6 +7,7 @@ import Header from "../../../components/Header/Header";
 import { DeleteIcon } from '../../../assets/svgs/index';
 import Searchbar from '../../../components/SearchBar/SearchBar';
 import PopUp from '../../../components/Popup/Popup';
+import itemsApi from '../../../api/itemsApi';
 
 const itemsPerPage = 6;
 
@@ -19,6 +20,8 @@ const useStyles = (isActive) => ({
 
 const StaffHome = () => {
   const [menu, setMenu] = React.useState([]);
+  const [mainMenu, setMainMenu] = React.useState([]);
+  const [invenMenu, setInvenMenu] = React.useState([]);
   const [originalMenu, setOriginalMenu] = React.useState([]);
   const [currentCategory, setCurrentCategory] = React.useState('Các món ăn');
   const [page, setPage] = React.useState(1);
@@ -28,6 +31,9 @@ const StaffHome = () => {
   const [change, setChange] = React.useState(0);
   const [confirmPopup, setConfirmPopup] = React.useState(false);
 
+  const token = localStorage.getItem("token");
+  const clientId = localStorage.getItem("clientId");
+  
   // Function to calculate the total value
   const calculateTotal = (selectedCards) => {
     let sum = 0;
@@ -46,8 +52,8 @@ const StaffHome = () => {
 
   const handleQuantityChange = (cardId, quantity) => {
     const updatedSelectedCards = selectedCards.map((card) => {
-      if (card.id === cardId) {
-        const total = parseInt(card.id) * 10000 * parseInt(quantity);
+      if (card._id === cardId) {
+        const total = parseInt(card.item_price) * parseInt(quantity);
         return { ...card, quantity, total };
       }
       return card;
@@ -57,6 +63,14 @@ const StaffHome = () => {
   };
 
   const handleBreadcrumbClick = (category) => {
+    if (category == 'Các món ăn'){
+      setMenu(mainMenu);
+      setOriginalMenu(mainMenu);
+    }
+    else if (category == 'Các món khác'){
+      setMenu(invenMenu);
+      setOriginalMenu(invenMenu);
+    }
     setCurrentCategory(category);
     setPage(1);
   };
@@ -76,18 +90,21 @@ const StaffHome = () => {
 
   React.useEffect(() => {
     const fetchMenuData = async () => {
-      const data = await axios.get(`https://reqres.in/api/users?per_page=12`);
-      setOriginalMenu(data.data.data);
-      setMenu(data.data.data);
-  };
-  fetchMenuData();
-}, [])
+      const inven = await itemsApi.getItemsByType({token, clientId}, 'inven');
+      setInvenMenu(inven.data);
+      const main = await itemsApi.getItemsByType({token, clientId}, 'main');
+      setMainMenu(main.data);
+      setMenu(main.data);
+      setOriginalMenu(main.data);
+    };
+    fetchMenuData();
+  }, [])
 
   const handleSearchBar = async (query) => {
     console.log(query);
     if (originalMenu.length > 0) {
         if (query !== ""){
-            const searchResult = originalMenu.filter((item) => item.last_name.toLowerCase().includes(query.toLowerCase()));
+            const searchResult = originalMenu.filter((item) => item.item_name.toLowerCase().includes(query.toLowerCase()));
             setMenu(searchResult);
         }
         else{
@@ -104,9 +121,9 @@ const StaffHome = () => {
   };
 
   const handleCardClick = (item) => {
-    if (!selectedCards.some((card) => card.id === item.id)) {
+    if (!selectedCards.some((card) => card._id === item._id)) {
       setSelectedCards((prevSelectedCards) => {
-        const newCard = { ...item, quantity: 1, total: parseInt(item.id) * 10000 };
+        const newCard = { ...item, quantity: 1, total: parseInt(item.item_price)};
         const updatedSelectedCards = [...prevSelectedCards, newCard];
         calculateTotal(updatedSelectedCards);
         return updatedSelectedCards;
@@ -116,7 +133,7 @@ const StaffHome = () => {
 
   const handleDelete = (selectedCardId) => {
     setSelectedCards((prevSelectedCards) => {
-      const updatedSelectedCards = prevSelectedCards.filter((card) => card.id !== selectedCardId);
+      const updatedSelectedCards = prevSelectedCards.filter((card) => card._id !== selectedCardId);
       calculateTotal(updatedSelectedCards);
       return updatedSelectedCards;
     });
@@ -125,7 +142,7 @@ const StaffHome = () => {
   const handleInputChange = (selectedCardId, field, value) => {
     setSelectedCards((prevSelectedCards) =>
       prevSelectedCards.map((card) =>
-        card.id === selectedCardId ? { ...card, [field]: value } : card
+        card._id === selectedCardId ? { ...card, [field]: value } : card
       )
     );
   };
@@ -165,7 +182,7 @@ const StaffHome = () => {
             </CardHeader>
             <Grid container spacing={3}>
               {(menu.slice((page - 1) * itemsPerPage, page * itemsPerPage) || []).map((item) => (
-                <Grid item key={item.id} xs={12} sm={6} md={4}>
+                <Grid item key={item._id} xs={12} sm={6} md={4}>
                   <Card sx={{ 
                     border: 'rounded',
                     color: 'white', 
@@ -177,11 +194,19 @@ const StaffHome = () => {
                   },}}
                     onClick={() => handleCardClick(item)}
                   >
-                    <CardMedia component="img" image={item.avatar} alt={item.email} />
+                    <CardMedia 
+                      component="img" 
+                      image={item.item_image} 
+                      alt={item._id}
+                      sx={{
+                        maxWidth: '100%',
+                        maxHeight: '100px',
+                      }}
+                    />
                     <CardContent sx={{ textAlign: 'center' }}>
-                      <Typography>{item.id}</Typography>
-                      <Typography>{item.first_name}</Typography>
-                      <Typography>{item.last_name}</Typography>
+                      <Typography>{item.item_name}</Typography>
+                      <Typography>{item.item_price}đ</Typography>
+                      <Typography>Số lượng còn lại: {item.item_quantity}</Typography>
                     </CardContent>
                   </Card>
                 </Grid>
@@ -209,27 +234,26 @@ const StaffHome = () => {
           </div>
         <div style={{ maxHeight: 'calc(100vh - 300px)', overflowY: 'auto' }}>
           {selectedCards.map((selectedCard) => (
-            <div key={selectedCard.id}>
+            <div key={selectedCard._id}>
               {/* First item */}
               <div style={{ display: 'grid', gridTemplateColumns: '50% 20% 20%', gridColumnGap: '10px', marginBottom: '2px', alignItems: 'center' }}>
                 <Card sx={{ 
                   backgroundColor: 'background.secondary',
                   display: 'flex', 
                   alignItems: 'center',
-                  maxWidth: '100px',
                   maxHeight: '40px', }}>
                   <CardMedia
                     component="img" 
-                    image={selectedCard.avatar}
-                    alt={selectedCard.id}
+                    image={selectedCard.item_image}
+                    alt={selectedCard._id}
                     sx={{
                       maxWidth: '40px',
                       maxHeight: '40px',
                     }}
                   />
-                  <CardContent sx={{ textAlign: 'center', fontSize: 10 }}>
-                    <Typography>{selectedCard.id}</Typography>
-                    <Typography>{selectedCard.first_name}</Typography>
+                  <CardContent sx={{ textAlign: 'left', fontSize: 10}}>
+                    <Typography>{selectedCard.item_name}</Typography>
+                    <Typography>{selectedCard.item_price}đ</Typography>
                   </CardContent>
                 </Card>
                 <Input
@@ -237,7 +261,7 @@ const StaffHome = () => {
                   type="number"
                   value={selectedCard.quantity || 1}
                   inputProps={{ min: 1 }}
-                  onChange={(e) => handleQuantityChange(selectedCard.id, e.target.value)}
+                  onChange={(e) => handleQuantityChange(selectedCard._id, e.target.value)}
                   sx={{
                     borderRadius: '4px',
                     paddingLeft: '12px',
@@ -245,7 +269,7 @@ const StaffHome = () => {
                     color: 'white'
                   }}
                 />
-                <Typography>{parseInt(selectedCard.quantity) * parseInt(selectedCard.id)* 10000}</Typography>
+                <Typography>{parseInt(selectedCard.quantity) * parseInt(selectedCard.item_price)}</Typography>
               </div>
               {/* Second item */}
               <div style={{ display: 'grid', gridTemplateColumns: '70% 20%', gridColumnGap: '16px',  marginBottom: '4px', alignItems: 'center' }}>
@@ -253,7 +277,7 @@ const StaffHome = () => {
                   type="text"
                   value={selectedCard.note}
                   defaultValue={'Ghi chú...'}
-                  onChange={(e) => handleInputChange(selectedCard.id, 'note', e.target.value)}
+                  onChange={(e) => handleInputChange(selectedCard._id, 'note', e.target.value)}
                   sx={{
                     borderRadius: '4px',
                     paddingLeft: '5px',
@@ -262,7 +286,7 @@ const StaffHome = () => {
                   }}
                 />
                 <Button
-                  onClick={() => handleDelete(selectedCard.id)}
+                  onClick={() => handleDelete(selectedCard._id)}
                   sx={{
                     border: '1px solid red',
                     borderColor: '#FF7CA3',

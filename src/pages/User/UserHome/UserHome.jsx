@@ -5,6 +5,7 @@ import { Input, Typography, Breadcrumbs, Link, Table, TableBody, TableCell, Tabl
 import CustomButton from "../../../components/CustomButton/CustomButton";
 import Header from "../../../components/Header/Header";
 import { DeleteIcon } from '../../../assets/svgs/index';
+import itemsApi from '../../../api/itemsApi';
 
 const itemsPerPage = 6;
 
@@ -16,13 +17,20 @@ const useStyles = (isActive) => ({
 });
 
 const UserHome = () => {
-  const [rows, setRows] = React.useState([]);
+  const [menu, setMenu] = React.useState([]);
+  const [mainMenu, setMainMenu] = React.useState([]);
+  const [invenMenu, setInvenMenu] = React.useState([]);
+  const [originalMenu, setOriginalMenu] = React.useState([]);
   const [currentCategory, setCurrentCategory] = React.useState('Các món ăn');
   const [page, setPage] = React.useState(1);
   const [selectedCards, setSelectedCards] = React.useState([]);
   const [time, setTime] = React.useState(0);
   const [total, setTotal] = React.useState(0);
+  const [error, setError] = React.useState(false); 
 
+  const token = localStorage.getItem("token");
+  const clientId = localStorage.getItem("clientId");
+  
   // Function to calculate the total value
   const calculateTotal = (selectedCards) => {
     let sum = 0;
@@ -39,8 +47,8 @@ const UserHome = () => {
 
   const handleQuantityChange = (cardId, quantity) => {
     const updatedSelectedCards = selectedCards.map((card) => {
-      if (card.id === cardId) {
-        const total = parseInt(card.id) * 10000 * parseInt(quantity);
+      if (card._id === cardId) {
+        const total = parseInt(card.item_price) * parseInt(quantity);
         return { ...card, quantity, total };
       }
       return card;
@@ -50,11 +58,28 @@ const UserHome = () => {
   };
 
   const handleBreadcrumbClick = (category) => {
+    if (category == 'Các món ăn'){
+      setMenu(mainMenu);
+      setOriginalMenu(mainMenu);
+    }
+    else if (category == 'Các món khác'){
+      setMenu(invenMenu);
+      setOriginalMenu(invenMenu);
+    }
     setCurrentCategory(category);
     setPage(1);
   };
 
   const handleConfirm = () => {
+    console.log(selectedCards);
+    if (time){
+      console.log('co')
+    } else{
+      console.log('khong')
+    }
+    if (time < '18:00' && time > '06:00') {
+      console.log(1);
+    }
     console.log("confirm");
   };
 
@@ -63,32 +88,42 @@ const UserHome = () => {
   };
 
   React.useEffect(() => {
-    const fetchFoods = async () => {
-      const url = `https://reqres.in/api/users?per_page=12`;
-      try {
-        const res = await axios.get(url);
-        const data = res.data;
-        setRows(data.data);
-      } catch (error) {
-        console.error('Error fetching Reports:', error);
-      }
+    const fetchMenuData = async () => {
+      const inven = await itemsApi.getItemsByType({token, clientId}, 'inven');
+      setInvenMenu(inven.data);
+      const main = await itemsApi.getItemsByType({token, clientId}, 'main');
+      setMainMenu(main.data);
+      setMenu(main.data);
+      setOriginalMenu(main.data);
     };
-
-    fetchFoods();
+    fetchMenuData();
   }, []);
 
+  const handleSearchBar = async (query) => {
+    console.log(query);
+    if (originalMenu.length > 0) {
+        if (query !== ""){
+            const searchResult = originalMenu.filter((item) => item.item_name.toLowerCase().includes(query.toLowerCase()));
+            setMenu(searchResult);
+        }
+        else{
+            setMenu(originalMenu);
+        }
+    }
+  }
+  
   const titles = ['Các món ăn', 'Các món khác'];
 
-  const pageCount = Math.ceil(rows.length / itemsPerPage);
+  const pageCount = Math.ceil(menu.length / itemsPerPage);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
 
-  const handleCardClick = (row) => {
-    if (!selectedCards.some((card) => card.id === row.id)) {
+  const handleCardClick = (item) => {
+    if (!selectedCards.some((card) => card._id === item._id)) {
       setSelectedCards((prevSelectedCards) => {
-        const newCard = { ...row, quantity: 1, total: parseInt(row.id) * 10000 };
+        const newCard = { ...item, quantity: 1, total: parseInt(item.item_price)};
         const updatedSelectedCards = [...prevSelectedCards, newCard];
         calculateTotal(updatedSelectedCards);
         return updatedSelectedCards;
@@ -98,7 +133,7 @@ const UserHome = () => {
 
   const handleDelete = (selectedCardId) => {
     setSelectedCards((prevSelectedCards) => {
-      const updatedSelectedCards = prevSelectedCards.filter((card) => card.id !== selectedCardId);
+      const updatedSelectedCards = prevSelectedCards.filter((card) => card._id !== selectedCardId);
       calculateTotal(updatedSelectedCards);
       return updatedSelectedCards;
     });
@@ -107,7 +142,7 @@ const UserHome = () => {
   const handleInputChange = (selectedCardId, field, value) => {
     setSelectedCards((prevSelectedCards) =>
       prevSelectedCards.map((card) =>
-        card.id === selectedCardId ? { ...card, [field]: value } : card
+        card._id === selectedCardId ? { ...card, [field]: value } : card
       )
     );
   };
@@ -142,8 +177,8 @@ const UserHome = () => {
               Chọn món
             </CardHeader>
             <Grid container spacing={3}>
-              {(rows.slice((page - 1) * itemsPerPage, page * itemsPerPage) || []).map((row) => (
-                <Grid item key={row.id} xs={12} sm={6} md={4}>
+            {(menu.slice((page - 1) * itemsPerPage, page * itemsPerPage) || []).map((item) => (
+                <Grid item key={item._id} xs={12} sm={6} md={4}>
                   <Card sx={{ 
                     border: 'rounded',
                     color: 'white', 
@@ -153,13 +188,21 @@ const UserHome = () => {
                       cursor: 'pointer',
                       bgcolor: 'background.tertiary',
                   },}}
-                    onClick={() => handleCardClick(row)}
+                    onClick={() => handleCardClick(item)}
                   >
-                    <CardMedia component="img" image={row.avatar} alt={row.email} />
+                     <CardMedia 
+                      component="img" 
+                      image={item.item_image} 
+                      alt={item._id}
+                      sx={{
+                        maxWidth: '100%',
+                        maxHeight: '100px',
+                      }}
+                    />
                     <CardContent sx={{ textAlign: 'center' }}>
-                      <Typography>{row.id}</Typography>
-                      <Typography>{row.first_name}</Typography>
-                      <Typography>{row.last_name}</Typography>
+                      <Typography>{item.item_name}</Typography>
+                      <Typography>{item.item_price}đ</Typography>
+                      <Typography>Số lượng còn lại: {item.item_quantity}</Typography>
                     </CardContent>
                   </Card>
                 </Grid>
@@ -187,27 +230,26 @@ const UserHome = () => {
           </div>
         <div style={{ maxHeight: 'calc(100vh - 260px)', overflowY: 'auto' }}>
           {selectedCards.map((selectedCard) => (
-            <div key={selectedCard.id}>
+            <div key={selectedCard._id}>
               {/* First Row */}
               <div style={{ display: 'grid', gridTemplateColumns: '50% 20% 20%', gridColumnGap: '10px', marginBottom: '2px', alignItems: 'center' }}>
                 <Card sx={{ 
                   backgroundColor: 'background.secondary',
                   display: 'flex', 
                   alignItems: 'center',
-                  maxWidth: '100px',
                   maxHeight: '40px', }}>
                   <CardMedia
                     component="img" 
-                    image={selectedCard.avatar}
-                    alt={selectedCard.id}
+                    image={selectedCard.item_image}
+                    alt={selectedCard._id}
                     sx={{
                       maxWidth: '40px',
                       maxHeight: '40px',
                     }}
                   />
-                  <CardContent sx={{ textAlign: 'center', fontSize: 10 }}>
-                    <Typography>{selectedCard.id}</Typography>
-                    <Typography>{selectedCard.first_name}</Typography>
+                  <CardContent sx={{ textAlign: 'left', fontSize: 10}}>
+                    <Typography>{selectedCard.item_name}</Typography>
+                    <Typography>{selectedCard.item_price}đ</Typography>
                   </CardContent>
                 </Card>
                 <Input
@@ -215,7 +257,7 @@ const UserHome = () => {
                   type="number"
                   value={selectedCard.quantity || 1}
                   inputProps={{ min: 1 }}
-                  onChange={(e) => handleQuantityChange(selectedCard.id, e.target.value)}
+                  onChange={(e) => handleQuantityChange(selectedCard._id, e.target.value)}
                   sx={{
                     borderRadius: '4px',
                     paddingLeft: '12px',
@@ -223,7 +265,7 @@ const UserHome = () => {
                     color: 'white'
                   }}
                 />
-                <Typography>{parseInt(selectedCard.quantity) * parseInt(selectedCard.id)* 10000}</Typography>
+                <Typography>{parseInt(selectedCard.quantity) * parseInt(selectedCard.item_price)}</Typography>
               </div>
               {/* Second Row */}
               <div style={{ display: 'grid', gridTemplateColumns: '70% 20%', gridColumnGap: '16px',  marginBottom: '4px', alignItems: 'center' }}>
@@ -231,7 +273,7 @@ const UserHome = () => {
                   type="text"
                   value={selectedCard.note}
                   defaultValue={'Ghi chú...'}
-                  onChange={(e) => handleInputChange(selectedCard.id, 'note', e.target.value)}
+                  onChange={(e) => handleInputChange(selectedCard._id, 'note', e.target.value)}
                   sx={{
                     borderRadius: '4px',
                     paddingLeft: '5px',
@@ -240,7 +282,7 @@ const UserHome = () => {
                   }}
                 />
                 <Button
-                  onClick={() => handleDelete(selectedCard.id)}
+                  onClick={() => handleDelete(selectedCard._id)}
                   sx={{
                     border: '1px solid red',
                     borderColor: '#FF7CA3',
