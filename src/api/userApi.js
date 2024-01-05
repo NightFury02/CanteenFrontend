@@ -70,28 +70,6 @@ class UserApi {
     }
   }
 
-  async updateStaffInfo({ token, clientId }, staffId, attributes, password) {
-    try {
-      const res = await axios.post(`${BASE_URL}/user/${staffId}`,
-        {
-          "attributes": attributes,
-          "password": password
-        },
-        {
-          headers: configHeader({ token, clientId }),
-        }
-      );
-
-      return res.data;
-    } catch (error) {
-      console.log(error);
-      return {
-        error: true,
-        response: error?.response,
-      };
-    }
-  }
-
   async updateStaffInfo({ token, clientId }, data) {
     try {
       const res = await axios.patch(
