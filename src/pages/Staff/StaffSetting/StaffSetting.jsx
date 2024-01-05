@@ -39,7 +39,7 @@ const StaffSetting = () => {
         const {
           attributes: { address, birthday, phone },
           ...rest
-        } = res.data;
+        } = res?.data;
 
         let formattedBirthday = "";
         if (birthday) {
