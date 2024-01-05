@@ -94,16 +94,39 @@ const StaffHome = () => {
   }
 
   const handleSuccess = () => {
+    const fetchMenuData = async () => {
+      try {
+        setLoading(true);
+        const inven = await itemsApi.getItemsByType({token, clientId}, 'inven');
+        setInvenMenu(inven.data);
+        const main = await itemsApi.getItemsByType({token, clientId}, 'main');
+        setMainMenu(main.data);
+        setMenu(main.data);
+        setOriginalMenu(main.data);
+        setLoading(false);
+      } catch (error) {
+      }
+    };
+
+    fetchMenuData();
     setSuccess(false);
     setSelectedCards([]);
+    setTotal(0);
+    setChange(0);
+    setReceived(0);
   }
 
   const handleConfirm = () => {
     const createNewOrder = async () => {
       const currentTime = new Date().toLocaleTimeString('en-US', { hour12: false });
-      console.log(currentTime)
-      const res = await orderApi.createOrder({token, clientId}, selectedCards, currentTime);
-      console.log(res);
+      const transformedData = selectedCards.map(item => ({
+          item_name: item.item_name,
+          item_id: item._id,
+          item_quantity: item.quantity,
+          item_note: item.note || ''
+      }));
+      const res = await orderApi.createOrder({token, clientId}, transformedData, currentTime);
+      const confirm = await orderApi.confirmPayment({token, clientId}, res.data._id);
     };
 
     if (change){

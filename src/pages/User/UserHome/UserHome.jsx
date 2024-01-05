@@ -94,10 +94,13 @@ const UserHome = () => {
 
   const handleConfirm = () => {
     const createNewOrder = async () => {
-      console.log('Bearer ' + token)
-      console.log(clientId)
-      const res = await orderApi.createOrder({token, clientId}, selectedCards, time);
-      console.log(res);
+      const transformedData = selectedCards.map(item => ({
+        item_name: item.item_name,
+        item_id: item._id,
+        item_quantity: item.quantity,
+        item_note: item.note || ''
+    }));
+      const res = await orderApi.createOrder({token, clientId}, transformedData, time);
     };
 
     if (time){
