@@ -79,6 +79,23 @@ class ReportApi{
         }
     }
 
+    async getDetailInventoryReport({ token, clientId }, reportId){
+        try{
+            const res = await axios.get(`${BASE_URL}/report/inventoryD/detail?reportId=${reportId}`, {
+                headers: configHeader({ token, clientId }),
+            });
+            return res.data;
+        }
+        catch (error) {
+            console.log(error);
+            return {
+              error: true,
+              response: error?.response,
+              data: []
+            };
+        }
+    }
+
     async getAllDailyIncomeReport({ token, clientId }){
         try{
             const res = await axios.get(`${BASE_URL}/report/incomeD/all`, {
