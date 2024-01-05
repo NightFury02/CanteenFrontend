@@ -137,6 +137,9 @@ export default function DailyStorageReport(props) {
               console.log(detailReport.data);
               setRows(detailReport.data);
             }
+            else {
+              setRows([]);
+            }
           } catch (error) {
             console.error('Error fetching Reports:', error);
           }
