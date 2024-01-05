@@ -41,7 +41,10 @@ const StaffSetting = () => {
           ...rest
         } = res.data;
 
-        const formattedBirthday = toDatePickerFormat(birthday);
+        let formattedBirthday = "";
+        if (birthday) {
+          formattedBirthday = toDatePickerFormat(birthday);
+        }
         const newData = { ...rest, address, birthday: formattedBirthday, phone };
   
         //console.log(newData);

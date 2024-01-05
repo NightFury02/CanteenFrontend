@@ -10,6 +10,8 @@ import itemsApi from '../../../api/itemsApi';
 import orderApi from '../../../api/orderApi';
 import userApi from '../../../api/userApi';
 import { Loading } from "../../../components";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const itemsPerPage = 6;
 
@@ -128,7 +130,19 @@ const StaffHome = () => {
       }));
       const res = await orderApi.createOrder({token, clientId}, transformedData, currentTime);
       const confirm = await orderApi.confirmPayment({token, clientId}, res.data._id);
+      setConfirmPopup(false);
       setLoading(false);
+      handleSuccess();
+      toast.success('Đặt đơn thành công', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
     };
 
     if (change >= 0) {
@@ -147,13 +161,23 @@ const StaffHome = () => {
     }
   };
 
-  const handleConfirmPopup = () => {
-    setConfirmPopup(false);
-    console.log("confirm");
-  }
-
   const handleCancel = () => {
-    console.log("cancel");
+    setSelectedCards([]);
+    setTotal(0);
+    setChange(0);
+    setReceived(0);
+    if (selectedCards){
+      toast.warning('Đã hủy đơn', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    }
   };
 
   React.useEffect(() => {
@@ -417,7 +441,7 @@ const StaffHome = () => {
         <CustomButton
           title={'Xác nhận thanh toán'}
           className="p-2 mt-2 w-full"
-          onAction={handleConfirm}
+          onAction={()=>{setConfirmPopup(true)}}
           variant='tertiary'
         />
         <CustomButton
@@ -445,44 +469,28 @@ const StaffHome = () => {
               />
               <CustomButton
                 title='Xác nhận'
-                onAction={handleConfirmPopup}
+                onAction={handleConfirm}
                 className="py-1 px-4"
               />
             </div>
           </div>
         }
       </PopUp>
-      <Dialog open={error} onClose={handleClose}>
-        <DialogTitle sx={{ backgroundColor: 'background.tertiary' }}>Lỗi</DialogTitle>
-        <DialogContent sx={{ backgroundColor: 'background.tertiary' }}>
-          <DialogContentText sx={{color: 'white'}}>
-            {message}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions sx={{ backgroundColor: 'background.tertiary' }}>
-          <Button onClick={handleClose} color="primary" autoFocus>
-            OK
-          </Button>
-        </DialogActions>
-      </Dialog>
 
-      <Dialog open={success} onClose={handleSuccess}>
-        <DialogTitle sx={{ backgroundColor: 'background.tertiary' }}>Thành công</DialogTitle>
-        <DialogContent sx={{ backgroundColor: 'background.tertiary' }}>
-          <DialogContentText sx={{color: 'white'}}>
-            Thanh toán đơn hàng thành công
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions sx={{ backgroundColor: 'background.tertiary' }}>
-          <Button onClick={handleSuccess} color="primary" autoFocus>
-            OK
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      
-
-
+      <div>
+        <ToastContainer
+            position="top-right"
+            autoClose={200}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover={false}
+            theme="colored"
+            />
+      </div>
       {isLoading && <Loading/>}
     </div>
   );
