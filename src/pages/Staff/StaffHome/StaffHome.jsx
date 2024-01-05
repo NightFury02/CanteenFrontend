@@ -25,7 +25,7 @@ const StaffHome = () => {
   const [mainMenu, setMainMenu] = React.useState([]);
   const [invenMenu, setInvenMenu] = React.useState([]);
   const [originalMenu, setOriginalMenu] = React.useState([]);
-  const [currentCategory, setCurrentCategory] = React.useState('Các món ăn');
+  const [currentCategory, setCurrentCategory] = React.useState('Món chính');
   const [page, setPage] = React.useState(1);
   const [selectedCards, setSelectedCards] = React.useState([]);
   const [received, setReceived] = React.useState(0);
@@ -76,7 +76,7 @@ const StaffHome = () => {
   };
 
   const handleBreadcrumbClick = (category) => {
-    if (category == 'Các món ăn'){
+    if (category == 'Món chính'){
       setMenu(mainMenu);
       setOriginalMenu(mainMenu);
     }
@@ -90,6 +90,7 @@ const StaffHome = () => {
 
   const handleClose = () => {
     setError(false);
+    setSelectedCards([]);
   }
 
   const handleSuccess = () => {
@@ -197,7 +198,7 @@ const StaffHome = () => {
         }
     }
   }
-  const titles = ['Các món ăn', 'Các món khác'];
+  const titles = ['Món chính', 'Các món khác'];
 
   const pageCount = Math.ceil(menu.length / itemsPerPage);
 
@@ -233,7 +234,7 @@ const StaffHome = () => {
   };
 
   return (
-    <div className="relative grid grid-cols-3 gap-x-16">
+    <div className="relative grid grid-cols-[1fr_1fr_400px]">
       <Header className='col-span-1' heading={user.name}></Header>
       <div className='col-span-1 p-3'>
             <Searchbar
@@ -261,10 +262,7 @@ const StaffHome = () => {
         </div>
 
         <div className="mt-5 p-2">
-          <Card sx={{ backgroundColor: 'background.tertiary' }}>
-            <CardHeader title="Chọn món" sx={{ color: 'white', fontSize: 20 }}>
-              Chọn món
-            </CardHeader>
+          <Card sx={{ backgroundColor: 'background.tertiary', marginLeft: '10px', boxShadow: 'none'}}>
             <Grid container spacing={3}>
               {(menu.slice((page - 1) * itemsPerPage, page * itemsPerPage) || []).map((item) => (
                 <Grid item key={item._id} xs={12} sm={6} md={4}>
@@ -272,7 +270,7 @@ const StaffHome = () => {
                     border: 'rounded',
                     color: 'white', 
                     bgcolor: '#1F1D2B',
-                    borderRadius: '12px', 
+                    borderRadius: '12px',
                     '&:hover': {
                       cursor: 'pointer',
                       bgcolor: 'background.tertiary',
@@ -285,11 +283,12 @@ const StaffHome = () => {
                       alt={item._id}
                       sx={{
                         maxWidth: '100%',
-                        maxHeight: '100px',
+                        height: '200px',
+                        objectFit: 'fill'
                       }}
                     />
                     <CardContent sx={{ textAlign: 'center' }}>
-                      <Typography>{item.item_name}</Typography>
+                      <Typography className='text-primary'>{item.item_name}</Typography>
                       <Typography>{item.item_price}đ</Typography>
                       <Typography>Số lượng còn lại: {item.item_quantity}</Typography>
                     </CardContent>
@@ -305,6 +304,7 @@ const StaffHome = () => {
               onChange={handleChangePage}
               color="primary"
               size="large"
+              shape='rounded'
               sx={{ mx: 'auto'}}
             />
           </Stack>
@@ -342,7 +342,7 @@ const StaffHome = () => {
                   </CardContent>
                 </Card>
                 <Input
-                  className='w-10'
+                  className='w-full -ms-3'
                   type="number"
                   value={selectedCard.quantity || 1}
                   inputProps={{ min: 1 }}
@@ -354,7 +354,7 @@ const StaffHome = () => {
                     color: 'white'
                   }}
                 />
-                <Typography>{parseInt(selectedCard.quantity) * parseInt(selectedCard.item_price)}</Typography>
+                <Typography>{`${parseInt(selectedCard.quantity) * parseInt(selectedCard.item_price)} đ`}</Typography>
               </div>
               {/* Second item */}
               <div style={{ display: 'grid', gridTemplateColumns: '70% 20%', gridColumnGap: '16px',  marginBottom: '4px', alignItems: 'center' }}>
@@ -388,7 +388,7 @@ const StaffHome = () => {
           ))}
         </div>
 
-        <div className="absolute left-4 bottom-6">
+        <div className="absolute left-0 right-0 w-full bottom-6">
         <TableContainer>
         <Table sx={{ minWidth: 300, bgcolor: 'background.secondary' }} size="small">
           <TableBody>
@@ -418,11 +418,13 @@ const StaffHome = () => {
           title={'Xác nhận thanh toán'}
           className="p-2 mt-2 w-full"
           onAction={handleConfirm}
+          variant='tertiary'
         />
         <CustomButton
           title={'Hủy'}
           className='p-2 mt-2 w-full'
           onAction={handleCancel}
+          variant='secondary'
         />
         </div>
       </Card>
@@ -477,6 +479,10 @@ const StaffHome = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      
+
+
       {isLoading && <Loading/>}
     </div>
   );
