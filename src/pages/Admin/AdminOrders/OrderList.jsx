@@ -396,7 +396,7 @@ const OrderList = (props) => {
                                 padding: '6px',
                             }}
                             >
-                            {selectedCard.note || 'Ghi chú...'}
+                            {selectedCard.item_note || 'Ghi chú...'}
                         </Typography>
                         </div>
                     </div>
