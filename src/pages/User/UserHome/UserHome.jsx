@@ -222,7 +222,7 @@ const UserHome = () => {
     );
   };
   return (
-    <div className="relative grid grid-cols-3">
+    <div className="relative grid grid-cols-[1fr_1fr_400px]">
       <div className="col-span-2">
         <div>
           <Header heading={user.name} />
