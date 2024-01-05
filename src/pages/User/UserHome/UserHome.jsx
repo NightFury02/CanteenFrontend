@@ -4,6 +4,7 @@ import { Input, Typography, Breadcrumbs, Link, Table, TableBody, TableCell, Tabl
 import CustomButton from "../../../components/CustomButton/CustomButton";
 import Header from "../../../components/Header/Header";
 import { DeleteIcon } from '../../../assets/svgs/index';
+import Searchbar from '../../../components/SearchBar/SearchBar';
 import itemsApi from '../../../api/itemsApi';
 import orderApi from '../../../api/orderApi';
 import userApi from '../../../api/userApi';
