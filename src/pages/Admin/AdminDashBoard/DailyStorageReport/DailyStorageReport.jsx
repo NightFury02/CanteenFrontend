@@ -130,13 +130,13 @@ export default function DailyStorageReport(props) {
     React.useEffect(() => {
       const fetchReports = async () => {
           try {
-            console.log('Bearer ' + token);
-            console.log(clientId);
+            console.log(dailyInventoryReports);
             const foundReport = dailyInventoryReports.find(item => item.createdAt.startsWith(selectedDate));
-            console.log(foundReport._id)
-            const detailReport = await reportApi.getDetailInventoryReport({token, clientId}, foundReport._id);
-            console.log(detailReport);
-            //setRows(foundReport);
+            if (foundReport){
+              const detailReport = await reportApi.getDetailInventoryReport({token, clientId}, foundReport._id);
+              console.log(detailReport.data);
+              setRows(detailReport.data);
+            }
           } catch (error) {
             console.error('Error fetching Reports:', error);
           }

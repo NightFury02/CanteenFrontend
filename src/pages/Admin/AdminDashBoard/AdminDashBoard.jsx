@@ -17,41 +17,35 @@ const AdminDashBoard = () => {
   const [isLoading, setLoading] = React.useState(false);
   const headCells = [
     {
-        id: 'id',
+        id: 'item_id',
         numeric: false,
         disablePadding: true,
         label: 'Mã sản phẩm',
     },
     {
-        id: 'first_name',
+        id: 'inventoryName',
         numeric: false,
         disablePadding: true,
         label: 'Tên',
     },
     {
-        id: 'last_name',
+        id: 'quantity',
         numeric: false,
         disablePadding: true,
-        label: 'Số lượng tồn kho',
+        label: 'Tồn kho',
     },
     {
-        id: 'email',
+        id: 'come',
         numeric: false,
         disablePadding: true,
-        label: 'Số lượng nhập kho',
+        label: 'Nhập kho',
     },
     {
-        id: 'export',
+        id: 'leave',
         numeric: false,
         disablePadding: true,
-        label: 'Số lượng xuất kho',
-    },
-    {
-        id: 'exp',
-        numeric: false,
-        disablePadding: true,
-        label: 'Hạn sử dụng',
-    },
+        label: 'Xuất kho',
+    }
   ];
 
   const token = localStorage.getItem("token");
