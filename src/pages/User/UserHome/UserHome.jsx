@@ -75,6 +75,9 @@ const UserHome = () => {
   const handleQuantityChange = (cardId, quantity) => {
     const updatedSelectedCards = selectedCards.map((card) => {
       if (card._id === cardId) {
+        if (!quantity || quantity < 1) {
+          quantity = 1;
+        }
         if (quantity > card.item_quantity) {
           quantity = card.item_quantity;
         }

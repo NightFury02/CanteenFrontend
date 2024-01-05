@@ -78,7 +78,7 @@ const StaffHome = () => {
   const handleQuantityChange = (cardId, quantity) => {
     const updatedSelectedCards = selectedCards.map((card) => {
       if (card._id === cardId) {
-        if (!quantity) {
+        if (!quantity || quantity < 1) {
           quantity = 1;
         }
         if (quantity > card.item_quantity) {
