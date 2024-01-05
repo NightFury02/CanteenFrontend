@@ -208,6 +208,7 @@ const PreorderList = (props) => {
     };
 
     const handleConfirmPopup = async () => {
+        setSuccess(true);
         const confirmPayment = await orderApi.confirmPayment({token, clientId}, selected._id);
         console.log(confirmPayment);
 
@@ -215,7 +216,6 @@ const PreorderList = (props) => {
         setPreorderListRows(res.data);
         setPreorderListOriginalRows(res.data);
 
-        setSuccess(true);
         setConfirmPopup(false);
         setOpenCard(false);
     }
@@ -380,7 +380,7 @@ const PreorderList = (props) => {
                                 >
                                 {selectedCard.quantity || 1}
                             </Typography>
-                            <Typography>{parseInt(selectedCard.item_quantity) * parseInt(selectedCard.item_price)}đ</Typography>
+                            <Typography>{parseInt(selectedCard.quantity) * parseInt(selectedCard.item_price)}đ</Typography>
                         </div>
                         {/* Second Row */}
                         <div style={{ display: 'grid', gridTemplateColumns: '70% 20%', gridColumnGap: '16px',  marginBottom: '4px', alignItems: 'center' }}>
