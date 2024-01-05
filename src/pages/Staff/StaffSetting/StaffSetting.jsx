@@ -74,7 +74,7 @@ const StaffSetting = () => {
         if (response.error) {
           toast.error("Lỗi cập nhật thông tin", {
             position: "top-right",
-            autoClose: 5000,
+            autoClose: 2000,
             hideProgressBar: false,
             closeOnClick: true,
             pauseOnHover: false,
@@ -86,7 +86,7 @@ const StaffSetting = () => {
           //Update UI
           toast.success("Cập nhật thành công", {
             position: "top-right",
-            autoClose: 5000,
+            autoClose: 2000,
             hideProgressBar: false,
             closeOnClick: true,
             pauseOnHover: false,
@@ -126,7 +126,7 @@ const StaffSetting = () => {
         setLoading(false);
         toast.error("Lỗi cập nhật mật khẩu", {
           position: "top-right",
-          autoClose: 5000,
+          autoClose: 2000,
           hideProgressBar: false,
           closeOnClick: true,
           pauseOnHover: false,
