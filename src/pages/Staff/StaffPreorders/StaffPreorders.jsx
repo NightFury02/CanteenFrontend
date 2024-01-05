@@ -1,7 +1,7 @@
 import React from "react";
 import Header from "../../../components/Header/Header";
 import PreorderList from "./PreorderList";
-import Searchbar from '../../../components/SearchBar/SearchBar';
+import Searchbar from '../../../components/Searchbar/Searchbar';
 import { useStaffInventoryContext } from '../../../context/Staff/StaffInventoryContext';
 
 const token = localStorage.getItem("token");
@@ -35,7 +35,7 @@ const StaffPreorders = () => {
       },
     ];
 
-    const handleSearchBar = async (query) => {
+    const handleSearchbar = async (query) => {
       console.log(query);
       if (preorderListOriginalRows.length > 0) {
           if (query !== ""){
@@ -54,7 +54,7 @@ const StaffPreorders = () => {
           <Header heading="Đơn đặt trước"></Header>
           <div className='p-3'>
               <Searchbar
-                handleSearch={handleSearchBar}  
+                handleSearch={handleSearchbar}  
                 placeholder='Tìm kiếm đơn'
               />
           </div>

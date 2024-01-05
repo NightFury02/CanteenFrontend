@@ -5,7 +5,7 @@ import CustomButton from '../../../components/CustomButton/CustomButton';
 import Popup from '../../../components/Popup/Popup';
 import CreateDailyMenu from './CreateDailyMenu';
 import DailyMenu from './DailyMenu';
-import Searchbar from '../../../components/SearchBar/SearchBar';
+import Searchbar from '../../../components/Searchbar/Searchbar';
 import { Loading } from '../../../components';
 const StaffDailyMenu = () => {
     const [isMenuPopUpOpen, setMenuPopUpOpen] = React.useState(false);
@@ -71,7 +71,7 @@ const StaffDailyMenu = () => {
         setDeletePopUpOpen(false);
     }
 
-    const handleSearchBar = async (query) => {
+    const handleSearchbar = async (query) => {
         console.log(query);
         if (originalMenu.length > 0) {
             if (query !== ""){
@@ -92,7 +92,7 @@ const StaffDailyMenu = () => {
             <Header heading="Món ăn chính hàng ngày"></Header>
             <div className='p-3'>
                 <Searchbar
-                  handleSearch={handleSearchBar}  
+                  handleSearch={handleSearchbar}  
                   placeholder='Tìm tên...'
                 />
             </div>

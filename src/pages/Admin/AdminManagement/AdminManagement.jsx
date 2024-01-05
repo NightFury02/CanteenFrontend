@@ -4,7 +4,7 @@ import CustomButton from '../../../components/CustomButton/CustomButton';
 import PopUp from '../../../components/Popup/Popup';
 import StaffTable from './StaffTable/StaffTable';
 import AddStaffForm from './AddStaffForm/AddStaffForm';
-import Searchbar from '../../../components/SearchBar/SearchBar';
+import Searchbar from '../../../components/Searchbar/Searchbar';
 import { useStaffInventoryContext } from '../../../context/Staff/StaffInventoryContext';
 
 const AdminManagement = () => {
@@ -51,7 +51,7 @@ const AdminManagement = () => {
         },
     ];
 
-    const handleSearchBar = async (query) => {
+    const handleSearchbar = async (query) => {
         console.log(query);
         if (staffTableOriginalRows.length > 0) {
             if (query !== ""){
@@ -70,7 +70,7 @@ const AdminManagement = () => {
                 <Header heading="Quản lý nhân viên"></Header>
                 <div className='p-3'>
                     <Searchbar
-                    handleSearch={handleSearchBar}  
+                    handleSearch={handleSearchbar}  
                     placeholder='Tìm kiếm nhân viên...'
                     />
                 </div>

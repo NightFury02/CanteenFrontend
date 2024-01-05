@@ -4,7 +4,7 @@ import { Input, Typography, Breadcrumbs, Link, Table, TableBody, TableCell, Tabl
 import CustomButton from "../../../components/CustomButton/CustomButton";
 import Header from "../../../components/Header/Header";
 import { DeleteIcon } from '../../../assets/svgs/index';
-import Searchbar from '../../../components/SearchBar/SearchBar';
+import Searchbar from '../../../components/Searchbar/Searchbar';
 import itemsApi from '../../../api/itemsApi';
 import orderApi from '../../../api/orderApi';
 import userApi from '../../../api/userApi';
@@ -147,7 +147,7 @@ const UserHome = () => {
     fetchUser();
     fetchMenuData();
   }, []);
-  const handleSearchBar = async (query) => {
+  const handleSearchbar = async (query) => {
     console.log(query);
     if (originalMenu.length > 0) {
         if (query !== ""){
@@ -197,7 +197,7 @@ const UserHome = () => {
         </div>
         <div className='col-span-1 p-3'>
             <Searchbar
-              handleSearch={handleSearchBar}  
+              handleSearch={handleSearchbar}  
               placeholder='Tìm tên...'
             />
         </div>

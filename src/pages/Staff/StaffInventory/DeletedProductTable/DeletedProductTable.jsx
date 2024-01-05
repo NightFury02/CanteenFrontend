@@ -12,7 +12,7 @@ import TableRow from '@mui/material/TableRow';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
-import Searchbar from '../../../../components/SearchBar/SearchBar';
+import Searchbar from '../../../../components/Searchbar/Searchbar';
 
 function EnhancedTableHead(props) {
   const { headCells } = props;
@@ -41,7 +41,7 @@ EnhancedTableHead.propTypes = {
 };
 
 function EnhancedTableToolbar(props) {
-  const { title, handleSearchBar } = props;
+  const { title, handleSearchbar } = props;
 
   return (
     <Toolbar
@@ -63,7 +63,7 @@ function EnhancedTableToolbar(props) {
         </Typography>
         <div className='p-3'>
           <Searchbar
-            handleSearch={handleSearchBar}  
+            handleSearch={handleSearchbar}  
             placeholder='Tìm kiếm sản phẩm...'
           />
         </div>
@@ -182,7 +182,7 @@ export default function DeletedProductTable(props) {
       fetchExpiredProducts()
     }, []);
 
-    const handleSearchBar = async (query) => {
+    const handleSearchbar = async (query) => {
       console.log(query);
       if (originalRows.length > 0) {
           if (query !== ""){
@@ -215,7 +215,7 @@ export default function DeletedProductTable(props) {
     return (
         <Box sx={{ width: '100%' }}>
         <Paper sx={{ width: '100%', mb: 2 }}>
-            <EnhancedTableToolbar title={title} handleSearchBar={handleSearchBar}/>
+            <EnhancedTableToolbar title={title} handleSearchbar={handleSearchbar}/>
             <TableContainer>
             <Table
                 sx={{ minWidth: 750, bgcolor: 'background.secondary' }}
