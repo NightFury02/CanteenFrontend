@@ -1,5 +1,4 @@
 import React from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
 import { Input, Typography, Breadcrumbs, Link, Table, TableBody, TableCell, TableContainer, TableRow, Card, CardMedia, CardContent, CardHeader, CardActions, Button, Grid, Pagination, Stack } from '@mui/material';
 import CustomButton from "../../../components/CustomButton/CustomButton";
 import Header from "../../../components/Header/Header";
@@ -34,9 +33,6 @@ const StaffHome = () => {
   const [total, setTotal] = React.useState(0);
   const [change, setChange] = React.useState(0);
   const [confirmPopup, setConfirmPopup] = React.useState(false);
-  const [error, setError] = React.useState(false); 
-  const [success, setSuccess] = React.useState(false); 
-  const [message, setMessage] = React.useState('');
   const [isLoading, setLoading] = React.useState(false);
   const [user, setUser] = React.useState({
     _id: '',
@@ -89,11 +85,6 @@ const StaffHome = () => {
     setCurrentCategory(category);
     setPage(1);
   };
-
-  const handleClose = () => {
-    setError(false);
-    setSelectedCards([]);
-  }
 
   const handleSuccess = () => {
     const fetchMenuData = async () => {
@@ -148,28 +139,24 @@ const StaffHome = () => {
     if (change >= 0) {
       if (selectedCards.length != 0){
         createNewOrder();
-        setSuccess(true);
       }
       else {
-        setMessage('Đơn hàng không được bỏ trống');
-        setError(true);
+        toast.error('Đơn hàng không được bỏ trống', {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
       }
     }
     else{
-      setMessage('Số tiền nhận vào không hợp lệ');
-      setError(true);
-    }
-  };
-
-  const handleCancel = () => {
-    setSelectedCards([]);
-    setTotal(0);
-    setChange(0);
-    setReceived(0);
-    if (selectedCards){
-      toast.warning('Đã hủy đơn', {
+      toast.error('Số tiền nhận vào không hợp lệ', {
         position: "top-right",
-        autoClose: 5000,
+        autoClose: 2000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: false,
@@ -177,6 +164,26 @@ const StaffHome = () => {
         progress: undefined,
         theme: "colored",
       });
+      
+    }
+  };
+
+  const handleCancel = () => {
+    if (selectedCards.length !== 0){
+      toast.warning('Đã hủy đơn', {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+      setSelectedCards([]);
+      setTotal(0);
+      setChange(0);
+      setReceived(0);
     }
   };
 
@@ -480,7 +487,7 @@ const StaffHome = () => {
       <div>
         <ToastContainer
             position="top-right"
-            autoClose={200}
+            autoClose={2000}
             hideProgressBar={false}
             newestOnTop={false}
             closeOnClick

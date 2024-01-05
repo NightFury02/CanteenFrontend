@@ -1,14 +1,16 @@
 import React from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
 import { Input, Typography, Breadcrumbs, Link, Table, TableBody, TableCell, TableContainer, TableRow, Card, CardMedia, CardContent, CardHeader, CardActions, Button, Grid, Pagination, Stack } from '@mui/material';
 import CustomButton from "../../../components/CustomButton/CustomButton";
 import Header from "../../../components/Header/Header";
 import { DeleteIcon } from '../../../assets/svgs/index';
 import Searchbar from '../../../components/SearchBar/SearchBar';
+import PopUp from '../../../components/Popup/Popup';
 import itemsApi from '../../../api/itemsApi';
 import orderApi from '../../../api/orderApi';
 import userApi from '../../../api/userApi';
 import { Loading } from "../../../components";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const itemsPerPage = 6;
 
@@ -31,9 +33,6 @@ const UserHome = () => {
   const [total, setTotal] = React.useState(0);
   const [change, setChange] = React.useState(0);
   const [confirmPopup, setConfirmPopup] = React.useState(false);
-  const [error, setError] = React.useState(false); 
-  const [success, setSuccess] = React.useState(false); 
-  const [message, setMessage] = React.useState('');
   const [isLoading, setLoading] = React.useState(false);
   const [user, setUser] = React.useState({
     _id: '',
@@ -87,11 +86,6 @@ const UserHome = () => {
     setPage(1);
   };
 
-  const handleClose = () => {
-    setError(false);
-    setSelectedCards([]);
-  }
-
   const handleSuccess = () => {
     const fetchMenuData = async () => {
       try {
@@ -127,32 +121,70 @@ const UserHome = () => {
       }));
       const res = await orderApi.createOrder({token, clientId}, transformedData, currentTime);
       const confirm = await orderApi.confirmPayment({token, clientId}, res.data._id);
+      setConfirmPopup(false);
       setLoading(false);
+      handleSuccess();
+      toast.success('Đặt đơn thành công', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
     };
 
     if (change >= 0) {
       if (selectedCards.length != 0){
         createNewOrder();
-        setSuccess(true);
       }
       else {
-        setMessage('Đơn hàng không được bỏ trống');
-        setError(true);
+        toast.error('Đơn hàng không được bỏ trống', {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
       }
     }
     else{
-      setMessage('Số tiền nhận vào không hợp lệ');
-      setError(true);
+      toast.error('Số tiền nhận vào không hợp lệ', {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+      
     }
   };
 
-  const handleConfirmPopup = () => {
-    setConfirmPopup(false);
-    console.log("confirm");
-  }
-
   const handleCancel = () => {
-    console.log("cancel");
+    if (selectedCards.length !== 0){
+      toast.warning('Đã hủy đơn', {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+      setSelectedCards([]);
+      setTotal(0);
+      setChange(0);
+      setReceived(0);
+    }
   };
 
   React.useEffect(() => {
@@ -416,7 +448,7 @@ const UserHome = () => {
         <CustomButton
           title={'Xác nhận thanh toán'}
           className="p-2 mt-2 w-full"
-          onAction={handleConfirm}
+          onAction={()=>{setConfirmPopup(true)}}
           variant='tertiary'
         />
         <CustomButton
@@ -444,44 +476,28 @@ const UserHome = () => {
               />
               <CustomButton
                 title='Xác nhận'
-                onAction={handleConfirmPopup}
+                onAction={handleConfirm}
                 className="py-1 px-4"
               />
             </div>
           </div>
         }
       </PopUp>
-      <Dialog open={error} onClose={handleClose}>
-        <DialogTitle sx={{ backgroundColor: 'background.tertiary' }}>Lỗi</DialogTitle>
-        <DialogContent sx={{ backgroundColor: 'background.tertiary' }}>
-          <DialogContentText sx={{color: 'white'}}>
-            {message}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions sx={{ backgroundColor: 'background.tertiary' }}>
-          <Button onClick={handleClose} color="primary" autoFocus>
-            OK
-          </Button>
-        </DialogActions>
-      </Dialog>
 
-      <Dialog open={success} onClose={handleSuccess}>
-        <DialogTitle sx={{ backgroundColor: 'background.tertiary' }}>Thành công</DialogTitle>
-        <DialogContent sx={{ backgroundColor: 'background.tertiary' }}>
-          <DialogContentText sx={{color: 'white'}}>
-            Thanh toán đơn hàng thành công
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions sx={{ backgroundColor: 'background.tertiary' }}>
-          <Button onClick={handleSuccess} color="primary" autoFocus>
-            OK
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      
-
-
+      <div>
+        <ToastContainer
+            position="top-right"
+            autoClose={2000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover={false}
+            theme="colored"
+            />
+      </div>
       {isLoading && <Loading/>}
     </div>
   );
