@@ -354,7 +354,6 @@ const OrderList = (props) => {
                                 backgroundColor: 'background.secondary',
                                 display: 'flex', 
                                 alignItems: 'center',
-                                maxWidth: '100px',
                                 maxHeight: '40px', }}>
                                 <CardMedia
                                 component="img" 
@@ -365,7 +364,7 @@ const OrderList = (props) => {
                                     maxHeight: '40px',
                                 }}
                                 />
-                                <CardContent sx={{ textAlign: 'center', fontSize: 10 }}>
+                                <CardContent sx={{ textAlign: 'left', fontSize: 10 }}>
                                 <Typography>{selectedCard.item_name}</Typography>
                                 </CardContent>
                             </Card>
