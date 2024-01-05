@@ -41,7 +41,7 @@ const UserOrders = () => {
             setOrderListRows(searchResult);
         }
         else{
-          setRows(orderListOriginalRows);
+          setOrderListRows(orderListOriginalRows);
         }
     }
   };
