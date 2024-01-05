@@ -228,7 +228,7 @@ const UserHome = () => {
           <Header heading={user.name} />
         </div>
         <div className="col-span-1 p-3">
-          <Searchbar handleSearch={handleSearchBar} placeholder="Tìm tên..." />
+          <Searchbar handleSearch={handleSearchbar} placeholder="Tìm tên..." />
         </div>
         <div className="ms-3">
           <Breadcrumbs aria-label="breadcrumb" className="p-2 me-5">
