@@ -10,6 +10,7 @@ import CustomButton from '../../../components/CustomButton/CustomButton';
 import PopUp from '../../../components/Popup/Popup';
 import orderApi from "../../../api/orderApi";
 import { useStaffInventoryContext } from '../../../context/Staff/StaffInventoryContext';
+import { Loading } from "../../../components";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -148,17 +149,19 @@ const OrderList = (props) => {
     const [isProcessing, setProcessing] = React.useState(false);
     const [isPending, setPending] = React.useState(false);
     const [openConfirmCancel, setOpenConfirmCancel] = React.useState(false);
-
+    const [isLoading, setLoading] = React.useState(false);
+  
     const token = localStorage.getItem("token");
     const clientId = localStorage.getItem("clientId");
     
     React.useEffect(() =>{
       const fetchOrders = async () => {
           try {
+              setLoading(true);
               const res = await orderApi.getAllOrders({token, clientId});
-
               setOrderListRows(res.data);
               setOrderListOriginalRows(res.data);
+              setLoading(false);
           } catch (error) {
           console.error('Error fetching orders:', error);
           }
@@ -174,6 +177,7 @@ const OrderList = (props) => {
 
     //Handle on row click
     const handleClick = async (event, row) => {
+        setLoading(true);
         setSelected(row);
         const res = await orderApi.getOrderDetail({token, clientId}, row._id);
 
@@ -192,6 +196,7 @@ const OrderList = (props) => {
         }
 
         setTotal(row.order_total_price);
+        setLoading(false);
         setOpenCard(true);
     };
 
@@ -201,6 +206,7 @@ const OrderList = (props) => {
     }
 
     const handleConfirm = async () => {
+        setLoading(true);
         const res = await orderApi.completeOrder({token, clientId}, selected._id);
         console.log(res);
         const newData = await orderApi.getAllOrders({token, clientId});
@@ -210,6 +216,7 @@ const OrderList = (props) => {
         setProcessing(false);
         setPending(false);
         setOpenCard(false);
+        setLoading(false);
     };
     
     const handleCancel = () => {
@@ -217,16 +224,18 @@ const OrderList = (props) => {
     };
 
     const confirmCancel = async () => {
+        setOpenConfirmCancel(false);
+        setLoading(true);
         const res = await orderApi.deleteOrder({token, clientId}, selected._id);
         console.log(res);
         const newData = await orderApi.getAllOrders({token, clientId});
         setOrderListRows(newData.data);
         setOrderListOriginalRows(newData.data);
         
-        setOpenConfirmCancel(false);
         setProcessing(false);
         setPending(false);
         setOpenCard(false);
+        setLoading(false);
     }
 
     const handleCloseCard = () => {
@@ -448,6 +457,7 @@ const OrderList = (props) => {
             </div>
           }
         </PopUp>
+        {isLoading && <Loading/>}
     </Box>
     );
 }

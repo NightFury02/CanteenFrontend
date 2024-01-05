@@ -24,6 +24,7 @@ import CustomButton from '../../../../components/CustomButton/CustomButton';
 import EditStaffForm from '../EditStaffForm/EditStaffForm';
 import userApi from '../../../../api/userApi';
 import { useStaffInventoryContext } from '../../../../context/Staff/StaffInventoryContext';
+import { Loading } from '../../../../components';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -163,13 +164,15 @@ export default function StaffTable(props) {
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const [openEditPopUp, setOpenEditPopUp] = React.useState(false);
     const [openDeletePopUp, setOpenDeletePopUp] = React.useState(false);
-
+    const [isLoading, setLoading] = React.useState(false);
+  
     const token = localStorage.getItem("token");
     const clientId = localStorage.getItem("clientId");
 
     React.useEffect(() =>{
       const fetchStaffs = async () => {
           try {
+              setLoading(true);
               const res = await userApi.getStaffList({token, clientId});
               const transformedData = res.data.map(item => ({
                   ...item,
@@ -178,7 +181,8 @@ export default function StaffTable(props) {
         
               setStaffTableRows(transformedData);
               setStaffTableOriginalRows(transformedData);
-          } catch (error) {
+              setLoading(false);
+            } catch (error) {
           console.error('Error fetching staffs:', error);
           }
       }
@@ -214,6 +218,7 @@ export default function StaffTable(props) {
     const handleOnDelete = () => {
         const deleteStaff = async () => {
           try {
+            setLoading(true);
             const res = await userApi.deleteStaff({token, clientId}, selected._id);
             console.log(res);
             const newData = await userApi.getStaffList({token, clientId});
@@ -225,6 +230,7 @@ export default function StaffTable(props) {
 
             setStaffTableRows(transformedData);
             setStaffTableOriginalRows(transformedData);
+            setLoading(false);
           } catch (error) {
             console.error('Error fetching expired Staff:', error);
           }
@@ -363,6 +369,7 @@ export default function StaffTable(props) {
             </div>
           }
         </PopUp>
+      {isLoading && <Loading/>}
       </Box>
     );
 }

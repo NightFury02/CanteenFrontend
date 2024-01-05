@@ -10,6 +10,7 @@ import CustomButton from '../../../components/CustomButton/CustomButton';
 import PopUp from '../../../components/Popup/Popup';
 import orderApi from "../../../api/orderApi";
 import { useStaffInventoryContext } from '../../../context/Staff/StaffInventoryContext';
+import { Loading } from "../../../components";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -139,6 +140,7 @@ const PreorderList = (props) => {
     const [error, setError] = React.useState(false); 
     const [success, setSuccess] = React.useState(false); 
     const [message, setMessage] = React.useState('');
+    const [isLoading, setLoading] = React.useState(false);
   
     const token = localStorage.getItem("token");
     const clientId = localStorage.getItem("clientId");
@@ -146,10 +148,11 @@ const PreorderList = (props) => {
     React.useEffect(() =>{
       const fetchOrders = async () => {
           try {
+              setLoading(true);
               const res = await orderApi.getAllPendingOrders({token, clientId});
-
               setPreorderListRows(res.data);
               setPreorderListOriginalRows(res.data);
+              setLoading(false);
           } catch (error) {
           console.error('Error fetching orders:', error);
           }
@@ -165,6 +168,7 @@ const PreorderList = (props) => {
 
     //Handle on row click
     const handleClick = async (event, row) => {
+        setLoading(true);
         setSelected(row);
         const res = await orderApi.getOrderDetail({token, clientId}, row._id);
         
@@ -176,6 +180,7 @@ const PreorderList = (props) => {
         }
 
         setTotal(row.order_total_price);
+        setLoading(false);
         setOpenCard(true);
     };
 
@@ -225,6 +230,8 @@ const PreorderList = (props) => {
     };
 
     const handleConfirmDelete = async () => {
+        setOpenPopupCancel(false);
+        setLoading(true);
         const deleteOrder = await orderApi.deleteOrder({token, clientId}, selected._id);
         console.log(deleteOrder);
 
@@ -232,8 +239,8 @@ const PreorderList = (props) => {
         setPreorderListRows(res.data);
         setPreorderListOriginalRows(res.data);
 
-        setOpenPopupCancel(false);
         setOpenCard(false);
+        setLoading(false);
     };
 
     const handleCloseCard = () => {
@@ -515,6 +522,7 @@ const PreorderList = (props) => {
           </Button>
         </DialogActions>
       </Dialog>
+        {isLoading && <Loading/>}
     </Box>
     );
 }

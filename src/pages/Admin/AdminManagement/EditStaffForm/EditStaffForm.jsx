@@ -1,21 +1,20 @@
-import {useState} from 'react'
+import React from 'react'
 import {FormControl, FormLabel, TextField, Input} from '@mui/material'
 import CustomButton from '../../../../components/CustomButton/CustomButton'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import userApi from '../../../../api/userApi';
 import { useStaffInventoryContext } from '../../../../context/Staff/StaffInventoryContext';
-
-const token = localStorage.getItem("token");
-const clientId = localStorage.getItem("clientId");
+import { Loading } from '../../../../components';
 
 const EditStaffForm = (props) => {
     const {targetStaff, setOpen} = props
-
+    const [isLoading, setLoading] = React.useState(false);
+  
     const {
         staffTableRows, setStaffTableRows, setStaffTableOriginalRows
     } = useStaffInventoryContext();
 
-    const [editedStaff, setEditedStaff] = useState({
+    const [editedStaff, setEditedStaff] = React.useState({
         _id: targetStaff._id || '', 
         name: targetStaff.name || '',
         birthday: targetStaff.birthday || '',
@@ -23,12 +22,16 @@ const EditStaffForm = (props) => {
         address: targetStaff.address || '',
     });
     
+    const token = localStorage.getItem("token");
+    const clientId = localStorage.getItem("clientId");
+
     const handleCancel = () => {
         setOpen(false);
     }
     
     const handleSubmit = () => {
         const editStaff = async () => {
+            setLoading(true);
             const attributes = {
                 "address": editedStaff.address,
                 "birthday": editedStaff.birthday,
@@ -45,6 +48,7 @@ const EditStaffForm = (props) => {
       
             setStaffTableRows(transformedData);
             setStaffTableOriginalRows(transformedData);
+            setLoading(false);
         }
         editStaff();
         setOpen(false);
@@ -63,7 +67,8 @@ const EditStaffForm = (props) => {
         marginBottom: '2rem',
     }
     return (
-        <form 
+        <div>
+<form 
             className="flex flex-col min-w-[600px]"
             autoComplete='off'
         >
@@ -122,6 +127,8 @@ const EditStaffForm = (props) => {
                 className="p-2"
             />
         </form>
+        {isLoading && <Loading/>}
+        </div>
     )
 }
 

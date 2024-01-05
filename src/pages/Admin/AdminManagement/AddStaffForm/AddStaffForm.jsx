@@ -1,18 +1,20 @@
-import {useState} from 'react'
+import React from 'react'
 import {FormControl, FormLabel, TextField} from '@mui/material'
 import CustomButton from '../../../../components/CustomButton/CustomButton'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import userApi from '../../../../api/userApi';
 import { useStaffInventoryContext } from '../../../../context/Staff/StaffInventoryContext';
+import { Loading } from '../../../../components';
 
 const AddStaffForm = (props) => {
     const {setOpen} = props;
-
+    const [isLoading, setLoading] = React.useState(false);
+  
     const {
         setStaffTableRows, setStaffTableOriginalRows
     } = useStaffInventoryContext();
 
-    const [staff, setStaff] = useState({
+    const [staff, setStaff] = React.useState({
         _id: '', 
         name: '',
         birthday: '',
@@ -31,6 +33,7 @@ const AddStaffForm = (props) => {
 
     const handleSubmit = () => {
         const addStaff = async () => {
+            setLoading(true);
             const attributes = {
                 birthday: staff.birthday,
                 phone: staff.phone,
@@ -47,6 +50,7 @@ const AddStaffForm = (props) => {
       
             setStaffTableRows(transformedData);
             setStaffTableOriginalRows(transformedData);
+            setLoading(false);
         }
         addStaff();
         setOpen(false);
@@ -65,6 +69,7 @@ const AddStaffForm = (props) => {
         marginBottom: '2rem',
     };
     return (
+        <div>
         <form 
             className="flex flex-col min-w-[700px]"
             autoComplete='off'
@@ -130,6 +135,8 @@ const AddStaffForm = (props) => {
                 className="p-2"
             />
         </form>
+        {isLoading && <Loading/>}
+        </div>
     )
 }
 

@@ -40,7 +40,7 @@ const StaffSetting = () => {
           attributes: { address, birthday, phone },
           ...rest
         } = res.data;
-  
+
         const formattedBirthday = toDatePickerFormat(birthday);
         const newData = { ...rest, address, birthday: formattedBirthday, phone };
   

@@ -117,6 +117,7 @@ const StaffHome = () => {
 
   const handleConfirm = () => {
     const createNewOrder = async () => {
+      setLoading(true);
       const currentTime = new Date().toLocaleTimeString('en-US', { hour12: false });
       const transformedData = selectedCards.map(item => ({
           item_name: item.item_name,
@@ -126,24 +127,20 @@ const StaffHome = () => {
       }));
       const res = await orderApi.createOrder({token, clientId}, transformedData, currentTime);
       const confirm = await orderApi.confirmPayment({token, clientId}, res.data._id);
+      setLoading(false);
     };
 
-    if (change){
-      if (change >= 0) {
-        if (selectedCards.length != 0){
-          createNewOrder();
-          setSuccess(true);
-        }
-        else {
-          setMessage('Đơn hàng không được bỏ trống');
-          setError(true);
-        }
+    if (change >= 0) {
+      if (selectedCards.length != 0){
+        createNewOrder();
+        setSuccess(true);
       }
-      else{
-        setMessage('Số tiền nhận vào không hợp lệ');
+      else {
+        setMessage('Đơn hàng không được bỏ trống');
         setError(true);
       }
-    } else{
+    }
+    else{
       setMessage('Số tiền nhận vào không hợp lệ');
       setError(true);
     }
@@ -471,7 +468,7 @@ const StaffHome = () => {
         <DialogTitle sx={{ backgroundColor: 'background.tertiary' }}>Thành công</DialogTitle>
         <DialogContent sx={{ backgroundColor: 'background.tertiary' }}>
           <DialogContentText sx={{color: 'white'}}>
-            Đặt đơn hàng thành công
+            Thanh toán đơn hàng thành công
           </DialogContentText>
         </DialogContent>
         <DialogActions sx={{ backgroundColor: 'background.tertiary' }}>

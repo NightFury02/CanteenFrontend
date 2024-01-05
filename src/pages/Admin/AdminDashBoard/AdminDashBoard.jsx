@@ -7,11 +7,14 @@ import DailyRevenueReport from './DailyRevenueReport/DailyRevenueReport';
 import MonthlyRevenueReport from './MonthlyRevenueReport/MonthlyRevenueReport';
 import { useStaffInventoryContext } from '../../../context/Staff/StaffInventoryContext';
 import reportApi from '../../../api/reportApi';
+import { Loading } from "../../../components";
 
 const AdminDashBoard = () => {
   const {
     setDailyInventoryReports, setDailyIncomeReports, setMonthlyIncomeReports,
   } = useStaffInventoryContext();
+
+  const [isLoading, setLoading] = React.useState(false);
   const headCells = [
     {
         id: 'id',
@@ -57,12 +60,14 @@ const AdminDashBoard = () => {
   React.useEffect(() => {
     const fetchReports = async () => {
         try {
+          setLoading(true);
           const inventoryReports = await reportApi.getAllDailyInventoryReport({token, clientId});
           const dailyIncomeReports = await reportApi.getAllDailyIncomeReport({token, clientId});
           const monthlyIncomeReports = await reportApi.getAllMonthlyIncomeReport({token, clientId});
           setDailyInventoryReports(inventoryReports.data);
           setDailyIncomeReports(dailyIncomeReports.data);
           setMonthlyIncomeReports(monthlyIncomeReports.data);
+          setLoading(false);
         } catch (error) {
           console.error('Error fetching Reports:', error);
         }
@@ -138,6 +143,7 @@ const AdminDashBoard = () => {
           {<MonthlyRevenueReport title={'Báo cáo doanh thu '}/>}
         </PopupButton>
       </div>
+      {isLoading && <Loading/>}
     </div>
   );
 };
