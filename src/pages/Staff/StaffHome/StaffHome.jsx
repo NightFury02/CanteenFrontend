@@ -102,7 +102,6 @@ const StaffHome = () => {
     };
 
     fetchMenuData();
-    setSuccess(false);
     setSelectedCards([]);
     setTotal(0);
     setChange(0);
@@ -126,7 +125,7 @@ const StaffHome = () => {
       handleSuccess();
       toast.success('Đặt đơn thành công', {
         position: "top-right",
-        autoClose: 5000,
+        autoClose: 2000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: false,
@@ -141,6 +140,7 @@ const StaffHome = () => {
         createNewOrder();
       }
       else {
+        setConfirmPopup(false);
         toast.error('Đơn hàng không được bỏ trống', {
           position: "top-right",
           autoClose: 2000,
@@ -154,6 +154,7 @@ const StaffHome = () => {
       }
     }
     else{
+      setConfirmPopup(false);
       toast.error('Số tiền nhận vào không hợp lệ', {
         position: "top-right",
         autoClose: 2000,

@@ -1,44 +1,39 @@
 import React from 'react';
+import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
 import { Input, Typography, Breadcrumbs, Link, Table, TableBody, TableCell, TableContainer, TableRow, Card, CardMedia, CardContent, CardHeader, CardActions, Button, Grid, Pagination, Stack } from '@mui/material';
 import CustomButton from "../../../components/CustomButton/CustomButton";
 import Header from "../../../components/Header/Header";
 import { DeleteIcon } from '../../../assets/svgs/index';
 import Searchbar from '../../../components/SearchBar/SearchBar';
-import PopUp from '../../../components/Popup/Popup';
 import itemsApi from '../../../api/itemsApi';
 import orderApi from '../../../api/orderApi';
 import userApi from '../../../api/userApi';
 import { Loading } from "../../../components";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-
 const itemsPerPage = 6;
-
 const useStyles = (isActive) => ({
   color: isActive ? '#EA7C69' : 'white',
   '&:hover': {
     color: '#EA7C69',
   },
 });
-
 const UserHome = () => {
   const [menu, setMenu] = React.useState([]);
   const [mainMenu, setMainMenu] = React.useState([]);
   const [invenMenu, setInvenMenu] = React.useState([]);
   const [originalMenu, setOriginalMenu] = React.useState([]);
-  const [currentCategory, setCurrentCategory] = React.useState('Món chính');
+  const [currentCategory, setCurrentCategory] = React.useState('Các món ăn');
   const [page, setPage] = React.useState(1);
   const [selectedCards, setSelectedCards] = React.useState([]);
-  const [received, setReceived] = React.useState(0);
+  const [time, setTime] = React.useState('06:00');
   const [total, setTotal] = React.useState(0);
-  const [change, setChange] = React.useState(0);
-  const [confirmPopup, setConfirmPopup] = React.useState(false);
+  const [error, setError] = React.useState(false); 
+  const [success, setSuccess] = React.useState(false); 
+  const [message, setMessage] = React.useState('');
   const [isLoading, setLoading] = React.useState(false);
   const [user, setUser] = React.useState({
     _id: '',
     name: ''
   });
-
   const token = localStorage.getItem("token");
   const clientId = localStorage.getItem("clientId");
   
@@ -50,17 +45,13 @@ const UserHome = () => {
     });
     
     setTotal(sum);
-    setChange(received - sum);
   };
-
-  const handleReceivedChange = (value) => {
-    setReceived(value);
-    setChange(value - total);
-  }
-
+  const handleTimeChange = (value) => {
+    setTime(value);
+  };
   const handleQuantityChange = (cardId, quantity) => {
     const updatedSelectedCards = selectedCards.map((card) => {
-      if (card._id === cardId) { 
+      if (card._id === cardId) {
         if (quantity > card.item_quantity){
           quantity = card.item_quantity;
         }
@@ -72,9 +63,8 @@ const UserHome = () => {
     setSelectedCards(updatedSelectedCards);
     calculateTotal(updatedSelectedCards);
   };
-
   const handleBreadcrumbClick = (category) => {
-    if (category == 'Món chính'){
+    if (category == 'Các món ăn'){
       setMenu(mainMenu);
       setOriginalMenu(mainMenu);
     }
@@ -85,108 +75,49 @@ const UserHome = () => {
     setCurrentCategory(category);
     setPage(1);
   };
-
+  const handleClose = () => {
+    setError(false);
+  };
   const handleSuccess = () => {
-    const fetchMenuData = async () => {
-      try {
-        setLoading(true);
-        const inven = await itemsApi.getItemsByType({token, clientId}, 'inven');
-        setInvenMenu(inven.data);
-        const main = await itemsApi.getItemsByType({token, clientId}, 'main');
-        setMainMenu(main.data);
-        setMenu(main.data);
-        setOriginalMenu(main.data);
-        setLoading(false);
-      } catch (error) {
-      }
-    };
-
-    fetchMenuData();
     setSuccess(false);
     setSelectedCards([]);
-    setTotal(0);
-    setChange(0);
-    setReceived(0);
-  }
+  };
 
   const handleConfirm = () => {
     const createNewOrder = async () => {
-      setLoading(true);
-      const currentTime = new Date().toLocaleTimeString('en-US', { hour12: false });
       const transformedData = selectedCards.map(item => ({
-          item_name: item.item_name,
-          item_id: item._id,
-          item_quantity: item.quantity,
-          item_note: item.note || ''
-      }));
-      const res = await orderApi.createOrder({token, clientId}, transformedData, currentTime);
-      const confirm = await orderApi.confirmPayment({token, clientId}, res.data._id);
-      setConfirmPopup(false);
-      setLoading(false);
-      handleSuccess();
-      toast.success('Đặt đơn thành công', {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: true,
-        progress: undefined,
-        theme: "colored",
-      });
+        item_name: item.item_name,
+        item_id: item._id,
+        item_quantity: item.quantity,
+        item_note: item.note || ''
+    }));
+      const res = await orderApi.createOrder({token, clientId}, transformedData, time);
     };
 
-    if (change >= 0) {
-      if (selectedCards.length != 0){
-        createNewOrder();
+    if (time){
+      if (time <= '18:00' && time >= '06:00') {
+        if (selectedCards.length != 0){
+          createNewOrder();
+          setSuccess(true);
+        }
+        else {
+          setMessage('Đơn hàng không được bỏ trống');
+          setError(true);
+        }
       }
-      else {
-        toast.error('Đơn hàng không được bỏ trống', {
-          position: "top-right",
-          autoClose: 2000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: true,
-          progress: undefined,
-          theme: "colored",
-        });
+      else{
+        setMessage('Thời gian chọn không hợp lệ (6:00 AM - 6:00 PM).');
+        setError(true);
       }
-    }
-    else{
-      toast.error('Số tiền nhận vào không hợp lệ', {
-        position: "top-right",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: true,
-        progress: undefined,
-        theme: "colored",
-      });
-      
+    } else{
+      setMessage('Thời gian chọn không hợp lệ (6:00 AM - 6:00 PM).');
+      setError(true);
     }
   };
-
   const handleCancel = () => {
-    if (selectedCards.length !== 0){
-      toast.warning('Đã hủy đơn', {
-        position: "top-right",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: true,
-        progress: undefined,
-        theme: "colored",
-      });
-      setSelectedCards([]);
-      setTotal(0);
-      setChange(0);
-      setReceived(0);
-    }
+    console.log("cancel");
   };
-
+  
   React.useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -210,13 +141,12 @@ const UserHome = () => {
         setOriginalMenu(main.data);
         setLoading(false);
       } catch (error) {
+        
       }
     };
-
     fetchUser();
     fetchMenuData();
   }, []);
-
   const handleSearchBar = async (query) => {
     console.log(query);
     if (originalMenu.length > 0) {
@@ -229,14 +159,12 @@ const UserHome = () => {
         }
     }
   }
-  const titles = ['Món chính', 'Các món khác'];
-
+  
+  const titles = ['Các món ăn', 'Các món khác'];
   const pageCount = Math.ceil(menu.length / itemsPerPage);
-
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
-
   const handleCardClick = (item) => {
     if (!selectedCards.some((card) => card._id === item._id)) {
       setSelectedCards((prevSelectedCards) => {
@@ -247,7 +175,6 @@ const UserHome = () => {
       });
     }
   };
-
   const handleDelete = (selectedCardId) => {
     setSelectedCards((prevSelectedCards) => {
       const updatedSelectedCards = prevSelectedCards.filter((card) => card._id !== selectedCardId);
@@ -255,7 +182,6 @@ const UserHome = () => {
       return updatedSelectedCards;
     });
   };
-
   const handleInputChange = (selectedCardId, field, value) => {
     setSelectedCards((prevSelectedCards) =>
       prevSelectedCards.map((card) =>
@@ -263,18 +189,18 @@ const UserHome = () => {
       )
     );
   };
-
   return (
-    <div className="relative grid grid-cols-[1fr_1fr_400px]">
-      <Header className='col-span-1' heading={user.name}></Header>
-      <div className='col-span-1 p-3'>
+    <div className="relative grid grid-cols-3">
+      <div className="col-span-2">
+        <div>
+          <Header heading={user.name} />
+        </div>
+        <div className='col-span-1 p-3'>
             <Searchbar
               handleSearch={handleSearchBar}  
               placeholder='Tìm tên...'
             />
-      </div>
-      <div></div>
-      <div className="col-span-2">
+        </div>
         <div className="ms-3">
           <Breadcrumbs aria-label="breadcrumb" className="p-2 me-5">
             {titles.map((title, index) => (
@@ -291,35 +217,36 @@ const UserHome = () => {
             ))}
           </Breadcrumbs>
         </div>
-
         <div className="mt-5 p-2">
-          <Card sx={{ backgroundColor: 'background.tertiary', marginLeft: '10px', boxShadow: 'none'}}>
+          <Card sx={{ backgroundColor: 'background.tertiary' }}>
+            <CardHeader title="Chọn món" sx={{ color: 'white', fontSize: 20 }}>
+              Chọn món
+            </CardHeader>
             <Grid container spacing={3}>
-              {(menu.slice((page - 1) * itemsPerPage, page * itemsPerPage) || []).map((item) => (
+            {(menu.slice((page - 1) * itemsPerPage, page * itemsPerPage) || []).map((item) => (
                 <Grid item key={item._id} xs={12} sm={6} md={4}>
                   <Card sx={{ 
                     border: 'rounded',
                     color: 'white', 
                     bgcolor: '#1F1D2B',
-                    borderRadius: '12px',
+                    borderRadius: '12px', 
                     '&:hover': {
                       cursor: 'pointer',
                       bgcolor: 'background.tertiary',
                   },}}
                     onClick={() => handleCardClick(item)}
                   >
-                    <CardMedia 
+                     <CardMedia 
                       component="img" 
                       image={item.item_image} 
                       alt={item._id}
                       sx={{
                         maxWidth: '100%',
-                        height: '200px',
-                        objectFit: 'fill'
+                        maxHeight: '100px',
                       }}
                     />
                     <CardContent sx={{ textAlign: 'center' }}>
-                      <Typography className='text-primary'>{item.item_name}</Typography>
+                      <Typography>{item.item_name}</Typography>
                       <Typography>{item.item_price}đ</Typography>
                       <Typography>Số lượng còn lại: {item.item_quantity}</Typography>
                     </CardContent>
@@ -335,23 +262,21 @@ const UserHome = () => {
               onChange={handleChangePage}
               color="primary"
               size="large"
-              shape='rounded'
               sx={{ mx: 'auto'}}
             />
           </Stack>
         </div>
       </div>
-
       <Card className="col-span-1 fixed right-6 w-1/4 h-screen p-4 rounded-lg" sx={{ color: 'white', minWidth: '400', backgroundColor: 'background.secondary' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '45% 30% 20%', gridColumnGap: '10px', griditemGap: '8px', marginBottom: '16px', fontWeight: 'bold' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '45% 30% 20%', gridColumnGap: '10px', gridRowGap: '8px', marginBottom: '16px', fontWeight: 'bold' }}>
             <Typography>Sản phẩm</Typography>
             <Typography>Số lượng</Typography>
             <Typography>Giá</Typography>
           </div>
-        <div style={{ maxHeight: 'calc(100vh - 300px)', overflowY: 'auto' }}>
+        <div style={{ maxHeight: 'calc(100vh - 260px)', overflowY: 'auto' }}>
           {selectedCards.map((selectedCard) => (
             <div key={selectedCard._id}>
-              {/* First item */}
+              {/* First Row */}
               <div style={{ display: 'grid', gridTemplateColumns: '50% 20% 20%', gridColumnGap: '10px', marginBottom: '2px', alignItems: 'center' }}>
                 <Card sx={{ 
                   backgroundColor: 'background.secondary',
@@ -373,10 +298,10 @@ const UserHome = () => {
                   </CardContent>
                 </Card>
                 <Input
-                  className='w-full -ms-3'
+                  className='w-10'
                   type="number"
                   value={selectedCard.quantity || 1}
-                  inputProps={{ min: 1 }}
+                  inputProps={{ min: 1, max: selectedCard.item_quantity }}
                   onChange={(e) => handleQuantityChange(selectedCard._id, e.target.value)}
                   sx={{
                     borderRadius: '4px',
@@ -385,9 +310,9 @@ const UserHome = () => {
                     color: 'white'
                   }}
                 />
-                <Typography>{`${parseInt(selectedCard.quantity) * parseInt(selectedCard.item_price)} đ`}</Typography>
+                <Typography>{parseInt(selectedCard.quantity) * parseInt(selectedCard.item_price)}</Typography>
               </div>
-              {/* Second item */}
+              {/* Second Row */}
               <div style={{ display: 'grid', gridTemplateColumns: '70% 20%', gridColumnGap: '16px',  marginBottom: '4px', alignItems: 'center' }}>
               <Input
                   type="text"
@@ -418,8 +343,7 @@ const UserHome = () => {
             </div>
           ))}
         </div>
-
-        <div className="absolute left-0 right-0 w-full bottom-6">
+        <div className="absolute left-4 bottom-6">
         <TableContainer>
         <Table sx={{ minWidth: 300, bgcolor: 'background.secondary' }} size="small">
           <TableBody>
@@ -428,79 +352,59 @@ const UserHome = () => {
               <TableCell sx={{color: 'white'}}>{total}đ</TableCell>
             </TableRow>
             <TableRow>
-              <TableCell sx={{color: 'white', minWidth: 150}}>Đã nhận</TableCell>
+              <TableCell sx={{color: 'white',  minWidth: 150}}>Thời gian đến</TableCell>
               <TableCell>
                 <Input
-                  type="number"
-                  value={received}
-                  onChange={(e) => handleReceivedChange(e.target.value)}
+                  type="time"
+                  value={time}
+                  onChange={(e) => handleTimeChange(e.target.value)}
                   style={{color: 'white'}}
                 />
               </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell sx={{color: 'white', minWidth: 150}}>Tiền thừa</TableCell>
-              <TableCell sx={{color: 'white'}}>{change}đ</TableCell>
             </TableRow>
           </TableBody>
         </Table>
       </TableContainer>
         <CustomButton
-          title={'Xác nhận thanh toán'}
+          title={'Đặt món'}
           className="p-2 mt-2 w-full"
-          onAction={()=>{setConfirmPopup(true)}}
-          variant='tertiary'
+          onAction={handleConfirm}
         />
         <CustomButton
           title={'Hủy'}
           className='p-2 mt-2 w-full'
           onAction={handleCancel}
-          variant='secondary'
         />
         </div>
       </Card>
-      <PopUp
-        title="Xác nhận"
-        isOpen={confirmPopup}
-        handleCloseBtnClick={() => {setConfirmPopup(false);}}
-      >
-        {
-          <div className='flex flex-col'>
-            <h2 className='text-white pb-5'>Bạn có muốn xác nhận thanh toán?</h2>
-            <div className='flex justify-between gap-2'>
-              <CustomButton
-                title='Hủy'
-                variant='secondary'
-                onAction={()=>{setConfirmPopup(false);}}
-                className="py-1 px-8"
-              />
-              <CustomButton
-                title='Xác nhận'
-                onAction={handleConfirm}
-                className="py-1 px-4"
-              />
-            </div>
-          </div>
-        }
-      </PopUp>
-
-      <div>
-        <ToastContainer
-            position="top-right"
-            autoClose={2000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover={false}
-            theme="colored"
-            />
-      </div>
+      <Dialog open={error} onClose={handleClose}>
+        <DialogTitle sx={{ backgroundColor: 'background.tertiary' }}>Lỗi</DialogTitle>
+        <DialogContent sx={{ backgroundColor: 'background.tertiary' }}>
+          <DialogContentText sx={{color: 'white'}}>
+            {message}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{ backgroundColor: 'background.tertiary' }}>
+          <Button onClick={handleClose} color="primary" autoFocus>
+            OK
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog open={success} onClose={handleSuccess}>
+        <DialogTitle sx={{ backgroundColor: 'background.tertiary' }}>Thành công</DialogTitle>
+        <DialogContent sx={{ backgroundColor: 'background.tertiary' }}>
+          <DialogContentText sx={{color: 'white'}}>
+            Bạn đã đặt đơn hàng thành công
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{ backgroundColor: 'background.tertiary' }}>
+          <Button onClick={handleSuccess} color="primary" autoFocus>
+            OK
+          </Button>
+        </DialogActions>
+      </Dialog>
       {isLoading && <Loading/>}
     </div>
   );
 };
-
 export default UserHome;
