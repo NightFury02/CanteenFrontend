@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {Input, Box, Paper, Table, TableBody, TableCell, TableHead, TableContainer, TablePagination, TableSortLabel, TableRow, Toolbar, Typography } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 import { useStaffInventoryContext } from '../../../../context/Staff/StaffInventoryContext';
+import reportApi from '../../../../api/reportApi';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -120,15 +121,21 @@ export default function DailyStorageReport(props) {
     const month = (getCurrentDate.getMonth() + 1).toString().padStart(2, '0');
     const day = getCurrentDate.getDate().toString().padStart(2, '0');
     const {dailyInventoryReports} = useStaffInventoryContext();
-
     const currentDate = `${year}-${month}-${day}`;
-
     const [selectedDate, setSelectedDate] = React.useState(currentDate);
+
+    const token = localStorage.getItem("token");
+    const clientId = localStorage.getItem("clientId");
+
     React.useEffect(() => {
       const fetchReports = async () => {
           try {
+            console.log('Bearer ' + token);
+            console.log(clientId);
             const foundReport = dailyInventoryReports.find(item => item.createdAt.startsWith(selectedDate));
-            console.log(foundReport)
+            console.log(foundReport._id)
+            const detailReport = await reportApi.getDetailInventoryReport({token, clientId}, foundReport._id);
+            console.log(detailReport);
             //setRows(foundReport);
           } catch (error) {
             console.error('Error fetching Reports:', error);
