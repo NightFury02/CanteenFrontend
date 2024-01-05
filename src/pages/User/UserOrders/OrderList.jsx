@@ -366,9 +366,9 @@ const OrderList = (props) => {
                                     padding: '6px',
                                 }}
                                 >
-                                {selectedCard.item_quantity || 1}
+                                {selectedCard.quantity || 1}
                             </Typography>
-                            <Typography>{parseInt(selectedCard.item_quantity) * parseInt(selectedCard.item_price)}đ</Typography>
+                            <Typography>{parseInt(selectedCard.quantity) * parseInt(selectedCard.item_price)}đ</Typography>
                         </div>
                         {/* Second Row */}
                         <div style={{ display: 'grid', gridTemplateColumns: '70% 20%', gridColumnGap: '16px',  marginBottom: '4px', alignItems: 'center' }}>
