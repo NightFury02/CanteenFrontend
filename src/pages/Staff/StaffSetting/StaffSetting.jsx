@@ -4,6 +4,7 @@ import Header from "../../../components/Header/Header";
 import Popup from "../../../components/Popup/Popup";
 import EditForm from "./EditForm";
 import ResetPasswordForm from "./ResetPasswordForm";
+import { useNavigate } from "react-router-dom";
 import CustomButton from "../../../components/CustomButton/CustomButton";
 import { toDatePickerFormat } from "../../../utils/util";
 import { Loading } from "../../../components";
@@ -11,10 +12,11 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const StaffSetting = () => {
+  const navigate = useNavigate();
   const token = localStorage.getItem('token');
   const clientId = localStorage.getItem('clientId');
   const [isUpdatePopUpOpen, setUpdatePopUpOpen] = React.useState(false); 
-  const [isPasswortPopUpOpen, setPasswortPopUpOpen] = React.useState(false);
+  const [isPasswordPopUpOpen, setPasswordPopUpOpen] = React.useState(false);
   const [isLoading, setLoading] = React.useState(false);
   const [staff, setStaff] = React.useState({
     _id: '',
@@ -58,7 +60,7 @@ const StaffSetting = () => {
     const updateStaff = async () => {
       try {
         //console.log(updatedData);
-        const response = await UserApi.updateStaffInfo({token, clientId}, updatedData);
+        const response = await UserApi.updateInfo({token, clientId}, updatedData);
         if (response.error){
           toast.error('Lỗi cập nhật thông tin', {
             position: "top-right",
@@ -74,6 +76,16 @@ const StaffSetting = () => {
         else
         {
           //Update UI
+          toast.success('Cập nhật thành công', {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
           const res = await UserApi.getUserInfo({ token, clientId }, clientId);
           const {
             attributes: { address, birthday, phone },
@@ -93,11 +105,13 @@ const StaffSetting = () => {
 
   const handleUpdatePassword = async(newPassword) =>{
     try {
+      setLoading(true);
       const token = localStorage.getItem('token');
       const clientId = localStorage.getItem('clientId');
       //console.log(updatedData);
-      const res = await UserApi.updateUserInfo({token, clientId}, newPassword);
+      const res = await UserApi.updateInfo({token, clientId}, newPassword);
       if (res.error){
+        setLoading(false);
         toast.error('Lỗi cập nhật mật khẩu', {
           position: "top-right",
           autoClose: 5000,
@@ -111,15 +125,11 @@ const StaffSetting = () => {
       }
       else
       {
-        setLoading(true);
-        UserApi.logout({token, clientId}).then(() => {
-          localStorage.removeItem('token');
-          localStorage.removeItem('clientId');
-          setLoading(false);
-          navigate("/login");
-        });
+        localStorage.removeItem('token');
+        localStorage.removeItem('clientId');
+        setLoading(false);
+        navigate("/login");
       }
-      
     } 
     catch (error) {
       
@@ -141,7 +151,7 @@ const StaffSetting = () => {
                 <CustomButton 
                   title={'Đổi mật khẩu'}
                   className="p-3 me-5"
-                  onAction={() => {setPasswortPopUpOpen(true)}}
+                  onAction={() => {setPasswordPopUpOpen(true)}}
                 />
               </div>
           </div> 
@@ -266,10 +276,10 @@ const StaffSetting = () => {
 
           <Popup
             title="Đổi mật khẩu"
-            isOpen={isPasswortPopUpOpen}
-            handleCloseBtnClick={() => {setPasswortPopUpOpen(false)}}
+            isOpen={isPasswordPopUpOpen}
+            handleCloseBtnClick={() => {setPasswordPopUpOpen(false)}}
           >
-              <ResetPasswordForm onClose={()=>{setPasswortPopUpOpen(false)}} onSubmit={handleUpdatePassword}></ResetPasswordForm>
+              <ResetPasswordForm onClose={()=>{setPasswordPopUpOpen(false)}} onSubmit={handleUpdatePassword}></ResetPasswordForm>
           </Popup>
 
           <div>
