@@ -218,10 +218,7 @@ const UserHome = () => {
           </Breadcrumbs>
         </div>
         <div className="mt-5 p-2">
-          <Card sx={{ backgroundColor: 'background.tertiary' }}>
-            <CardHeader title="Chọn món" sx={{ color: 'white', fontSize: 20 }}>
-              Chọn món
-            </CardHeader>
+          <Card sx={{ backgroundColor: 'background.tertiary', boxShadow: 'none' }}>
             <Grid container spacing={3}>
             {(menu.slice((page - 1) * itemsPerPage, page * itemsPerPage) || []).map((item) => (
                 <Grid item key={item._id} xs={12} sm={6} md={4}>
@@ -242,7 +239,8 @@ const UserHome = () => {
                       alt={item._id}
                       sx={{
                         maxWidth: '100%',
-                        maxHeight: '100px',
+                        height: '200px',
+                        objectFit: 'fill'
                       }}
                     />
                     <CardContent sx={{ textAlign: 'center' }}>
@@ -298,7 +296,7 @@ const UserHome = () => {
                   </CardContent>
                 </Card>
                 <Input
-                  className='w-10'
+                  className='w-full -ms-3'
                   type="number"
                   value={selectedCard.quantity || 1}
                   inputProps={{ min: 1, max: selectedCard.item_quantity }}
