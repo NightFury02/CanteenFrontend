@@ -60,7 +60,7 @@ const AdminDashBoard = () => {
   const token = localStorage.getItem("token");
   const clientId = localStorage.getItem("clientId");
 
-  React.useEffect(() => {
+  const getReport = () => {
     const fetchReports = async () => {
       try {
         setLoading(true);
@@ -85,10 +85,6 @@ const AdminDashBoard = () => {
       }
     };
     fetchReports();
-  }, []);
-
-  const getReport = () => {
-    console.log("popup");
   };
 
   return (
