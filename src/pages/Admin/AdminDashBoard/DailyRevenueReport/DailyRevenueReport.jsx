@@ -13,6 +13,7 @@ import {
   Input,
 } from "@mui/material";
 import { useStaffInventoryContext } from "../../../../context/Staff/StaffInventoryContext";
+import reportApi from "../../../../api/reportApi";
 
 function EnhancedTableToolbar(props) {
   const { title, date } = props;
@@ -58,7 +59,7 @@ export default function DailyRevenueReport(props) {
   const day = getCurrentDate.getDate().toString().padStart(2, "0");
   const currentDate = `${year}-${month}-${day}`;
   const [selectedDate, setSelectedDate] = React.useState(currentDate);
-  const { dailyIncomeReports } = useStaffInventoryContext();
+  const { dailyIncomeReports, setDailyIncomeReports } = useStaffInventoryContext();
 
   const [revenue, setRevenue] = React.useState([
     { label: "Doanh thu", value: "N/A" },
@@ -68,9 +69,19 @@ export default function DailyRevenueReport(props) {
     { label: "Tổng số món lãng phí", value: "N/A" },
   ]);
 
+  
+  const token = localStorage.getItem("token");
+  const clientId = localStorage.getItem("clientId");
+
   React.useEffect(() => {
     const fetchReports = async () => {
       try {
+        const dailyReports = await reportApi.getAllDailyIncomeReport({
+          token,
+          clientId,
+        });
+        setDailyIncomeReports(dailyReports.data);
+
         const foundReport = dailyIncomeReports.find((item) =>
           item.createdAt.startsWith(selectedDate)
         );

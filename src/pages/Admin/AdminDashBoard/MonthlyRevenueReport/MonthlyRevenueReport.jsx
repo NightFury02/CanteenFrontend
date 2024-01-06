@@ -2,6 +2,7 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 import {Box, Paper, Table, TableBody, TableCell, TableContainer, TableRow, Toolbar, Typography, Input } from '@mui/material';
 import { useStaffInventoryContext } from '../../../../context/Staff/StaffInventoryContext';
+import reportApi from "../../../../api/reportApi";
 
 function EnhancedTableToolbar(props) {
     const { title, date } = props;
@@ -41,8 +42,10 @@ export default function MonthlyRevenueReport(props) {
     const month = (getCurrentDate.getMonth() + 1).toString().padStart(2, '0');
     const currentMonth = `${year}-${month}`;
     const [selectedMonth, setSelectedMonth] = React.useState(currentMonth);
-    const {monthlyIncomeReports} = useStaffInventoryContext();
-
+    const {monthlyIncomeReports, setMonthlyIncomeReports} = useStaffInventoryContext();
+    const token = localStorage.getItem("token");
+    const clientId = localStorage.getItem("clientId");
+  
     const [revenue, setRevenue] = React.useState([
       { label: 'Doanh thu', value: 'N/A' },
       { label: 'Lợi nhuận', value: 'N/A' },
@@ -54,6 +57,12 @@ export default function MonthlyRevenueReport(props) {
     React.useEffect(() => {
       const fetchReports = async () => {
           try {
+            const monthlyReports = await reportApi.getAllMonthlyIncomeReport({
+              token,
+              clientId,
+            });
+
+            setMonthlyIncomeReports(monthlyReports.data);
             const foundReport = monthlyIncomeReports.find(item => item.createdAt.startsWith(selectedMonth));
             if (foundReport) {
               setRevenue([

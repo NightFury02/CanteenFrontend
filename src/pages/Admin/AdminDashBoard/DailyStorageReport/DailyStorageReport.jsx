@@ -120,7 +120,7 @@ export default function DailyStorageReport(props) {
     const year = getCurrentDate.getFullYear();
     const month = (getCurrentDate.getMonth() + 1).toString().padStart(2, '0');
     const day = getCurrentDate.getDate().toString().padStart(2, '0');
-    const {dailyInventoryReports} = useStaffInventoryContext();
+    const {dailyInventoryReports, setDailyInventoryReports} = useStaffInventoryContext();
     const currentDate = `${year}-${month}-${day}`;
     const [selectedDate, setSelectedDate] = React.useState(currentDate);
 
@@ -130,6 +130,12 @@ export default function DailyStorageReport(props) {
     React.useEffect(() => {
       const fetchReports = async () => {
           try {
+            const inventoryReports = await reportApi.getAllDailyInventoryReport({
+              token,
+              clientId,
+            });
+            
+            setDailyInventoryReports(inventoryReports.data);
             console.log(dailyInventoryReports);
             const foundReport = dailyInventoryReports.find(item => item.createdAt.startsWith(selectedDate));
             if (foundReport){

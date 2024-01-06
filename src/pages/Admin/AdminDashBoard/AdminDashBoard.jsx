@@ -57,34 +57,8 @@ const AdminDashBoard = () => {
     },
   ];
 
-  const token = localStorage.getItem("token");
-  const clientId = localStorage.getItem("clientId");
-
   const getReport = () => {
-    const fetchReports = async () => {
-      try {
-        setLoading(true);
-        const inventoryReports = await reportApi.getAllDailyInventoryReport({
-          token,
-          clientId,
-        });
-        const dailyIncomeReports = await reportApi.getAllDailyIncomeReport({
-          token,
-          clientId,
-        });
-        const monthlyIncomeReports = await reportApi.getAllMonthlyIncomeReport({
-          token,
-          clientId,
-        });
-        setDailyInventoryReports(inventoryReports.data);
-        setDailyIncomeReports(dailyIncomeReports.data);
-        setMonthlyIncomeReports(monthlyIncomeReports.data);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching Reports:", error);
-      }
-    };
-    fetchReports();
+    console.log('get')
   };
 
   return (
