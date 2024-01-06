@@ -351,7 +351,6 @@ const OrderList = (props) => {
                                 />
                                 <CardContent sx={{ textAlign: 'left', fontSize: 10 }}>
                                 <Typography>{selectedCard.item_name}</Typography>
-                                <Typography>{selectedCard.item_price}đ</Typography>
                                 </CardContent>
                             </Card>
                             <Typography

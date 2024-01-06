@@ -117,7 +117,7 @@ const StaffDashboard = () => {
       label: "Mã đơn",
     },
     {
-      id: "time_receive",
+      id: 'order_time',
       disablePadding: true,
       label: "Thời gian nhận",
     },
