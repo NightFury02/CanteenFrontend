@@ -117,7 +117,7 @@ const StaffDashboard = () => {
       label: "Mã đơn",
     },
     {
-      id: "time_receive",
+      id: 'order_time',
       disablePadding: true,
       label: "Thời gian nhận",
     },
@@ -258,7 +258,7 @@ const StaffDashboard = () => {
         {
           <div className="flex flex-col">
             <h2 className="text-white pb-5">
-              Xác nhận tạo báo cáo hàng tháng?
+              Xác nhận tạo báo cáo kho?
             </h2>
             <div className="flex justify-between gap-2">
               <CustomButton
