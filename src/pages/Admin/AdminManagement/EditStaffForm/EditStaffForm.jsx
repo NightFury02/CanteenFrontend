@@ -6,14 +6,14 @@ import { Loading } from "../../../../components";
 
 const EditStaffForm = (props) => {
   const { targetStaff, setOpen } = props;
-  const [editedTarget, setEditedTarget] = useState({
+  const [editedTarget, setEditedTarget] = React.useState({
     _id: targetStaff._id || "",
     name: targetStaff.name || "",
     address: targetStaff.address || "",
     birthday: targetStaff.birthday || "",
     phone: targetStaff.phone || "",
   });
-  const [errors, setErrors] = useState({
+  const [errors, setErrors] = React.useState({
     _id: "",
     name: "",
     address: "",
