@@ -44,7 +44,7 @@ const AdminDashBoard = () => {
       label: "Tồn kho",
     },
     {
-      id: "come",
+      id: "leave",
       numeric: false,
       disablePadding: true,
       label: "Nhập kho",
