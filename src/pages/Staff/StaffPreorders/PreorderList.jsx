@@ -304,7 +304,7 @@ const PreorderList = (props) => {
           selected={Object.keys(selected).length === 0 ? false : true}
           title={title}
         />
-        <TableContainer ref={tableRef}>
+        <TableContainer>
           <Table
             sx={{ minWidth: 750, bgcolor: "background.secondary" }}
             aria-labelledby="tableTitle"
