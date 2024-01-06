@@ -175,24 +175,6 @@ const EditForm = (props) => {
           />
         </div>
 
-        {/* <div className='input flex flex-col'>
-                <label
-                    className='block text-white text-sm font-barlow font-medium leading-6'
-                    htmlFor='password'
-                >
-                    Mật khẩu
-                </label>
-                <input 
-                    className='block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6'
-                    name='password'
-                    id='password'
-                    value={editedTarget.password}
-                    onChange={(e) => {handleInputChange("password", e.target.value) }}
-                    autoComplete='off'
-                    type='password'
-                />
-            </div> */}
-
         <div className="input flex flex-col">
           <label
             className="block text-white text-sm font-barlow font-medium leading-6"
