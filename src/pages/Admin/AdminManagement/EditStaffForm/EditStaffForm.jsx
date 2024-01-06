@@ -23,256 +23,129 @@ const EditStaffForm = (props) => {
   const { setStaffTableRows, setStaffTableOriginalRows } =
     useStaffInventoryContext();
 
-  const handleSubmit = async () => {
-    const dataToSend = {
-      name: editedTarget.name,
-      attributes: {
-        address: editedTarget.address,
-        birthday: editedTarget.birthday,
-        phone: editedTarget.phone,
-      },
-    };
-    //console.log(dataToSend);
-    const res = await userApi.updateInfo({ token, clientId }, dataToSend);
-    const newData = await userApi.getStaffList({ token, clientId });
-    const transformedData = newData.data.map((item) => ({
-      ...item,
-      ...item.attributes, // Spread attributes directly
-    }));
-    setStaffTableRows(transformedData);
-    setStaffTableOriginalRows(transformedData);
-    setOpen(false);
-  };
+    const [editedStaff, setEditedStaff] = React.useState({
+        _id: targetStaff._id || '', 
+        name: targetStaff.name || '',
+        birthday: targetStaff.birthday || '',
+        phone: targetStaff.phone || '',
+        address: targetStaff.address || '',
+    });
+    
+    const token = localStorage.getItem("token");
+    const clientId = localStorage.getItem("clientId");
 
-  const handleInputChange = (name, value) => {
-    setEditedTarget((previous) => ({
-      ...previous,
-      [name]: value,
-    }));
+    const handleCancel = () => {
+        setOpen(false);
+    }
+    
+    const handleSubmit = () => {
+        const editStaff = async () => {
+            setLoading(true);
+            const attributes = {
+                "address": editedStaff.address,
+                "birthday": editedStaff.birthday,
+                "phone": editedStaff.phone
+            };
 
-    //Form Validation
-    //Tên mặt hàng
-    if (name === "name") {
-      if (value === "") {
-        setErrors((prev) => ({
-          ...prev,
-          [name]: "Tên không được để trống",
-        }));
-      }
-      //Else, no error
-      else {
-        setErrors((prev) => ({
-          ...prev,
-          [name]: "",
-        }));
-      }
+            const data = {
+                "attributes": attributes,
+                "name": editedStaff.name,
+                "_id": editedStaff._id
+            };
+
+            const res = await userApi.updateStaffInfo({token, clientId}, data);
+            console.log(res)
+            const newData = await userApi.getStaffList({token, clientId});
+            const transformedData = newData.data.map(item => ({
+              ...item,
+              ...item.attributes // Spread attributes directly
+            }));
+            console.log(newData)
+      
+            setStaffTableRows(transformedData);
+            setStaffTableOriginalRows(transformedData);
+            setLoading(false);
+        }
+        editStaff();
+        setOpen(false);
     }
 
-    //Gía bán
-    if (name === "address") {
-      if (value === "") {
-        setErrors((prev) => ({
-          ...prev,
-          [name]: "Địa chỉ không được để trống",
-        }));
-      }
-      //Else, no error
-      else {
-        setErrors((prev) => ({
-          ...prev,
-          [name]: "",
-        }));
-      }
+    const handleInputChange = (name, value) => {
+        setEditedStaff((previous) => (
+            {
+                ...previous,
+                [name]: value
+            }
+        ))
     }
 
-    //Gía nhập
-    if (name === "birthday") {
-      if (value === "") {
-        setErrors((prev) => ({
-          ...prev,
-          [name]: "Ngày sinh không được để trống",
-        }));
-      }
-      //Else, no error
-      else {
-        setErrors((prev) => ({
-          ...prev,
-          [name]: "",
-        }));
-      }
+    const textFieldStyle = {
+        marginBottom: '2rem',
     }
-
-    //Số lượng
-    if (name === "phone") {
-      if (value === "") {
-        setErrors((prev) => ({
-          ...prev,
-          [name]: "Số điện thoại không được để trống",
-        }));
-      } else if (isNaN(Number(value))) {
-        setErrors((prev) => ({
-          ...prev,
-          [name]: "Số điện thoại không hợp lệ",
-        }));
-      }
-      //Else, no error
-      else {
-        setErrors((prev) => ({
-          ...prev,
-          [name]: "",
-        }));
-      }
-    }
-  };
-
-  return (
-    <div className="flex flex-col">
-      <form className="grid grid-cols-2 min-w-[800px] gap-5" autoComplete="off">
-        <div className="input flex flex-col">
-          <label
-            className="block text-white text-sm font-barlow font-medium leading-6"
-            htmlFor="_id"
-          >
-            Mã nhân viên
-          </label>
-          <input
-            className="block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6"
-            name="_id"
-            id="_id"
-            value={targetStaff._id}
-            autoComplete="off"
-            type="text"
-            readOnly={true}
-          />
+    return (
+        <div>
+<form 
+            className="flex flex-col min-w-[600px]"
+            autoComplete='off'
+        >
+            <TextField
+                variant='outlined'
+                label="Mã nhân viên"
+                name="_id"
+                defaultValue={targetStaff._id}
+                sx={textFieldStyle}
+                InputProps={{
+                    readOnly: true,
+                }}
+            />
+            <TextField
+                variant='outlined'
+                label="Tên nhân viên"
+                name="name"
+                value={editedStaff.name}
+                onChange={(e) => {handleInputChange("name", e.target.value) }}
+                sx={textFieldStyle}
+            />
+            <TextField
+                label="Ngày sinh"
+                name="birthday"
+                type="date" 
+                value={editedStaff.birthday}
+                onChange={(e) => {handleInputChange("birthday", e.target.value) }}
+                sx={textFieldStyle}
+            />
+            <TextField
+                variant='outlined'
+                label="Số điện thoại"
+                name="phone"
+                value={editedStaff.phone}
+                onChange={(e) => {handleInputChange("phone", e.target.value) }}
+                sx={textFieldStyle}
+            />
+            <TextField
+                variant='outlined'
+                label="Địa chỉ"
+                name="address"
+                value={editedStaff.address}
+                onChange={(e) => {handleInputChange("address", e.target.value) }}
+                sx={textFieldStyle}
+            />
+            <CustomButton
+                title='Hủy'
+                variant='secondary'
+                onAction={handleCancel}
+                className="p-2"
+            />
+            <CustomButton
+                title='Xác nhận'
+                variant='tertiary'
+                onAction={handleSubmit}
+                className="p-2"
+            />
+        </form>
+        {isLoading && <Loading/>}
         </div>
-
-        <div className="input flex flex-col">
-          <label
-            className="block text-white text-sm font-barlow font-medium leading-6"
-            htmlFor="name"
-          >
-            Tên nhân viên
-          </label>
-          <input
-            className="block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6"
-            name="name"
-            id="name"
-            value={editedTarget.name}
-            onChange={(e) => {
-              handleInputChange("name", e.target.value);
-            }}
-            autoComplete="off"
-            type="text"
-          />
-          {errors.name && (
-            <span className="text-red-500 text-sm mt-1">{errors.name}</span>
-          )}
-        </div>
-
-        <div className="input flex flex-col">
-          <label
-            className="block text-white text-sm font-barlow font-medium leading-6"
-            htmlFor="email"
-          >
-            Email
-          </label>
-          <input
-            className="block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6"
-            name="email"
-            id="email"
-            value={targetStaff.email}
-            autoComplete="off"
-            type="text"
-            readOnly={true}
-          />
-        </div>
-
-        <div className="input flex flex-col">
-          <label
-            className="block text-white text-sm font-barlow font-medium leading-6"
-            htmlFor="address"
-          >
-            Địa chỉ
-          </label>
-          <input
-            className="block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6"
-            name="address"
-            id="address"
-            value={editedTarget.address}
-            onChange={(e) => {
-              handleInputChange("address", e.target.value);
-            }}
-            autoComplete="off"
-            type="text"
-          />
-          {errors.address && (
-            <span className="text-red-500 text-sm mt-1">{errors.address}</span>
-          )}
-        </div>
-
-        <div className="input flex flex-col">
-          <label
-            className="block text-white text-sm font-barlow font-medium leading-6"
-            htmlFor="birthday"
-          >
-            Ngày sinh
-          </label>
-          <input
-            className="block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6"
-            name="birthday"
-            id="birthday"
-            value={editedTarget.birthday}
-            onChange={(e) => {
-              handleInputChange("birthday", e.target.value);
-            }}
-            autoComplete="off"
-            type="date"
-          />
-          {errors.birthday && (
-            <span className="text-red-500 text-sm mt-1">{errors.birthday}</span>
-          )}
-        </div>
-
-        <div className="input flex flex-col">
-          <label
-            className="block text-white text-sm font-barlow font-medium leading-6"
-            htmlFor="phone"
-          >
-            Số điện thoại
-          </label>
-          <input
-            className="block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6"
-            name="phone"
-            id="phone"
-            value={editedTarget.phone}
-            onChange={(e) => {
-              handleInputChange("phone", e.target.value);
-            }}
-            autoComplete="off"
-            type="text"
-          />
-          {errors.phone && (
-            <span className="text-red-500 text-sm mt-1">{errors.phone}</span>
-          )}
-        </div>
-      </form>
-      <div className="grid grid-cols-2 gap-4 mt-2">
-        <CustomButton
-          title="Hủy"
-          variant="delete"
-          onAction={setOpen(false)}
-          className="p-2 mt-3"
-        />
-
-        <CustomButton
-          title="Xác nhận"
-          onAction={handleSubmit}
-          className="p-2 mt-3"
-          disabled={Object.values(errors).some((error) => error !== "")}
-        />
-      </div>
-    </div>
-  );
-};
+    )
+}
 
 export default EditStaffForm;

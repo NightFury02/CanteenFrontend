@@ -66,11 +66,12 @@ const StaffSetting = () => {
   const handleUpdateInfo = (updatedData) => {
     const updateStaff = async () => {
       try {
-        //console.log(updatedData);
+        console.log(updatedData);
         const response = await UserApi.updateInfo(
           { token, clientId },
           updatedData
         );
+        console.log(response);
         if (response.error) {
           toast.error("Lỗi cập nhật thông tin", {
             position: "top-right",
