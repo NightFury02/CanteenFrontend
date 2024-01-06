@@ -1,18 +1,27 @@
-import React from 'react'
-import {FormControl, FormLabel, TextField, Input} from '@mui/material'
-import CustomButton from '../../../../components/CustomButton/CustomButton'
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import userApi from '../../../../api/userApi';
-import { useStaffInventoryContext } from '../../../../context/Staff/StaffInventoryContext';
-import { Loading } from '../../../../components';
+import React from "react";
+import CustomButton from "../../../../components/CustomButton/CustomButton";
+import userApi from "../../../../api/userApi";
+import { useStaffInventoryContext } from "../../../../context/Staff/StaffInventoryContext";
+import { Loading } from "../../../../components";
 
 const EditStaffForm = (props) => {
-    const {targetStaff, setOpen} = props
-    const [isLoading, setLoading] = React.useState(false);
-  
-    const {
-        staffTableRows, setStaffTableRows, setStaffTableOriginalRows
-    } = useStaffInventoryContext();
+  const { targetStaff, setOpen } = props;
+  const [editedTarget, setEditedTarget] = React.useState({
+    _id: targetStaff._id || "",
+    name: targetStaff.name || "",
+    address: targetStaff.address || "",
+    birthday: targetStaff.birthday || "",
+    phone: targetStaff.phone || "",
+  });
+  const [errors, setErrors] = React.useState({
+    _id: "",
+    name: "",
+    address: "",
+    birthday: "",
+    phone: "",
+  });
+  const { setStaffTableRows, setStaffTableOriginalRows } =
+    useStaffInventoryContext();
 
     const [editedStaff, setEditedStaff] = React.useState({
         _id: targetStaff._id || '', 
@@ -139,4 +148,4 @@ const EditStaffForm = (props) => {
     )
 }
 
-export default EditStaffForm
+export default EditStaffForm;
