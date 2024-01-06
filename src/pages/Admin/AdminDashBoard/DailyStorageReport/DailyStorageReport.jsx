@@ -151,6 +151,32 @@ export default function DailyStorageReport(props) {
           }
       }
       fetchReports()
+    }, []);
+
+    React.useEffect(() => {
+      const fetchReports = async () => {
+          try {
+            const inventoryReports = await reportApi.getAllDailyInventoryReport({
+              token,
+              clientId,
+            });
+            
+            setDailyInventoryReports(inventoryReports.data);
+            console.log(dailyInventoryReports);
+            const foundReport = dailyInventoryReports.find(item => item.createdAt.startsWith(selectedDate));
+            if (foundReport){
+              const detailReport = await reportApi.getDetailInventoryReport({token, clientId}, foundReport._id);
+              console.log(detailReport.data);
+              setRows(detailReport.data);
+            }
+            else {
+              setRows([]);
+            }
+          } catch (error) {
+            console.error('Error fetching Reports:', error);
+          }
+      }
+      fetchReports()
     }, [selectedDate]);
 
     const handleDateChange = (event) => {

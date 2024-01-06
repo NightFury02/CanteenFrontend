@@ -87,6 +87,41 @@ export default function MonthlyRevenueReport(props) {
           }
       }
       fetchReports()
+    }, []);
+
+    React.useEffect(() => {
+      const fetchReports = async () => {
+          try {
+            const monthlyReports = await reportApi.getAllMonthlyIncomeReport({
+              token,
+              clientId,
+            });
+
+            setMonthlyIncomeReports(monthlyReports.data);
+            const foundReport = monthlyIncomeReports.find(item => item.createdAt.startsWith(selectedMonth));
+            if (foundReport) {
+              setRevenue([
+                  { label: 'Doanh thu', value: foundReport.income + 'đ' },
+                  { label: 'Lợi nhuận', value: foundReport.profit + 'đ' },
+                  { label: 'Tổng số lượt đặt', value: foundReport.sale_quantity },
+                  { label: 'Tổng số tiền lãng phí', value: foundReport.loss_money + 'đ' },
+                  { label: 'Tổng số món lãng phí', value: foundReport.loss_quantity },
+              ]);
+            } else {
+              // Set default values if foundReport is not available
+              setRevenue([
+                  { label: 'Doanh thu', value: 'N/A' },
+                  { label: 'Lợi nhuận', value: 'N/A' },
+                  { label: 'Tổng số lượt đặt', value: 'N/A' },
+                  { label: 'Tổng số tiền lãng phí', value: 'N/A' },
+                  { label: 'Tổng số món lãng phí', value: 'N/A' },
+              ]);
+          }
+          } catch (error) {
+            console.error('Error fetching Reports:', error);
+          }
+      }
+      fetchReports()
     }, [selectedMonth]);
 
     const handleMonthChange = (event) => {
