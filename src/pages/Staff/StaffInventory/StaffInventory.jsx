@@ -8,6 +8,8 @@ import CustomButton from "../../../components/CustomButton/CustomButton";
 import PopUp from "../../../components/Popup/Popup";
 import GRNForm from "./GoodsReceivedNoteForm/GRNForm";
 import GDNForm from "./GoodsDeliveryNoteForm/GDNForm";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const StaffInventory = () => {
   //Inventory context
@@ -73,7 +75,29 @@ const StaffInventory = () => {
           { token, clientId },
           body
         );
-
+        if (res.error) {
+          toast.error("Lỗi tạo phiếu nhập kho", {
+            position: "top-right",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
+        } else {
+          toast.success("Tạo phiếu nhập kho thành công", {
+            position: "top-right",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
+        }
         //Update Inventory Table
         const invenRes = await InventoryApi.getAllInventoryItems({
           token,
@@ -111,6 +135,29 @@ const StaffInventory = () => {
           { token, clientId },
           body
         );
+        if (res.error) {
+          toast.error("Lỗi tạo phiếu xuất kho", {
+            position: "top-right",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
+        } else {
+          toast.success("Tạo phiếu xuất kho thành công", {
+            position: "top-right",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
+        }
 
         //Update Inventory Table
         const invenRes = await InventoryApi.getAllInventoryItems({
@@ -186,6 +233,21 @@ const StaffInventory = () => {
           onSubmit={handleCreateGDN}
         />
       </PopUp>
+
+      <div>
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover={false}
+          theme="colored"
+        />
+      </div>
     </>
   );
 };
