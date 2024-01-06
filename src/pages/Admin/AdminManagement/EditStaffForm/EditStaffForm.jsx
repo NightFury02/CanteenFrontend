@@ -37,13 +37,21 @@ const EditStaffForm = (props) => {
                 "birthday": editedStaff.birthday,
                 "phone": editedStaff.phone
             };
-            
-            const res = await userApi.updateInfo({token, clientId}, attributes);
+
+            const data = {
+                "attributes": attributes,
+                "name": editedStaff.name,
+                "_id": editedStaff._id
+            };
+
+            const res = await userApi.updateStaffInfo({token, clientId}, data);
+            console.log(res)
             const newData = await userApi.getStaffList({token, clientId});
             const transformedData = newData.data.map(item => ({
               ...item,
               ...item.attributes // Spread attributes directly
             }));
+            console.log(newData)
       
             setStaffTableRows(transformedData);
             setStaffTableOriginalRows(transformedData);

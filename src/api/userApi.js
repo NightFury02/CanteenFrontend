@@ -89,6 +89,25 @@ class UserApi {
     }
   }
 
+  async updateStaffInfo({ token, clientId }, data) {
+    try {
+      const res = await axios.patch(
+        `${BASE_URL}/staff`, data,
+        {
+          headers: configHeader({ token, clientId }),
+        }
+      );
+
+      return res.data;
+    } catch (error) {
+      console.log(error);
+      return {
+        error: true,
+        response: error?.response,
+      };
+    }
+  }
+
   async getStaffList({ token, clientId }) {
     try {
       const res = await axios.get(
